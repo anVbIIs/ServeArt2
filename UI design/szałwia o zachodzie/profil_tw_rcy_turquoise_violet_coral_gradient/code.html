@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "accent-tomato": "#FF6347",
+                    "surface-bright": "#fcf9f8",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#c1c1ff",
+                    "on-secondary-fixed-variant": "#00504d",
+                    "on-tertiary-fixed-variant": "#733600",
+                    "secondary-fixed": "#5af9f2",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-container": "#f0eded",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#e1dfff",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-container-low": "#f6f3f2",
+                    "surface-dim": "#dcd9d9",
+                    "on-secondary-fixed": "#00201f",
+                    "surface-variant": "#e5e2e1",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#2edcd6",
+                    "on-surface-variant": "#464555",
+                    "primary-container": "#6060f9",
+                    "primary": "#4643df",
+                    "on-primary-container": "#fffbff",
+                    "outline": "#767587",
+                    "on-secondary-container": "#00706d",
+                    "surface": "#fcf9f8",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#313030",
+                    "tertiary": "#934700",
+                    "secondary-container": "#5af9f2",
+                    "on-surface": "#1c1b1b",
+                    "outline-variant": "#c7c4d8",
+                    "secondary": "#006a67",
+                    "inverse-primary": "#c1c1ff",
+                    "tertiary-container": "#b85a00",
+                    "tertiary-fixed": "#ffdcc7",
+                    "on-tertiary-fixed": "#311300",
+                    "on-background": "#1c1b1b",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-primary-fixed-variant": "#2e26ca",
+                    "tertiary-fixed-dim": "#ffb787",
+                    "background": "#fcf9f8",
+                    "on-primary-fixed": "#09006b",
+                    "surface-tint": "#4846e1",
+                    "surface-container-high": "#eae7e7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "20px",
+                    "stack-lg": "24px",
+                    "gutter": "16px",
+                    "stack-md": "12px",
+                    "stack-sm": "4px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-sm": ["10px", {"lineHeight": "12px", "fontWeight": "700"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>.brand-gradient { background: linear-gradient(135deg, #00CEC8 0%, #6666FF 50%, #FF6347 100%); } .brand-border-gradient { border: 1.5px solid; border-image-source: linear-gradient(135deg, #00CEC8 0%, #6666FF 50%, #FF6347 100%); border-image-slice: 1; } .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 flex justify-between items-center px-container-margin h-16 shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+<span class="font-headline-xl text-headline-xl bg-gradient-to-r from-[#00CEC8] via-[#6666FF] to-[#FF6347] bg-clip-text text-transparent">ServeArt</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95" data-icon="notifications">notifications</button>
+</div>
+</header>
+<!-- Profile Header Section -->
+<section class="mt-16 relative">
+<div class="h-40 w-full brand-gradient"></div>
+<div class="px-container-margin -mt-16 relative z-10 flex flex-col items-center">
+<div class="p-1 bg-surface-bright rounded-full shadow-lg">
+<img alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-surface-bright" data-alt="A professional and warm portrait of a female artist in her late 20s with a creative aesthetic. She has a friendly smile and is posed against a soft, blurred studio background. The lighting is natural and bright, emphasizing a light-mode gallery feel. Her style is modern and minimalist, reflecting the artisan modernism of the ServeArt brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2p2ADu0NwmNQFqNon7Bwe7CLqzC5BJCPtyU-v7JRcBwb493ZPtWDvltQ411tCxKoFXaKPb4xrOUFsfc3-O2jfv4MyxF6IRgURVWz8tDH55Svju5GwOQNXCY_8JwWK9uMHybJ2AYpUDz_LgtX8P4VbIbgChI1M9pCTOeyivj5riTpxUzFdVfwWFlpPzK39u1EwMwLgpoMrTp2SHOzwdcG_khMZeADPUkvVHtTa1cftoRbUCYFc5AYT5ub-EkYBG61r0UZsnfY6s68"/>
+</div>
+<div class="mt-4 text-center">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Elena Kovic</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 max-w-xs mx-auto">Ceramiczka i ilustratorka z pasją do form organicznych. Tworzę sztukę użytkową, która opowiada historie.</p>
+<div class="flex items-center justify-center gap-3 mt-3">
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star_half" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="ml-1 font-label-md text-label-md text-on-surface-variant">(4.9)</span>
+</div>
+<span class="h-4 w-px bg-outline-variant"></span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+<span class="font-label-md text-label-md">Wrocław, PL</span>
+</div>
+</div>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<span class="bg-accent-tomato/10 text-accent-tomato px-3 py-1 rounded-full border border-accent-tomato/20 font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span>
+                        Szybka realizacja
+                    </span>
+<span class="text-on-surface-variant font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                        Dołączyła Marzec 2023
+                    </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Status Banner -->
+<section class="px-container-margin mt-stack-lg">
+<div class="bg-primary/5 border border-primary/20 rounded-xl p-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex h-2 w-2 rounded-full bg-secondary"></span>
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">[ Przyjmuję zlecenia (Custom) ]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Chętnie podejmę się personalizowanych projektów ceramicznych. 
+                <span class="font-bold text-error block mt-2">Nie tworzę:</span> Biżuterii metalowej, rzeźb wielkogabarytowych powyżej 1m.
+            </p>
+</div>
+</section>
+<!-- Portfolio Navigation Tabs -->
+<nav class="sticky top-16 z-40 bg-surface/95 backdrop-blur-md mt-stack-lg border-b border-outline-variant/20">
+<div class="flex px-container-margin overflow-x-auto no-scrollbar gap-6 h-12 items-center">
+<button class="whitespace-nowrap font-label-md text-label-md text-accent-tomato border-b-2 border-accent-tomato h-full px-1">Dzieła (Sklep)</button>
+<button class="whitespace-nowrap font-label-md text-label-md text-on-surface-variant hover:text-accent-tomato transition-colors h-full px-1">Portfolio / Procesy</button>
+<button class="whitespace-nowrap font-label-md text-label-md text-on-surface-variant hover:text-accent-tomato transition-colors h-full px-1">Wydarzenia</button>
+<button class="whitespace-nowrap font-label-md text-label-md text-on-surface-variant hover:text-accent-tomato transition-colors h-full px-1">O mnie</button>
+</div>
+</nav>
+<!-- Shop Content (Default Tab) -->
+<main class="px-container-margin mt-stack-md grid grid-cols-2 gap-gutter">
+<!-- AI FREE Product -->
+<div class="flex flex-col gap-2 group">
+<div class="relative aspect-square overflow-hidden rounded-xl bg-surface-container shadow-sm border border-outline-variant/10">
+<img alt="Ceramic Vase" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A minimalist handmade ceramic vase with an irregular, organic shape and a matte, sandy texture. It is placed on a clean white surface with soft, diffused sunlight casting gentle shadows. The aesthetic is professional, high-end, and perfectly aligned with a light-mode artisan gallery. The color palette is composed of soft earth tones and pure whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG7T7UUm66w1_rIgk9ElTmtCixnOaYr_Lgpg-MsF0xCNYSRp7s5joR2X5Q99oDtaohBucflaRg-IeHAhrWObvWQOvDcrNOyPAp-i7mGPJ1BR0pmk7vCX1R2cIRWJwRnF9_G8PgFOTB40JT79FMiKl64R9H0S05CUZxMbZ9sqvrNWEMQ4AdCqHl36RcstF3LSOJeXYQ1d0QQmGLO_HS0jqmLf2Kk4yFl0gpFXoCWx5gzrqpjGy3mocWKUVZ0IlhdUTw8KJy3EgX8qc"/>
+<span class="absolute top-2 left-2 bg-black text-white px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-label-md text-label-md text-on-surface">Waza "Oddech"</h3>
+<p class="font-headline-md text-headline-md text-primary">249 PLN</p>
+<span class="inline-block border border-secondary text-secondary px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[TRUE HANDMADE]</span>
+</div>
+</div>
+<!-- Local Materials Product -->
+<div class="flex flex-col gap-2 group">
+<div class="relative aspect-square overflow-hidden rounded-xl bg-surface-container shadow-sm border border-outline-variant/10">
+<img alt="Clay Bowl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A set of handcrafted deep indigo clay bowls with a glossy finish and unique speckled patterns. They are artfully stacked in a minimalist, bright kitchen setting. The lighting is crisp and modern, highlighting the high-quality craftsmanship. The scene uses a sophisticated palette of deep blues, grays, and whites to maintain a professional, artisan marketplace look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkbBgGQEnLZ6LTJI_4PUi6kHyrYiiazUPJxCZWmZgXQnkxYjr0tsRmrbvBI9z0a7INY_a6sk2n9OqkZwTtMp_uc3OwSjOxId6SdUjfz8s7ChPyo67He0_8FuEIuFexNfQ2S1IKOwFYRQ3ndTttcBUBfUCs8uO5MbX97qyHMhHAaDAE72F-rxkAufr5pXvm6ScUICPMP1ZaHh6ageD-UdRLmFaaxz36fHsRQiTU0PzWB_E6jVmcsb1aVBGVO5c_hoxj6btu9F2yl80"/>
+<span class="absolute top-2 left-2 border border-primary bg-surface/80 text-primary px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[LOCAL MATERIALS]</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-label-md text-label-md text-on-surface">Misa Nocne Niebo</h3>
+<p class="font-headline-md text-headline-md text-primary">120 PLN</p>
+<span class="inline-block border border-secondary text-secondary px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[TRUE HANDMADE]</span>
+</div>
+</div>
+<!-- More Products -->
+<div class="flex flex-col gap-2 group">
+<div class="relative aspect-square overflow-hidden rounded-xl bg-surface-container shadow-sm border border-outline-variant/10">
+<img alt="Abstract Painting" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A small, modern abstract painting on canvas featuring textures and mixed media in shades of turquoise, gold, and white. The artwork is presented in a minimalist frame against a bright, airy gallery wall. The lighting is focused and clean, enhancing the tactile qualities of the paint. The overall mood is sophisticated and creatively vibrant." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPAsPYGaK5tz8sUGaJLhLz3VPKdH0llaOhXclnDiqeEvomjoy4h6-fysgINvXo86We8B7iDDTi9Zb_XonmTgSrl6YXM8_Jgyjebszfyhj5GCwUQSHPV0TglWpjTBYNdnaJH1Ghyvwg5qe3STxZ8CiNTz7R-jGwks6nDBXXWP2eftEj53ZRUQHAATzxmsO4yO7ffzwszkEDplCnTl-OCi03eGKiOXQLRIECyA0dUXtzZQvRh3p-MS8LXHnBrfi_T_2Z5gDDpKs9XaM"/>
+</div>
+<div class="space-y-1">
+<h3 class="font-label-md text-label-md text-on-surface">Pejzaż Pamięci II</h3>
+<p class="font-headline-md text-headline-md text-primary">550 PLN</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 group">
+<div class="relative aspect-square overflow-hidden rounded-xl bg-surface-container shadow-sm border border-outline-variant/10">
+<img alt="Minimalist Mug" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sleek, minimalist ceramic mug with a bold handle and a matte charcoal finish. It sits alone on a clean, light gray surface under a soft top-down light. The design is contemporary and professional, showcasing high-quality product photography. The color scheme is elegant and muted, emphasizing the product's form and material." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaFtaCOPEBY3WBIKF2lEO1nWqVtGOWYkYscECUgwbi-57kBC6BU_IDTzaDgjkJV9shJjJcj1oW0Hy-kJf5lhR3YPnxfSAjpb-YMstdtnpANjbdv18L6JlQPp4znCaJwo4MDwg6mlc3ubDQFoPxanU5gxjAAT9d9DfV4qtspPLPQnpOkrjmSeDqvddfCpYTeYuQB7x3esU1CtGn9bPP91NLyK3afjMJHoI3P2SMcglw_ASiQAAzUp2xtygDZI-MhjL3WsXEDexG4Vw"/>
+</div>
+<div class="space-y-1">
+<h3 class="font-label-md text-label-md text-on-surface">Kubek Brutal</h3>
+<p class="font-headline-md text-headline-md text-primary">85 PLN</p>
+</div>
+</div>
+</main>
+<!-- Sticky CTA Bubble Buttons -->
+<div class="fixed bottom-24 right-container-margin flex flex-col gap-3 z-50">
+<button class="brand-gradient text-on-primary px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-label-md text-label-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+            Złóż zamówienie
+        </button>
+<button class="bg-surface/90 backdrop-blur-md border border-outline-variant/50 text-[#6666FF] px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-label-md text-label-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+            Wiadomość
+        </button>
+</div>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 backdrop-blur-2xl border-t border-outline-variant/20 shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] flex justify-around items-center h-20 px-4">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-xl transition-colors w-16 h-16 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-sm text-label-sm mt-1">Społeczność</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-xl transition-colors w-16 h-16 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm mt-1">Odkrywaj</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-xl transition-colors w-16 h-16 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-label-sm text-label-sm mt-1">Wiadomości</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#6666FF] font-bold hover:bg-surface-variant/50 rounded-xl transition-colors w-16 h-16 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profil</span>
+</a>
+</nav>
+<script>
+        // Simple tab switching interaction
+        const tabs = document.querySelectorAll('nav:not(.fixed) button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('text-accent-tomato', 'border-b-2', 'border-accent-tomato');
+                    t.classList.add('text-on-surface-variant');
+                });
+                tab.classList.remove('text-on-surface-variant');
+                tab.classList.add('text-accent-tomato', 'border-b-2', 'border-accent-tomato');
+            });
+        });
+
+        // Click effect on reputation stars
+        const starsContainer = document.querySelector('.flex.items-center.text-tertiary');
+        starsContainer.addEventListener('click', () => {
+            starsContainer.classList.add('scale-110');
+            setTimeout(() => starsContainer.classList.remove('scale-110'), 200);
+            alert('Opinie użytkowników są weryfikowane przez ServeArt.');
+        });
+    </script>
+</body></html>

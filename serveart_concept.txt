@@ -1,0 +1,131 @@
+﻿Serveart — Koncepcja aplikacji
+
+Platforma zrzeszająca artystów i rękodzielników w Polsce
+
+Serveart — Koncepcja aplikacji
+
+Platforma zrzeszająca artystów i rękodzielników w Polsce
+
+1. Problem / Deficyt
+
+Nie istnieje jedno, dedykowane miejsce w Polsce, gdzie można znaleźć, wesprzeć i nabyć autentyczne rękodzieło bezpośrednio od twórcy.
+
+Polscy rękodzielniczy i artyści nie mają przestrzeni, która łączyłaby funkcję sklepu, portfolio i społeczności — i która byłaby dostosowana do specyfiki twórczości ręcznej. Jednocześnie nabywcy coraz trudniej odróżniają prawdziwe rękodzieło od masowej produkcji udającej ręczną pracę.
+
+2. Przejawy
+
+Po stronie twórców:
+
+Reklama rozproszona po grupach na Facebooku — posty giną w feedzie, brak ciągłości i zasięgu
+
+Instagram i inne social media traktują małych twórców jak TikToka — obcinają zasięgi organiczne, faworyzując treści viralowe i płatne
+
+Sprzedaż na Vinted — platformie przeznaczonej dla rzeczy używanych, nie dla nowej twórczości artystycznej
+
+Brak jednego miejsca, które pokazuje pełen profil twórcy: portfolio, oferty, warsztaty, lokalizację, specjalizację
+
+Konieczność prowadzenia kilku platform jednocześnie, żadna nie jest do tego dostosowana
+
+Po stronie nabywców:
+
+Trudność w odróżnieniu ręcznie robionych przedmiotów od dropshippingu (głównie z Temu, AliExpress)
+
+Produkty generowane lub projektowane przez AI, sprzedawane jako rękodzieło
+
+Brak narzędzi filtrowania według autentyczności, lokalizacji czy specjalizacji twórcy
+
+Niska świadomość różnorodności rękodzieła — ludzie nie wiedzą, że mogą zamówić np. mural, custom, stolarskie meble na wymiar
+
+3. Rozwiązania
+
+Profile i społeczność
+
+Dwa typy kont: **Twórca** i **Nabywca**
+
+Profil twórcy jako mini-strona: portfolio, galeria prac i procesów, oferty, lokalizacja, rodzaje przyjmowanych zleceń, lista kategorii których twórca **nie przyjmuje**
+
+System tagów zamiast sztywnych kategorii — jeden twórca może być jednocześnie w: malarstwo, mixed-media, murale, customy
+
+Możliwość budowania społeczności wokół profilu twórcy (obserwowanie, powiadomienia o nowych pracach/wydarzeniach)
+
+Autentyczność i weryfikacja
+
+Obowiązek dodania zdjęć lub filmów z procesu tworzenia przy każdej ofercie
+
+Tagi weryfikacyjne widoczne dla nabywców: **AI free**, **ręcznie robione**, **lokalne materiały** itp.
+
+System reputacji oparty na: czasie realizacji, kontakcie z klientem, aktywności, ocenach
+
+Sprzedaż i oferty
+
+Wystawianie prac gotowych do sprzedaży
+
+Możliwość przyjmowania zleceń na zamówienie (custom)
+
+Jasne oznaczenie, jakich zleceń twórca nie przyjmuje
+
+Wydarzenia i warsztaty
+
+Twórca może ogłaszać warsztaty, wystawy, pokazy
+
+Platforma jako źródło informacji o lokalnym życiu artystycznym
+
+Odkrywalność
+
+Rozbudowany system tagów i kategorii, rozwijany z czasem (od szerokich jak „rękodzieło" po niszowe jak „stolarka", „tkactwo", „upcycling")
+
+Algorytm promujący rzetelnych, aktywnych twórców — nie tylko tych z największym budżetem reklamowym
+
+Filtrowanie po lokalizacji, specjalizacji, dostępności, tagach
+
+Monetyzacja i konta premium
+
+Konta premium dla twórców: lepsza widoczność, rozbudowane statystyki, personalizacja profilu
+
+Odznaki i wyróżnienia budujące reputację (np. „Zweryfikowany twórca", „Szybka realizacja")
+
+Opcja reklamy wewnętrznej dla twórców — przejrzysta, bez faworyzowania dropshipperów
+
+4. Ograniczenia
+
+Techniczne:
+
+Weryfikacja autentyczności nie jest w 100% automatyzowalna — system zdjęć procesowych można obejść; konieczny element moderacji ludzkiej lub zgłaszania przez społeczność
+
+Skalowalność tagów wymaga przemyślanej architektury od początku, żeby nie stała się chaosem
+
+Rynkowe:
+
+Przyzwyczajenia twórców do Instagrama i Vinted — trudność w przekonaniu ich do migracji na nową platformę
+
+Masa krytyczna: platforma jest wartościowa dopiero, gdy ma wystarczającą liczbę twórców i nabywców jednocześnie
+
+Konkurencja z Etsy (globalnym) — konieczność podkreślenia lokalnego, polskiego charakteru jako przewagi
+
+Prawne i finansowe:
+
+Obsługa płatności wymaga integracji z bramką płatności i zgodności z regulacjami (RODO, prawa konsumenta, VAT)
+
+Kwestia odpowiedzialności platformy za transakcje między twórcą a nabywcą
+
+Moderacja:
+
+Egzekwowanie zasad (zakaz dropshippingu, weryfikacja procesów) wymaga zasobów moderacyjnych
+
+Ryzyko fałszywych zgłoszeń i sporów między użytkownikami
+
+Podsumowanie — Opis aplikacji
+
+Serveart
+
+Platforma zrzeszająca artystów i rękodzielników w Polsce
+
+Serveart to aplikacja będąca skrzyżowaniem sklepu, portfolio i platformy społecznościowej — stworzona specjalnie dla polskich twórców rękodzielniczych i artystów oraz osób, które chcą świadomie wspierać lokalną twórczość.
+
+Twórcy budują na Serveart swój pełny profil: wystawiają gotowe prace, przyjmują zlecenia niestandardowe, dokumentują proces tworzenia, ogłaszają warsztaty i wystawy. Rozbudowany system tagów pozwala na precyzyjne określenie specjalizacji — od malarstwa i rzeźby, przez murale i szydełkowanie, po upcycling i stolarstwo — bez przypisywania twórcy do jednej, sztywnej kategorii.
+
+Dla nabywców Serveart to miejsce, gdzie autentyczność jest weryfikowalna: każda oferta wymaga dokumentacji procesu, a tagi takie jak „AI free" czy „ręcznie robione" pomagają świadomie filtrować wyniki. Algorytm platformy promuje rzetelnych, aktywnych twórców — nie tych z największym budżetem.
+
+Serveart odpowiada na realny deficyt na polskim rynku: miejsce, gdzie prawdziwe rękodzieło jest widoczne, dostępne i doceniane.
+
+Wersja dokumentu: 1.0 | Maj 2026
