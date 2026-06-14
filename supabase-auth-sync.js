@@ -1,0 +1,511 @@
+// Supabase Auth and User Profile Synchronization for ServeArt
+
+// Helper for saving callback of action that triggered auth modal
+window.authSuccessCallback = null;
+
+// Password validation function helper
+window.validatePassword = function(password) {
+    return {
+        minLength: password.length >= 8,
+        hasUpper: /[A-Z]/.test(password),
+        hasLower: /[a-z]/.test(password),
+        hasNumber: /[0-9]/.test(password),
+        hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+};
+
+// Check password validity
+window.isPasswordValid = function(password) {
+    const checks = window.validatePassword(password);
+    return checks.minLength && checks.hasUpper && checks.hasLower && checks.hasNumber && checks.hasSpecial;
+};
+
+// Open the auth modal and save the callback to run on success
+window.showAuthModal = function(callback = null) {
+    window.authSuccessCallback = callback;
+    const modal = document.getElementById('modal-auth');
+    if (modal) {
+        modal.classList.remove('hidden');
+        window.switchAuthView('login');
+    }
+};
+
+// Close the auth modal and clear success callback
+window.closeAuthModal = function() {
+    const modal = document.getElementById('modal-auth');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    window.authSuccessCallback = null;
+};
+
+// Switch between 'login' and 'register' views inside the auth modal
+window.switchAuthView = function(view) {
+    const loginSection = document.getElementById('auth-login-section');
+    const registerSection = document.getElementById('auth-register-section');
+    const modalTitle = document.getElementById('auth-modal-title');
+
+    if (!loginSection || !registerSection || !modalTitle) return;
+
+    // Clear messages and inputs
+    const errorMsg = document.getElementById('auth-error-msg');
+    const successMsg = document.getElementById('auth-success-msg');
+    if (errorMsg) {
+        errorMsg.innerText = '';
+        errorMsg.classList.add('hidden');
+    }
+    if (successMsg) {
+        successMsg.innerText = '';
+        successMsg.classList.add('hidden');
+    }
+
+    if (view === 'login') {
+        loginSection.classList.remove('hidden');
+        registerSection.classList.add('hidden');
+        modalTitle.innerText = 'Zaloguj się';
+    } else {
+        loginSection.classList.add('hidden');
+        registerSection.classList.remove('hidden');
+        modalTitle.innerText = 'Stwórz konto';
+        
+        // Reset password checklist UI
+        window.updatePasswordChecklist('');
+    }
+};
+
+// Update register password validation indicators
+window.updatePasswordChecklist = function(password) {
+    const checks = window.validatePassword(password);
+    
+    const elements = {
+        'pwd-check-length': checks.minLength,
+        'pwd-check-upper': checks.hasUpper,
+        'pwd-check-lower': checks.hasLower,
+        'pwd-check-number': checks.hasNumber,
+        'pwd-check-special': checks.hasSpecial
+    };
+
+    for (const [id, isValid] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el) {
+            const icon = el.querySelector('.material-symbols-outlined');
+            if (isValid) {
+                el.classList.remove('text-outline');
+                el.classList.add('text-primary');
+                if (icon) icon.innerText = 'check_circle';
+            } else {
+                el.classList.remove('text-primary');
+                el.classList.add('text-outline');
+                if (icon) icon.innerText = 'radio_button_unchecked';
+            }
+        }
+    }
+};
+
+// Guard action: if user logged in -> run callback; if not -> show modal
+window.requireAuth = function(actionCallback) {
+    if (!window.supabaseClient) {
+        // Fallback offline mode - always authenticated
+        if (actionCallback) actionCallback();
+        return true;
+    }
+    if (STATE.isAuthenticated) {
+        if (actionCallback) actionCallback();
+        return true;
+    } else {
+        window.showAuthModal(actionCallback);
+        return false;
+    }
+};
+
+// 1. Sign Up implementation with strict requirements
+window.supabaseSignUp = async function(email, password, confirmPassword, fullName, role) {
+    const errorMsg = document.getElementById('auth-error-msg');
+    const successMsg = document.getElementById('auth-success-msg');
+    
+    if (errorMsg) errorMsg.classList.add('hidden');
+    if (successMsg) successMsg.classList.add('hidden');
+
+    try {
+        if (!email || !password || !confirmPassword || !fullName || !role) {
+            throw new Error("Wszystkie pola są wymagane.");
+        }
+
+        const usernameClean = fullName.trim();
+        if (usernameClean.length < 3 || usernameClean.length > 15) {
+            throw new Error("Nazwa użytkownika musi mieć od 3 do 15 znaków.");
+        }
+
+        // Validate password strength
+        if (!window.isPasswordValid(password)) {
+            throw new Error("Hasło nie spełnia wymagań bezpieczeństwa.");
+        }
+
+        // Validate confirm password
+        if (password !== confirmPassword) {
+            throw new Error("Hasła nie są identyczne.");
+        }
+
+        if (!window.supabaseClient) {
+            throw new Error("Klient Supabase nie jest skonfigurowany.");
+        }
+
+        // Check if username is taken in profiles table
+        const { data: existingName, error: checkError } = await window.supabaseClient
+            .from('profiles')
+            .select('name')
+            .eq('name', fullName.trim())
+            .maybeSingle();
+
+        if (checkError) {
+            console.error("Checking name error:", checkError);
+        }
+
+        if (existingName) {
+            throw new Error("Ta nazwa użytkownika jest już zajęta.");
+        }
+
+        // Perform Supabase Auth registration
+        const { data, error: signUpError } = await window.supabaseClient.auth.signUp({
+            email: email.trim(),
+            password: password,
+            options: {
+                data: {
+                    full_name: fullName.trim(),
+                    role: role
+                }
+            }
+        });
+
+        if (signUpError) throw signUpError;
+
+        if (data.user) {
+            // Create user profile row
+            const joinedDate = new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
+            const capitalizedJoined = joinedDate.charAt(0).toUpperCase() + joinedDate.slice(1);
+
+            const { error: profileError } = await window.supabaseClient
+                .from('profiles')
+                .insert({
+                    id: data.user.id,
+                    name: fullName.trim(),
+                    role: role,
+                    city: 'Wrocław',
+                    bio: role === 'twórca' ? 'Artysta / Rzemieślnik w ServeArt' : 'Miłośnik polskiego rzemiosła i handmade.',
+                    tags: role === 'twórca' ? ['Rękodzieło'] : ['Kolekcja'],
+                    joined: capitalizedJoined,
+                    exclusions: role === 'twórca' ? 'Dropshippingu, masowej produkcji.' : 'Brak',
+                    banner: 'gradient-5'
+                });
+
+            if (profileError) {
+                console.error("Profile creation error:", profileError);
+                // Non-blocking for the auth signup user view, but good to know
+            }
+
+            if (successMsg) {
+                successMsg.innerText = "Rejestracja pomyślna! Sprawdź swoją skrzynkę e-mail i kliknij link weryfikacyjny przed zalogowaniem.";
+                successMsg.classList.remove('hidden');
+            }
+
+            // Clear inputs
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+            document.getElementById('reg-confirm-password').value = '';
+            document.getElementById('reg-fullname').value = '';
+            
+            // Switch to login after a few seconds
+            setTimeout(() => {
+                window.switchAuthView('login');
+            }, 6000);
+        }
+    } catch (err) {
+        if (errorMsg) {
+            errorMsg.innerText = err.message || "Błąd podczas rejestracji.";
+            errorMsg.classList.remove('hidden');
+        }
+    }
+};
+
+// 2. Sign In implementation
+window.supabaseSignIn = async function(email, password) {
+    const errorMsg = document.getElementById('auth-error-msg');
+    if (errorMsg) errorMsg.classList.add('hidden');
+
+    try {
+        if (!email || !password) {
+            throw new Error("E-mail oraz hasło są wymagane.");
+        }
+
+        if (!window.supabaseClient) {
+            throw new Error("Klient Supabase nie jest skonfigurowany.");
+        }
+
+        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+            email: email.trim(),
+            password: password
+        });
+
+        if (error) throw error;
+
+        // Listener will take care of session state
+    } catch (err) {
+        if (errorMsg) {
+            errorMsg.innerText = err.message || "Błąd logowania. Sprawdź poprawność danych.";
+            errorMsg.classList.remove('hidden');
+        }
+    }
+};
+
+// 3. Sign Out implementation
+window.supabaseSignOut = async function() {
+    if (!window.supabaseClient) {
+        alert("Działasz w trybie offline (demo). Resetowanie do domyślnych danych.");
+        safeLocalStorage.removeItem('serveart_user_name');
+        safeLocalStorage.removeItem('serveart_user_role');
+        safeLocalStorage.removeItem('serveart_user_email');
+        safeLocalStorage.removeItem('serveart_user_password');
+        safeLocalStorage.removeItem('serveart_premium');
+        safeLocalStorage.removeItem('serveart_avatar_shape');
+        safeLocalStorage.removeItem('serveart_main_specialization');
+        window.location.reload();
+        return;
+    }
+
+    try {
+        const { error } = await window.supabaseClient.auth.signOut();
+        if (error) throw error;
+
+        // Clear cached credentials
+        safeLocalStorage.removeItem('serveart_user_name');
+        safeLocalStorage.removeItem('serveart_user_role');
+        safeLocalStorage.removeItem('serveart_user_email');
+        safeLocalStorage.removeItem('serveart_user_password');
+        safeLocalStorage.removeItem('serveart_premium');
+        safeLocalStorage.removeItem('serveart_avatar_shape');
+        safeLocalStorage.removeItem('serveart_main_specialization');
+
+        window.location.reload();
+    } catch (err) {
+        console.error("SignOut error:", err);
+        window.location.reload();
+    }
+};
+
+// 4. Auth State Listener Initializer
+window.initAuthListener = function() {
+    if (!window.supabaseClient) {
+        console.log("No Supabase Client. Session listener skipped. Operating in Guest-disabled offline mode.");
+        STATE.isAuthenticated = true; // offline mock mode
+        return;
+    }
+
+    // Set state default as unauthenticated guest
+    STATE.isAuthenticated = false;
+
+    window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        console.log("Auth State Changed: ", event, session);
+        
+        if (session && session.user) {
+            STATE.isAuthenticated = true;
+            
+            // Try fetching profile matching authenticated user id
+            try {
+                const { data: profile, error } = await window.supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (profile) {
+                    // Overwrite STATE.currentUser with actual data
+                    STATE.currentUser = {
+                        name: profile.name,
+                        role: profile.role || 'twórca',
+                        email: session.user.email,
+                        avatar: profile.avatar || '',
+                        city: profile.city || 'Wrocław',
+                        joined: profile.joined || 'Sierpień 2023',
+                        profession: profile.profession || 'Kolekcjoner i Twórca Rzemiosła',
+                        mainSpecialization: profile.main_specialization || '',
+                        bio: profile.bio || '',
+                        exclusions: profile.exclusions || '',
+                        tags: profile.tags || [],
+                        customMinBudget: profile.custom_min_budget || 0,
+                        customMaxBudget: profile.custom_max_budget || 0,
+                        customDeliveryTime: profile.custom_delivery_time || '',
+                        banner: profile.banner || 'gradient-5',
+                        isPremium: profile.is_premium || false,
+                        avatarShape: profile.avatar_shape || 'circle',
+                        offering: profile.offering || [],
+                        soughtProfessions: profile.sought_professions || []
+                    };
+
+                    // Persist for offline-like reading if needed
+                    safeLocalStorage.setItem('serveart_user_name', profile.name);
+                    safeLocalStorage.setItem('serveart_user_role', profile.role);
+                    safeLocalStorage.setItem('serveart_user_email', session.user.email);
+                    safeLocalStorage.setItem('serveart_premium', profile.is_premium ? 'true' : 'false');
+                    safeLocalStorage.setItem('serveart_avatar_shape', profile.avatar_shape);
+                    safeLocalStorage.setItem('serveart_main_specialization', profile.main_specialization || '');
+                } else {
+                    // Profile not found in database, build one from auth metadata
+                    console.warn("Auth user exists but profile row is missing. Creating fallback profile.");
+                    const fallbackName = session.user.user_metadata.full_name || session.user.email.split('@')[0];
+                    const fallbackRole = session.user.user_metadata.role || 'twórca';
+                    
+                    const newProfile = {
+                        id: session.user.id,
+                        name: fallbackName,
+                        role: fallbackRole,
+                        city: 'Wrocław',
+                        bio: fallbackRole === 'twórca' ? 'Artysta / Rzemieślnik w ServeArt' : 'Miłośnik polskiego rzemiosła i handmade.',
+                        tags: fallbackRole === 'twórca' ? ['Rękodzieło'] : ['Kolekcja'],
+                        joined: new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' }),
+                        banner: 'gradient-5'
+                    };
+
+                    await window.supabaseClient.from('profiles').insert(newProfile);
+                    
+                    STATE.currentUser = {
+                        name: newProfile.name,
+                        role: newProfile.role,
+                        email: session.user.email,
+                        avatar: '',
+                        city: newProfile.city,
+                        joined: newProfile.joined,
+                        profession: newProfile.role === 'twórca' ? 'Artysta' : 'Pasjonat',
+                        mainSpecialization: '',
+                        bio: newProfile.bio,
+                        exclusions: 'Brak',
+                        tags: newProfile.tags,
+                        customMinBudget: 0,
+                        customMaxBudget: 0,
+                        customDeliveryTime: '',
+                        banner: newProfile.banner,
+                        isPremium: false,
+                        avatarShape: 'circle',
+                        offering: [],
+                        soughtProfessions: []
+                    };
+                }
+            } catch (e) {
+                console.error("Error fetching/creating user profile:", e);
+            }
+
+            // Sync database collections
+            await window.syncFromSupabase();
+
+            // Setup profile settings forms if exists
+            const settingsName = document.getElementById('settings-username');
+            const settingsEmail = document.getElementById('settings-email');
+            if (settingsName) settingsName.value = STATE.currentUser.name;
+            if (settingsEmail) settingsEmail.value = STATE.currentUser.email;
+
+            // Close auth modal if open
+            window.closeAuthModal();
+
+            // Run pending callback if exist
+            if (window.authSuccessCallback) {
+                window.authSuccessCallback();
+                window.authSuccessCallback = null;
+            }
+
+            // Re-render UI
+            if (window.initializeUserChannels) window.initializeUserChannels();
+            if (window.renderExploreFeed) window.renderExploreFeed();
+            if (window.renderCommunityFeed) window.renderCommunityFeed();
+            if (window.renderCooperationFeed) window.renderCooperationFeed();
+            
+            // Show welcome message
+            console.log(`Welcome back, ${STATE.currentUser.name}!`);
+        } else {
+            // User is Guest
+            STATE.isAuthenticated = false;
+            
+            // Set guest details to prevent UI reference crashes
+            STATE.currentUser = {
+                name: "Gość",
+                role: 'entuzjasta',
+                email: '',
+                avatar: "", // Empty to trigger default guest profile icon
+                city: "Wrocław",
+                joined: "",
+                profession: "Niezalogowany Użytkownik",
+                mainSpecialization: "",
+                bio: "Zaloguj się, aby zyskać dostęp do wszystkich funkcji społeczności, zamówień i ofert.",
+                exclusions: "",
+                tags: [],
+                customMinBudget: 0,
+                customMaxBudget: 0,
+                customDeliveryTime: "",
+                banner: "gradient-1",
+                isPremium: false,
+                avatarShape: 'circle',
+                offering: [],
+                soughtProfessions: []
+            };
+
+            // Sync database collections anyway so guest can browse public details
+            await window.syncFromSupabase();
+
+            // Re-render UI to display guest experience
+            if (window.initializeUserChannels) window.initializeUserChannels();
+            if (window.renderExploreFeed) window.renderExploreFeed();
+            if (window.renderCommunityFeed) window.renderCommunityFeed();
+            if (window.renderCooperationFeed) window.renderCooperationFeed();
+        }
+    });
+};
+
+window.selectRegRole = function(role) {
+    const btnTworca = document.getElementById('reg-role-btn-tworca');
+    const btnEntuzjasta = document.getElementById('reg-role-btn-entuzjasta');
+    const hiddenInput = document.getElementById('reg-role-value');
+    
+    if (!btnTworca || !btnEntuzjasta || !hiddenInput) return;
+    
+    hiddenInput.value = role;
+    
+    if (role === 'twórca') {
+        btnTworca.className = "py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-primary text-white shadow transition-all";
+        btnEntuzjasta.className = "py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-transparent text-on-surface-variant transition-all";
+    } else {
+        btnTworca.className = "py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-transparent text-on-surface-variant transition-all";
+        btnEntuzjasta.className = "py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-turquoise text-white shadow transition-all";
+    }
+};
+
+// 5. Google Sign In Implementation
+window.supabaseSignInWithGoogle = async function() {
+    const errorMsg = document.getElementById('auth-error-msg');
+    if (errorMsg) {
+        errorMsg.innerText = '';
+        errorMsg.classList.add('hidden');
+    }
+    
+    try {
+        if (!window.supabaseClient) {
+            throw new Error("Klient Supabase nie jest zainicjalizowany.");
+        }
+        
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + window.location.pathname
+            }
+        });
+        
+        if (error) throw error;
+    } catch (err) {
+        console.error("Google login error:", err);
+        if (errorMsg) {
+            errorMsg.innerText = "Błąd logowania Google: " + err.message;
+            errorMsg.classList.remove('hidden');
+        } else {
+            alert("Błąd logowania Google: " + err.message);
+        }
+    }
+};

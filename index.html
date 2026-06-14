@@ -484,7 +484,7 @@
                 <h1 class="font-headline-xl text-headline-xl brand-text-triple-gradient">ServeArt</h1>
             </div>
             <div class="flex items-center gap-2 md:gap-3">
-                <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-95 transition-transform" onclick="openSavedListsModal()" title="Zapisane treści">
+                <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-95 transition-transform" onclick="switchTab('saved')" title="Zapisane treści">
                     <span class="material-symbols-outlined text-on-surface-variant">bookmark</span>
                 </button>
                 <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-95 transition-transform" onclick="triggerNotificationSim()">
@@ -492,6 +492,9 @@
                 </button>
                 <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-95 transition-transform" onclick="openAppSettings()" title="Ustawienia aplikacji">
                     <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+                </button>
+                <button id="header-logout-btn" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-500/5 text-red-500/80 hover:text-red-600 active:scale-95 transition-transform" onclick="supabaseSignOut()" title="Wyloguj się">
+                    <span class="material-symbols-outlined">logout</span>
                 </button>
             </div>
         </div>
@@ -1328,16 +1331,68 @@
             </div>
         </section>
 
+        <!-- ================= 5. SAVED SCREEN ================= -->
+        <section id="screen-saved" class="hidden space-y-stack-lg text-left pt-4 pb-20">
+            <div class="flex justify-between items-center border-b border-outline-variant/10 pb-4">
+                <h3 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2 flex-wrap">
+                    <span class="material-symbols-outlined text-primary text-base">bookmark</span>
+                    Zapisane treści
+                    <span class="bg-surface-container border border-outline-variant/35 text-outline text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 select-none normal-case">
+                        <span class="material-symbols-outlined text-[10px] font-bold">lock</span>
+                        Prywatne
+                    </span>
+                </h3>
+            </div>
+            
+            <!-- Tabs Switcher -->
+            <div class="flex border-b border-outline-variant/15 gap-4 pt-2">
+                <button id="modal-saved-tab-offers" onclick="switchModalSavedSection('offers')" class="pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">shopping_bag</span>
+                    Zapisane oferty
+                </button>
+                <button id="modal-saved-tab-posts" onclick="switchModalSavedSection('posts')" class="pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">bookmark</span>
+                    <span>Zapisane posty</span>
+                </button>
+            </div>
+
+            <!-- Offers Section Wrapper -->
+            <div id="modal-saved-offers-wrapper">
+                <!-- Tabs -->
+                <div id="saved-lists-tabs-container" class="py-2 border-b border-outline-variant/10 flex gap-4 overflow-x-auto hide-scrollbar">
+                    <button id="saved-tab-wishlist" onclick="toggleSavedListTab('wishlist')" class="flex-1 py-2 text-center border-b-2 border-primary text-primary font-bold text-xs">
+                        Lista życzeń (<span id="wishlist-count">1</span>)
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="py-6">
+                    <div id="saved-list-items" class="grid grid-cols-2 gap-3">
+                        <!-- Dynamic saved list items -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Section Wrapper -->
+            <div id="modal-saved-posts-wrapper" class="hidden">
+                <div class="py-6">
+                    <div id="modal-saved-posts-container" class="flex flex-col gap-4">
+                        <!-- Dynamic saved community posts -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Global Solid Bottom Navigation Bar (4 tabs) -->
+    <!-- Global Solid Bottom Navigation Bar (5 tabs) -->
     <nav class="fixed bottom-0 w-full z-40 pb-safe bg-surface-container-lowest border-t border-outline-variant/20 shadow-[0_-4px_20px_0_rgba(0,0,0,0.03)] rounded-t-2xl">
         <div class="flex justify-around items-center h-20 px-4 max-w-2xl md:max-w-5xl lg:max-w-6xl mx-auto">
-            <!-- Explore (Odkrywaj) - Prominent center tab -->
-            <button id="nav-btn-explore" onclick="switchTab('explore')" class="flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
-                <span class="material-symbols-outlined text-[32px] brand-text-triple-gradient" id="nav-icon-explore" style="font-variation-settings: 'FILL' 1;">explore</span>
-                <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Odkrywaj</span>
-                <div class="mt-0.5 w-1.5 h-1.5 rounded-full brand-triple-gradient" id="nav-dot-explore"></div>
+            <!-- Profile -->
+            <button id="nav-btn-profile" onclick="openOwnProfile()" class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
+                <span class="material-symbols-outlined text-[26px]" id="nav-icon-profile">person</span>
+                <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Profil</span>
+                <div class="mt-0.5 w-1 h-1 rounded-full bg-transparent" id="nav-dot-profile"></div>
             </button>
 
             <!-- Community -->
@@ -1347,18 +1402,25 @@
                 <div class="mt-0.5 w-1 h-1 rounded-full bg-transparent" id="nav-dot-community"></div>
             </button>
 
+            <!-- Explore (Odkrywaj) - Prominent center tab -->
+            <button id="nav-btn-explore" onclick="switchTab('explore')" class="flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
+                <span class="material-symbols-outlined text-[32px] brand-text-triple-gradient" id="nav-icon-explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+                <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Odkrywaj</span>
+                <div class="mt-0.5 w-1.5 h-1.5 rounded-full brand-triple-gradient" id="nav-dot-explore"></div>
+            </button>
+
+            <!-- Zapisane (Saved) -->
+            <button id="nav-btn-saved" onclick="switchTab('saved')" class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
+                <span class="material-symbols-outlined text-[26px]" id="nav-icon-saved">bookmark</span>
+                <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Zapisane</span>
+                <div class="mt-0.5 w-1 h-1 rounded-full bg-transparent" id="nav-dot-saved"></div>
+            </button>
+
             <!-- Messages -->
             <button id="nav-btn-messages" onclick="switchTab('messages')" class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
                 <span class="material-symbols-outlined text-[26px]" id="nav-icon-messages">mail</span>
                 <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Wiadomości</span>
                 <div class="mt-0.5 w-1 h-1 rounded-full bg-transparent" id="nav-dot-messages"></div>
-            </button>
-
-            <!-- Profile -->
-            <button id="nav-btn-profile" onclick="openOwnProfile()" class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2">
-                <span class="material-symbols-outlined text-[26px]" id="nav-icon-profile">person</span>
-                <span class="font-label-sm text-label-sm mt-0.5 text-[11px]">Profil</span>
-                <div class="mt-0.5 w-1 h-1 rounded-full bg-transparent" id="nav-dot-profile"></div>
             </button>
         </div>
     </nav>
@@ -1522,63 +1584,7 @@
     </div>
 
 
-    <!-- MODAL: ZAPISANE LISTY (Saved Lists Modal) -->
-    <div id="modal-saved-lists" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
-        <div class="bg-surface w-full max-w-lg rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[90vh] overflow-y-auto text-left">
-            <!-- Header -->
-            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10">
-                <h3 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2 flex-wrap">
-                    <span class="material-symbols-outlined text-primary text-base">bookmark</span>
-                    Zapisane treści
-                    <span class="bg-surface-container border border-outline-variant/35 text-outline text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 select-none normal-case">
-                        <span class="material-symbols-outlined text-[10px] font-bold">lock</span>
-                        Prywatne
-                    </span>
-                </h3>
-                <button onclick="closeSavedListsModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            
-            <!-- Tabs Switcher for Modal -->
-            <div class="flex border-b border-outline-variant/15 gap-4 px-6 pt-2">
-                <button id="modal-saved-tab-offers" onclick="switchModalSavedSection('offers')" class="pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">shopping_bag</span>
-                    Zapisane oferty
-                </button>
-                <button id="modal-saved-tab-posts" onclick="switchModalSavedSection('posts')" class="pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">bookmark</span>
-                    <span>Zapisane posty</span>
-                </button>
-            </div>
 
-            <!-- Offers Section Wrapper -->
-            <div id="modal-saved-offers-wrapper">
-                <!-- Tabs -->
-                <div id="saved-lists-tabs-container" class="px-6 py-2 border-b border-outline-variant/10 flex gap-4 overflow-x-auto hide-scrollbar">
-                    <button id="saved-tab-wishlist" onclick="toggleSavedListTab('wishlist')" class="flex-1 py-2 text-center border-b-2 border-primary text-primary font-bold text-xs">
-                        Lista życzeń (<span id="wishlist-count">1</span>)
-                    </button>
-                </div>
-
-                <!-- Content Area -->
-                <div class="p-6 overflow-y-auto max-h-[50vh]">
-                    <div id="saved-list-items" class="grid grid-cols-2 gap-3">
-                        <!-- Dynamic saved list items -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Posts Section Wrapper -->
-            <div id="modal-saved-posts-wrapper" class="hidden">
-                <div class="p-6 overflow-y-auto max-h-[60vh]">
-                    <div id="modal-saved-posts-container" class="flex flex-col gap-4">
-                        <!-- Dynamic saved community posts -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <!-- MODAL B: FORMULARZ ZAMÓWIENIA CUSTOM (Custom Order Sheet) -->
@@ -2257,6 +2263,14 @@
                             <span id="settings-lock-timer" class="text-error font-bold text-[9px] mt-1 block hidden"></span>
                         </div>
                     </div>
+
+                    <!-- Logout Button -->
+                    <div class="pt-4 border-t border-outline-variant/10">
+                        <button type="button" onclick="supabaseSignOut()" class="w-full h-12 border border-red-500/30 text-red-500 hover:text-red-600 font-bold bg-red-500/5 hover:bg-red-500/10 rounded-xl active:scale-95 transition-transform flex items-center justify-center gap-2 text-xs">
+                            <span class="material-symbols-outlined text-sm">logout</span>
+                            Wyloguj się
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -2651,9 +2665,152 @@
 
 
 
+    <!-- MODAL AUTH: LOGOWANIE I REJESTRACJA (Supabase Auth Modal) -->
+    <div id="modal-auth" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden text-left flex flex-col transition-all duration-300">
+            <!-- Header -->
+            <div class="px-6 py-4 flex justify-between items-center border-b border-outline-variant/10">
+                <h3 id="auth-modal-title" class="font-headline-lg text-lg font-bold bg-gradient-to-r from-primary to-turquoise bg-clip-text text-transparent">Zaloguj się</h3>
+                <button onclick="closeAuthModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
+                    <span class="material-symbols-outlined text-sm font-bold">close</span>
+                </button>
+            </div>
+
+            <!-- Error and Success Messages -->
+            <div class="px-6 pt-4">
+                <div id="auth-error-msg" class="hidden p-3 bg-error/10 border border-error/20 rounded-xl text-error text-xs font-semibold text-center"></div>
+                <div id="auth-success-msg" class="hidden p-3 bg-primary/10 border border-primary/20 rounded-xl text-primary text-xs font-semibold text-center"></div>
+            </div>
+
+            <!-- LOGIN SECTION -->
+            <div id="auth-login-section" class="p-6 space-y-4">
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface block">E-mail</label>
+                    <input id="login-email" type="email" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="twoj-email@serveart.pl"/>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface block">Hasło</label>
+                    <input id="login-password" type="password" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="••••••••"/>
+                </div>
+                <button onclick="supabaseSignIn(document.getElementById('login-email').value, document.getElementById('login-password').value)" class="w-full h-12 bg-gradient-to-r from-primary to-turquoise hover:opacity-95 text-white font-bold rounded-xl active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2 text-xs shadow-md">
+                    <span class="material-symbols-outlined text-sm">login</span>
+                    Zaloguj się
+                </button>
+                <div class="flex items-center gap-3 my-2">
+                    <div class="h-px bg-outline-variant/20 flex-1"></div>
+                    <span class="text-[9px] text-on-surface-variant/40 font-bold uppercase tracking-wider">Lub</span>
+                    <div class="h-px bg-outline-variant/20 flex-1"></div>
+                </div>
+                <button onclick="supabaseSignInWithGoogle()" class="w-full h-12 border border-outline-variant/30 hover:bg-surface-container/50 text-on-surface font-bold rounded-xl active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2 text-xs">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Zaloguj się przez Google
+                </button>
+                <div class="text-center pt-2">
+                    <button onclick="switchAuthView('register')" class="text-xs text-primary hover:text-turquoise font-bold transition-colors">
+                        Nie masz konta? Zarejestruj się
+                    </button>
+                </div>
+            </div>
+
+            <!-- REGISTER SECTION -->
+            <div id="auth-register-section" class="hidden p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface flex justify-between items-center">
+                        <span>Nazwa użytkownika</span>
+                        <span class="text-[10px] text-on-surface-variant/60 font-normal normal-case">widoczne dla innych</span>
+                    </label>
+                    <input id="reg-fullname" type="text" maxlength="15" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="np. anna_nowak"/>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface block">E-mail</label>
+                    <input id="reg-email" type="email" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="twoj-email@serveart.pl"/>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface block">Hasło</label>
+                    <input id="reg-password" oninput="updatePasswordChecklist(this.value)" type="password" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="Minimum 8 znaków"/>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-label-md text-label-md text-on-surface block">Powtórz hasło</label>
+                    <input id="reg-confirm-password" type="password" class="w-full h-11 px-4 bg-input-bg border border-outline-variant/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-xs font-semibold" placeholder="Powtórz hasło"/>
+                </div>
+
+                <!-- Password checklist UI -->
+                <div class="p-3 bg-surface-container rounded-xl border border-outline-variant/10 space-y-1.5 text-[10px]">
+                    <div class="font-bold text-outline uppercase tracking-wider mb-1">Bezpieczeństwo hasła:</div>
+                    <div id="pwd-check-length" class="flex items-center gap-1.5 text-outline transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">radio_button_unchecked</span>
+                        <span>Minimum 8 znaków</span>
+                    </div>
+                    <div id="pwd-check-upper" class="flex items-center gap-1.5 text-outline transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">radio_button_unchecked</span>
+                        <span>Przynajmniej jedna wielka litera</span>
+                    </div>
+                    <div id="pwd-check-lower" class="flex items-center gap-1.5 text-outline transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">radio_button_unchecked</span>
+                        <span>Przynajmniej jedna mała litera</span>
+                    </div>
+                    <div id="pwd-check-number" class="flex items-center gap-1.5 text-outline transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">radio_button_unchecked</span>
+                        <span>Przynajmniej jedna cyfra</span>
+                    </div>
+                    <div id="pwd-check-special" class="flex items-center gap-1.5 text-outline transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">radio_button_unchecked</span>
+                        <span>Przynajmniej jeden znak specjalny (!@#$%^&*)</span>
+                    </div>
+                </div>
+
+                <!-- Role Selector -->
+                <div class="space-y-2">
+                    <label class="font-label-md text-[11px] text-on-surface-variant uppercase font-bold tracking-wider block">Typ konta</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-surface-container rounded-2xl border border-outline-variant/10">
+                        <button type="button" id="reg-role-btn-tworca" onclick="selectRegRole('twórca')" class="py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-primary text-white shadow transition-all">
+                            Twórca
+                            <span class="material-symbols-outlined text-sm">palette</span>
+                        </button>
+                        <button type="button" id="reg-role-btn-entuzjasta" onclick="selectRegRole('entuzjasta')" class="py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-transparent text-on-surface-variant transition-all">
+                            Entuzjasta
+                            <span class="material-symbols-outlined text-sm">favorite</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="reg-role-value" value="twórca" />
+                </div>
+
+                <button onclick="supabaseSignUp(document.getElementById('reg-email').value, document.getElementById('reg-password').value, document.getElementById('reg-confirm-password').value, document.getElementById('reg-fullname').value, document.getElementById('reg-role-value').value)" class="w-full h-12 bg-gradient-to-r from-primary to-turquoise hover:opacity-95 text-white font-bold rounded-xl active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2 text-xs shadow-md">
+                    <span class="material-symbols-outlined text-sm">person_add</span>
+                    Zarejestruj się
+                </button>
+                <div class="flex items-center gap-3 my-2">
+                    <div class="h-px bg-outline-variant/20 flex-1"></div>
+                    <span class="text-[9px] text-on-surface-variant/40 font-bold uppercase tracking-wider">Lub</span>
+                    <div class="h-px bg-outline-variant/20 flex-1"></div>
+                </div>
+                <button onclick="supabaseSignInWithGoogle()" class="w-full h-12 border border-outline-variant/30 hover:bg-surface-container/50 text-on-surface font-bold rounded-xl active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2 text-xs">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Zarejestruj się przez Google
+                </button>
+                <div class="text-center pt-2">
+                    <button onclick="switchAuthView('login')" class="text-xs text-primary hover:text-turquoise font-bold transition-colors">
+                        Masz już konto? Zaloguj się
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase JS Client via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./supabase-sync.js"></script>
+    <script src="./supabase-auth-sync.js"></script>
     <script>
         // Inicjalizacja klienta Supabase
         // WAŻNE: Podmień poniższe wartości na dane ze swojego konta Supabase (Project Settings -> API)
@@ -3198,52 +3355,64 @@
 
         // Navigation Switcher
         function switchTab(tabId) {
+            if (tabId === 'messages' || tabId === 'profile' || tabId === 'saved') {
+                if (!requireAuth(() => switchTab(tabId))) {
+                    return;
+                }
+            }
             STATE.activeTab = tabId;
             
             // Hide all views
-            ['explore', 'messages', 'profile', 'community'].forEach(id => {
-                document.getElementById(`screen-${id}`).classList.add('hidden');
+            ['explore', 'messages', 'profile', 'community', 'saved'].forEach(id => {
+                const screenEl = document.getElementById(`screen-${id}`);
+                if (screenEl) screenEl.classList.add('hidden');
                 
                 // Reset bottom nav active classes
                 const btn = document.getElementById(`nav-btn-${id}`);
                 const icon = document.getElementById(`nav-icon-${id}`);
                 const dot = document.getElementById(`nav-dot-${id}`);
-                btn.className = "flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
-                icon.className = `material-symbols-outlined ${id === 'explore' ? 'text-[32px]' : 'text-[26px]'} text-on-surface-variant`;
-                dot.className = "mt-0.5 w-1 h-1 rounded-full bg-transparent";
+                if (btn) btn.className = "flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (icon) icon.className = `material-symbols-outlined ${id === 'explore' ? 'text-[32px]' : 'text-[26px]'} text-on-surface-variant`;
+                if (dot) dot.className = "mt-0.5 w-1 h-1 rounded-full bg-transparent";
             });
 
             // Show target
-            document.getElementById(`screen-${tabId}`).classList.remove('hidden');
+            const targetScreen = document.getElementById(`screen-${tabId}`);
+            if (targetScreen) targetScreen.classList.remove('hidden');
+            
             const activeBtn = document.getElementById(`nav-btn-${tabId}`);
             const activeIcon = document.getElementById(`nav-icon-${tabId}`);
             const activeDot = document.getElementById(`nav-dot-${tabId}`);
             
             if (tabId === 'explore') {
-                activeBtn.className = "flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
-                activeIcon.className = "material-symbols-outlined text-[32px] brand-text-triple-gradient";
-                activeDot.className = "mt-0.5 w-1.5 h-1.5 rounded-full brand-triple-gradient";
+                if (activeBtn) activeBtn.className = "flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (activeIcon) activeIcon.className = "material-symbols-outlined text-[32px] brand-text-triple-gradient";
+                if (activeDot) activeDot.className = "mt-0.5 w-1.5 h-1.5 rounded-full brand-triple-gradient";
             } else if (tabId === 'community') {
-                activeBtn.className = "flex flex-col items-center justify-center text-turquoise font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
-                activeIcon.className = "material-symbols-outlined text-[26px] text-turquoise";
-                activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-turquoise";
+                if (activeBtn) activeBtn.className = "flex flex-col items-center justify-center text-turquoise font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (activeIcon) activeIcon.className = "material-symbols-outlined text-[26px] text-turquoise";
+                if (activeDot) activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-turquoise";
             } else if (tabId === 'messages') {
-                activeBtn.className = "flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
-                activeIcon.className = "material-symbols-outlined text-[26px] text-primary";
-                activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-primary";
+                if (activeBtn) activeBtn.className = "flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (activeIcon) activeIcon.className = "material-symbols-outlined text-[26px] text-primary";
+                if (activeDot) activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-primary";
             } else if (tabId === 'profile') {
-                activeBtn.className = "flex flex-col items-center justify-center text-coral font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
-                activeIcon.className = "material-symbols-outlined text-[26px] text-coral";
-                activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-coral";
+                if (activeBtn) activeBtn.className = "flex flex-col items-center justify-center text-coral font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (activeIcon) activeIcon.className = "material-symbols-outlined text-[26px] text-coral";
+                if (activeDot) activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-coral";
+            } else if (tabId === 'saved') {
+                if (activeBtn) activeBtn.className = "flex flex-col items-center justify-center text-primary font-bold transition-all duration-200 active:scale-90 rounded-xl px-4 py-2";
+                if (activeIcon) activeIcon.className = "material-symbols-outlined text-[26px] text-primary";
+                if (activeDot) activeDot.className = "mt-0.5 w-1 h-1 rounded-full bg-primary";
             }
 
             // Subnav show/hide rules
             const subnav = document.getElementById('subnav-feed');
             if (tabId === 'explore') {
-                subnav.classList.remove('hidden');
+                if (subnav) subnav.classList.remove('hidden');
                 document.getElementById('main-content').className = "pt-36 px-container-margin max-w-2xl md:max-w-5xl lg:max-w-6xl mx-auto space-y-stack-lg transition-all duration-300";
             } else {
-                subnav.classList.add('hidden');
+                if (subnav) subnav.classList.add('hidden');
                 document.getElementById('main-content').className = "pt-20 px-container-margin max-w-2xl md:max-w-5xl lg:max-w-6xl mx-auto space-y-stack-lg transition-all duration-300";
             }
 
@@ -3254,6 +3423,10 @@
                 renderExploreFeed();
             } else if (tabId === 'community') {
                 changeCommunityTab(STATE.activeCommunityTab || 'feed');
+            } else if (tabId === 'saved') {
+                if (window.openSavedListsPage) {
+                    window.openSavedListsPage();
+                }
             }
         }
 
@@ -4777,53 +4950,19 @@
 
             let processed = 0;
             for (let file of filesToProcess) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        // Canvas compression
-                        const MAX_WIDTH = 1200;
-                        const MAX_HEIGHT = 1200;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            }
-                        } else {
-                            if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
-                            }
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        // Compression to JPEG 0.8
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                        
-                        if (category === 'product') {
-                            STATE.tempProductPics.push(dataUrl);
-                        } else {
-                            STATE.tempProcessPics.push(dataUrl);
-                        }
-                        
-                        processed++;
-                        if (processed === filesToProcess.length) {
-                            renderPhotoUploads();
-                            event.target.value = ''; // Reset input
-                        }
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+                compressImage(file, 800 * 1024, 1600, 1600, function(dataUrl) {
+                    if (category === 'product') {
+                        STATE.tempProductPics.push(dataUrl);
+                    } else {
+                        STATE.tempProcessPics.push(dataUrl);
+                    }
+                    
+                    processed++;
+                    if (processed === filesToProcess.length) {
+                        renderPhotoUploads();
+                        event.target.value = ''; // Reset input
+                    }
+                });
             }
         }
 
@@ -4953,6 +5092,7 @@
         }
 
         function openAddListingModal() {
+            if (!requireAuth(() => openAddListingModal())) return;
             if (getUserRoleLabel(STATE.currentUser.name) === 'entuzjasta') {
                 showToast("Tylko profil Twórcy może dodawać oferty handlowe.", "lock");
                 return;
@@ -5247,6 +5387,7 @@
         // ==================== CUSTOM ORDER FORM DIALOG ====================
 
         function openCommissionModal() {
+            if (!requireAuth(() => openCommissionModal())) return;
             const creatorName = document.getElementById('profile-creator-name').innerText;
             let creator = STATE.creators.find(c => c.name === creatorName);
             if (!creator && creatorName === STATE.currentUser.name) {
@@ -5776,7 +5917,8 @@
         }
 
         function toggleSaveMenu(event, btn, itemId) {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
+            if (!requireAuth(() => toggleSaveMenu(undefined, btn, itemId))) return;
             
             // Close any open save menus first
             const existingMenu = document.getElementById('active-save-menu');
@@ -5966,15 +6108,20 @@
         }
 
         function toggleSaveMenuDetails(event, btn) {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
+            if (!requireAuth(() => toggleSaveMenuDetails(undefined, btn))) return;
             if (STATE.currentDetailProduct) {
-                toggleSaveMenu(event, btn, STATE.currentDetailProduct.id);
+                toggleSaveMenu(undefined, btn, STATE.currentDetailProduct.id);
             }
         }
 
         let activeSavedListTab = 'wishlist';
 
         function openSavedListsModal() {
+            switchTab('saved');
+        }
+
+        window.openSavedListsPage = function() {
             // Render tabs dynamically based on list keys
             const tabsContainer = document.getElementById('saved-lists-tabs-container');
             if (tabsContainer) {
@@ -5999,19 +6146,17 @@
 
             renderSavedListItems();
             
-            // Switch modal sections to offers by default
+            // Switch sections to offers by default if first time
             switchModalSavedSection('offers');
-            
-            document.getElementById('modal-saved-lists').classList.remove('hidden');
-        }
+        };
 
         function closeSavedListsModal() {
-            document.getElementById('modal-saved-lists').classList.add('hidden');
+            switchTab('explore');
         }
 
         function toggleSavedListTab(tabKey) {
             activeSavedListTab = tabKey;
-            openSavedListsModal();
+            window.openSavedListsPage();
         }
 
         function renderSavedListItems() {
@@ -6141,7 +6286,7 @@
                                 <span class="material-symbols-outlined text-xs">launch</span> Przejdź do posta
                             </button>
                             <button onclick="toggleSavePost(event, null, '${post.id}'); renderModalSavedPosts();" class="text-outline hover:text-error font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none ml-auto">
-                                <span class="material-symbols-outlined text-xs">delete</span> Usuń
+                                <span class="material-symbols-outlined text-xs">delete</span> Zdejmij
                             </button>
                         </div>
                     </div>
@@ -6150,7 +6295,6 @@
                 container.appendChild(card);
             });
         }
-
 
         function toggleFollowSim(btn, creatorName) {
             const idx = STATE.followedCreators.indexOf(creatorName);
@@ -6192,46 +6336,15 @@
             let processed = 0;
             
             for (let file of filesToProcess) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const MAX_WIDTH = 1200;
-                        const MAX_HEIGHT = 1200;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            }
-                        } else {
-                            if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
-                            }
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                        STATE.tempPostPics.push(dataUrl);
-                        
-                        processed++;
-                        if (processed === filesToProcess.length) {
-                            renderPostPhotoPreviews();
-                            event.target.value = ''; // Reset input
-                        }
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+                compressImage(file, 400 * 1024, 1200, 1200, function(dataUrl) {
+                    STATE.tempPostPics.push(dataUrl);
+                    
+                    processed++;
+                    if (processed === filesToProcess.length) {
+                        renderPostPhotoPreviews();
+                        event.target.value = ''; // Reset input
+                    }
+                });
             }
         }
 
@@ -6511,6 +6624,7 @@
         }
 
         function submitCommunityPost() {
+            if (!requireAuth(() => submitCommunityPost())) return;
             const textInput = document.getElementById('post-desc-input');
             const tagsInput = document.getElementById('post-tags-input');
             const channelSelect = document.getElementById('post-channel-select');
@@ -6857,6 +6971,7 @@
         }
 
         function toggleLikePost(postId) {
+            if (!requireAuth(() => toggleLikePost(postId))) return;
             const post = STATE.posts.find(p => p.id === postId);
             if (!post) return;
             
@@ -6878,6 +6993,7 @@
         }
 
         function submitPostComment(postId) {
+            if (!requireAuth(() => submitPostComment(postId))) return;
             const input = document.getElementById(`comment-input-${postId}`);
             if (!input) return;
             
@@ -6925,43 +7041,12 @@
             const postId = STATE.activeCommentPhotoPostId;
             if (!postId) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    STATE.tempCommentPics[postId] = dataUrl;
-                    
-                    renderCommentPhotoPreview(postId);
-                    event.target.value = ''; // Reset input
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            compressImage(file, 250 * 1024, 800, 800, function(dataUrl) {
+                STATE.tempCommentPics[postId] = dataUrl;
+                
+                renderCommentPhotoPreview(postId);
+                event.target.value = ''; // Reset input
+            });
         }
 
         function loadMockCommentPhoto(postId) {
@@ -7023,6 +7108,7 @@
 
         function toggleSavePost(event, btn, postId) {
             if (event) event.stopPropagation();
+            if (!requireAuth(() => toggleSavePost(undefined, btn, postId))) return;
             const index = STATE.savedPostIds.indexOf(postId);
             if (index > -1) {
                 STATE.savedPostIds.splice(index, 1);
@@ -7371,6 +7457,7 @@
         }
 
         function openOwnProfile() {
+            if (!requireAuth(() => openOwnProfile())) return;
             // Set title to your profile
             STATE.activeProfileName = STATE.currentUser.name;
             document.getElementById('profile-title-text').innerText = "Twój Profil";
@@ -7839,6 +7926,12 @@
 
             closeEditProfileModal();
             openOwnProfile();
+            
+            // Sync with Supabase immediately
+            if (window.supabaseSyncProfile) {
+                window.supabaseSyncProfile(STATE.currentUser);
+            }
+            
             showToast("Zaktualizowano profil i ustawienia Custom!");
         }
 
@@ -8853,6 +8946,55 @@
             });
         }
 
+        // Compress image before upload/preview using HTML5 Canvas
+        function compressImage(file, maxBytes, maxWidth, maxHeight, callback) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Fill canvas with white background to handle PNG transparency gracefully
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, width, height);
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    let quality = 0.85;
+                    let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    // Loop to reduce quality until it fits under the byte limit (estimated from Base64 length)
+                    while (dataUrl.length * 0.75 > maxBytes && quality > 0.15) {
+                        quality -= 0.05;
+                        dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    
+                    callback(dataUrl);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         // Fast avatar edit functions
         function triggerAvatarUpload() {
             document.getElementById('profile-avatar-file-input').click();
@@ -8861,17 +9003,19 @@
         function handleAvatarFileChange(e) {
             const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const dataUrl = event.target.result;
+                compressImage(file, 150 * 1024, 400, 400, function(dataUrl) {
                     STATE.currentUser.avatar = dataUrl;
                     
                     // Update UI immediately
                     renderAvatarHelper('profile-avatar-img', 'profile-avatar-placeholder', dataUrl);
                     applyAvatarShape('profile-avatar-img', 'profile-avatar-placeholder', 'profile-avatar-container', STATE.currentUser.avatarShape || 'circle');
-                    showToast("Zaktualizowano zdjęcie profilowe!");
-                };
-                reader.readAsDataURL(file);
+                    
+                    // Sync with Supabase immediately for fast avatar edit
+                    if (window.supabaseSyncProfile) {
+                        window.supabaseSyncProfile(STATE.currentUser);
+                    }
+                    showToast("Zaktualizowano i zapisano zdjęcie profilowe!");
+                });
             }
         }
 
@@ -8883,13 +9027,10 @@
         function handleEditAvatarFileChange(e) {
             const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const dataUrl = event.target.result;
+                compressImage(file, 150 * 1024, 400, 400, function(dataUrl) {
                     document.getElementById('edit-avatar-url').value = dataUrl;
                     updateEditAvatarPreview();
-                };
-                reader.readAsDataURL(file);
+                });
             }
         }
 
@@ -9169,15 +9310,13 @@
         window.onload = async () => {
             initSettings();
             
-            if (window.supabaseClient) {
-                showToast("Pobieranie danych z Supabase...");
-                const success = await window.syncFromSupabase();
-                if (success) {
-                    showToast("Dane zsynchronizowane z Supabase!");
-                }
+            if (window.supabaseClient && window.initAuthListener) {
+                window.initAuthListener();
+            } else {
+                // Offline fallback - normal execution using local localStorage mocks
+                initializeUserChannels();
             }
             
-            initializeUserChannels();
             switchTab('explore');
             
             // Check onboarding
