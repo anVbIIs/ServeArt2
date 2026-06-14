@@ -2663,6 +2663,18 @@
 
 
 
+    <!-- MODAL LOGOUT: OKIENKO WYLOGOWYWANIA -->
+    <div id="modal-logout" class="fixed inset-0 z-[110] hidden bg-black/75 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-sm rounded-3xl shadow-2xl border border-outline-variant/20 p-6 text-center flex flex-col items-center gap-4 transition-all duration-300">
+            <div class="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center animate-pulse">
+                <span class="material-symbols-outlined text-3xl animate-bounce">logout</span>
+            </div>
+            <h3 class="font-headline-lg text-lg font-bold text-on-surface">Wylogowywanie...</h3>
+            <p class="text-xs text-on-surface-variant/80 max-w-[280px]">Zostajesz bezpiecznie wylogowywany z aplikacji. Trwa czyszczenie danych sesji...</p>
+            <div class="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin mt-2"></div>
+        </div>
+    </div>
+
     <!-- MODAL AUTH: LOGOWANIE I REJESTRACJA (Supabase Auth Modal) -->
     <div id="modal-auth" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-md flex justify-center items-center p-4">
         <div class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl border border-outline-variant/20 overflow-hidden text-left flex flex-col transition-all duration-300">

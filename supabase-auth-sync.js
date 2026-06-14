@@ -257,6 +257,12 @@ window.supabaseSignIn = async function(email, password) {
 
 // 3. Sign Out implementation
 window.supabaseSignOut = async function() {
+    // Show logout overlay modal
+    const logoutModal = document.getElementById('modal-logout');
+    if (logoutModal) {
+        logoutModal.classList.remove('hidden');
+    }
+
     // Clear cached credentials first to ensure they are removed immediately
     safeLocalStorage.removeItem('serveart_user_name');
     safeLocalStorage.removeItem('serveart_user_role');
@@ -319,6 +325,35 @@ window.initAuthListener = function() {
         
         if (session && session.user) {
             STATE.isAuthenticated = true;
+            
+            // Immediately populate currentUser with clean details matching auth metadata
+            // to prevent temporary fallback or mock data of Jan Kowalski appearing
+            const defaultName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+            const defaultRole = session.user.user_metadata?.role || 'twórca';
+            const avatarUrl = session.user.user_metadata?.avatar_url || '';
+            
+            STATE.currentUser = {
+                id: session.user.id,
+                name: defaultName,
+                role: defaultRole,
+                email: session.user.email,
+                avatar: avatarUrl,
+                city: 'Wrocław',
+                joined: new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' }),
+                profession: defaultRole === 'twórca' ? 'Artysta' : 'Pasjonat',
+                mainSpecialization: '',
+                bio: defaultRole === 'twórca' ? 'Artysta / Rzemieślnik w ServeArt' : 'Miłośnik polskiego rzemiosła i handmade.',
+                exclusions: 'Brak',
+                tags: defaultRole === 'twórca' ? ['Rękodzieło'] : ['Kolekcja'],
+                customMinBudget: 0,
+                customMaxBudget: 0,
+                customDeliveryTime: '',
+                banner: 'gradient-5',
+                isPremium: false,
+                avatarShape: 'circle',
+                offering: [],
+                soughtProfessions: []
+            };
             
             // Try fetching profile matching authenticated user id
             try {
