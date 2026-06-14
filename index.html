@@ -2845,8 +2845,16 @@
                 } catch (e) {
                     console.warn("localStorage.setItem failed for key: " + key, e);
                 }
+            },
+            removeItem: function(key) {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    console.warn("localStorage.removeItem failed for key: " + key, e);
+                }
             }
         };
+        window.safeLocalStorage = safeLocalStorage;
         function getUserRoleLabel(name) {
             if (name === STATE.currentUser.name) {
                 return STATE.currentUser.role || 'twórca';
@@ -3222,6 +3230,7 @@
             ],
             tempPostPics: [],
             currentUser: {
+                id: safeLocalStorage.getItem('serveart_user_id') || null,
                 name: safeLocalStorage.getItem('serveart_user_name') || "Jan Kowalski",
                 role: safeLocalStorage.getItem('serveart_user_role') || 'twórca',
                 email: safeLocalStorage.getItem('serveart_user_email') || 'jan.kowalski@serveart.pl',

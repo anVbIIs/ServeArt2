@@ -279,6 +279,7 @@ window.supabaseSignOut = async function() {
     safeLocalStorage.removeItem('serveart_user_sought_professions');
     safeLocalStorage.removeItem('serveart_user_offering');
     safeLocalStorage.removeItem('serveart_user_cooperationEnabled');
+    safeLocalStorage.removeItem('serveart_user_id');
 
     if (window.showToast) {
         window.showToast("Wylogowano pomyślnie!");
@@ -332,6 +333,7 @@ window.initAuthListener = function() {
                 if (profile) {
                     // Overwrite STATE.currentUser with actual data
                     STATE.currentUser = {
+                        id: profile.id,
                         name: profile.name,
                         role: profile.role || 'twórca',
                         email: session.user.email,
@@ -354,6 +356,7 @@ window.initAuthListener = function() {
                     };
 
                     // Persist for offline-like reading if needed
+                    safeLocalStorage.setItem('serveart_user_id', profile.id);
                     safeLocalStorage.setItem('serveart_user_name', profile.name);
                     safeLocalStorage.setItem('serveart_user_role', profile.role);
                     safeLocalStorage.setItem('serveart_user_email', session.user.email);
@@ -400,6 +403,7 @@ window.initAuthListener = function() {
                     }
                     
                     STATE.currentUser = {
+                        id: session.user.id,
                         name: newProfile.name,
                         role: newProfile.role,
                         email: session.user.email,
@@ -421,6 +425,7 @@ window.initAuthListener = function() {
                         soughtProfessions: []
                     };
                     
+                    safeLocalStorage.setItem('serveart_user_id', session.user.id);
                     safeLocalStorage.setItem('serveart_user_name', newProfile.name);
                     safeLocalStorage.setItem('serveart_user_role', newProfile.role);
                     safeLocalStorage.setItem('serveart_user_email', session.user.email);

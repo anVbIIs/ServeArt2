@@ -182,27 +182,34 @@ window.syncFromSupabase = async function() {
 window.supabaseSyncProfile = async function(profileData) {
     if (!window.supabaseClient) return;
     try {
+        const payload = {
+            name: profileData.name,
+            avatar: profileData.avatar || '',
+            city: profileData.city || '',
+            profession: profileData.profession || '',
+            main_specialization: profileData.mainSpecialization || '',
+            bio: profileData.bio || '',
+            exclusions: profileData.exclusions || '',
+            is_premium: profileData.isPremium || false,
+            avatar_shape: profileData.avatarShape || 'circle',
+            tags: profileData.tags || [],
+            custom_min_budget: profileData.customMinBudget || 0,
+            custom_max_budget: profileData.customMaxBudget || 0,
+            custom_delivery_time: profileData.customDeliveryTime || '',
+            banner: profileData.banner || 'gradient-1',
+            offering: profileData.offering || [],
+            sought_professions: profileData.soughtProfessions || [],
+            role: profileData.role || 'twórca'
+        };
+
+        if (profileData.id) {
+            payload.id = profileData.id;
+        }
+
         const { error } = await window.supabaseClient
             .from('profiles')
-            .upsert({
-                name: profileData.name,
-                avatar: profileData.avatar || '',
-                city: profileData.city || '',
-                profession: profileData.profession || '',
-                main_specialization: profileData.mainSpecialization || '',
-                bio: profileData.bio || '',
-                exclusions: profileData.exclusions || '',
-                is_premium: profileData.isPremium || false,
-                avatar_shape: profileData.avatarShape || 'circle',
-                tags: profileData.tags || [],
-                custom_min_budget: profileData.customMinBudget || 0,
-                custom_max_budget: profileData.customMaxBudget || 0,
-                custom_delivery_time: profileData.customDeliveryTime || '',
-                banner: profileData.banner || 'gradient-1',
-                offering: profileData.offering || [],
-                sought_professions: profileData.soughtProfessions || [],
-                role: profileData.role || 'twórca'
-            }, { onConflict: 'name' });
+            .upsert(payload, { onConflict: profileData.id ? 'id' : 'name' });
+            
         if (error) throw error;
         console.log("Profile successfully updated in Supabase.");
     } catch (e) {
