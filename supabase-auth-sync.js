@@ -309,11 +309,35 @@ window.supabaseSignOut = async function() {
     }, 800);
 };
 
+// Helper to update the header authentication button dynamically
+window.updateHeaderAuthButton = function() {
+    const btn = document.getElementById('header-logout-btn');
+    if (!btn) return;
+    
+    // Check if user is logged in
+    const isLoggedIn = STATE.isAuthenticated && STATE.currentUser && STATE.currentUser.name !== "Gość";
+    
+    if (isLoggedIn) {
+        // Show logout button (reddish/default styling)
+        btn.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-500/5 text-red-500/80 hover:text-red-600 active:scale-95 transition-transform";
+        btn.setAttribute('onclick', 'supabaseSignOut()');
+        btn.setAttribute('title', 'Wyloguj się');
+        btn.innerHTML = `<span class="material-symbols-outlined">logout</span>`;
+    } else {
+        // Show login button (primary styling, matches other icons but uses login symbol)
+        btn.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container text-on-surface-variant hover:text-primary active:scale-95 transition-transform";
+        btn.setAttribute('onclick', 'showAuthModal()');
+        btn.setAttribute('title', 'Zaloguj się');
+        btn.innerHTML = `<span class="material-symbols-outlined">login</span>`;
+    }
+};
+
 // 4. Auth State Listener Initializer
 window.initAuthListener = function() {
     if (!window.supabaseClient) {
         console.log("No Supabase Client. Session listener skipped. Operating in Guest-disabled offline mode.");
         STATE.isAuthenticated = true; // offline mock mode
+        if (window.updateHeaderAuthButton) window.updateHeaderAuthButton();
         return;
     }
 
@@ -567,6 +591,7 @@ window.initAuthListener = function() {
             if (window.renderCommunityFeed) window.renderCommunityFeed();
             if (window.renderCooperationFeed) window.renderCooperationFeed();
         }
+        if (window.updateHeaderAuthButton) window.updateHeaderAuthButton();
     });
 };
 
