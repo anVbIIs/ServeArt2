@@ -324,11 +324,11 @@ window.updateHeaderAuthButton = function() {
         btn.setAttribute('title', 'Wyloguj się');
         btn.innerHTML = `<span class="material-symbols-outlined">logout</span>`;
     } else {
-        // Show login button (primary styling, matches other icons but uses login symbol)
-        btn.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container text-on-surface-variant hover:text-primary active:scale-95 transition-transform";
+        // Show login button (textual primary button)
+        btn.className = "px-4 h-9 rounded-xl bg-gradient-to-r from-primary to-turquoise text-white font-bold text-xs hover:opacity-95 active:scale-95 transition-transform flex items-center justify-center shadow-sm";
         btn.setAttribute('onclick', 'showAuthModal()');
         btn.setAttribute('title', 'Zaloguj się');
-        btn.innerHTML = `<span class="material-symbols-outlined">login</span>`;
+        btn.innerHTML = `Zaloguj`;
     }
 };
 
