@@ -46,6 +46,8 @@ window.syncFromSupabase = async function() {
                     ...STATE.currentUser,
                     name: myProfile.name,
                     role: myProfile.role || 'twórca',
+                    avatar: myProfile.avatar || STATE.currentUser.avatar || '',
+                    joined: myProfile.joined || STATE.currentUser.joined || 'Sierpień 2023',
                     city: myProfile.city || '',
                     profession: myProfile.profession || '',
                     mainSpecialization: myProfile.main_specialization || '',

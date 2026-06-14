@@ -11,3 +11,4 @@
 - `[x]` Step 5: Add a "Wyloguj się" (Log out) button in settings panel in `index.html`
 - `[x]` Step 6: Modify `window.onload` to initialize `initAuthListener` and hook into state/UI updates on auth state changes
 - `[x]` Step 7: Verify manual authentication flows and update walkthrough
+- `[x]` Step 8: Fix logout toast notification and ensure profile is correctly updated with Google avatar/metadata on successful sign-in instead of falling back to default mock data (Jan Kowalski)

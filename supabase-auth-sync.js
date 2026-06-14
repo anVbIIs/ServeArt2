@@ -257,37 +257,49 @@ window.supabaseSignIn = async function(email, password) {
 
 // 3. Sign Out implementation
 window.supabaseSignOut = async function() {
+    // Clear cached credentials first to ensure they are removed immediately
+    safeLocalStorage.removeItem('serveart_user_name');
+    safeLocalStorage.removeItem('serveart_user_role');
+    safeLocalStorage.removeItem('serveart_user_email');
+    safeLocalStorage.removeItem('serveart_user_password');
+    safeLocalStorage.removeItem('serveart_premium');
+    safeLocalStorage.removeItem('serveart_avatar_shape');
+    safeLocalStorage.removeItem('serveart_main_specialization');
+    safeLocalStorage.removeItem('serveart_user_avatar');
+    safeLocalStorage.removeItem('serveart_user_city');
+    safeLocalStorage.removeItem('serveart_user_joined');
+    safeLocalStorage.removeItem('serveart_user_profession');
+    safeLocalStorage.removeItem('serveart_user_bio');
+    safeLocalStorage.removeItem('serveart_user_exclusions');
+    safeLocalStorage.removeItem('serveart_user_tags');
+    safeLocalStorage.removeItem('serveart_user_customMinBudget');
+    safeLocalStorage.removeItem('serveart_user_customMaxBudget');
+    safeLocalStorage.removeItem('serveart_user_customDeliveryTime');
+    safeLocalStorage.removeItem('serveart_user_banner');
+    safeLocalStorage.removeItem('serveart_user_sought_professions');
+    safeLocalStorage.removeItem('serveart_user_offering');
+    safeLocalStorage.removeItem('serveart_user_cooperationEnabled');
+
+    if (window.showToast) {
+        window.showToast("Wylogowano pomyślnie!");
+    }
+
     if (!window.supabaseClient) {
-        alert("Działasz w trybie offline (demo). Resetowanie do domyślnych danych.");
-        safeLocalStorage.removeItem('serveart_user_name');
-        safeLocalStorage.removeItem('serveart_user_role');
-        safeLocalStorage.removeItem('serveart_user_email');
-        safeLocalStorage.removeItem('serveart_user_password');
-        safeLocalStorage.removeItem('serveart_premium');
-        safeLocalStorage.removeItem('serveart_avatar_shape');
-        safeLocalStorage.removeItem('serveart_main_specialization');
-        window.location.reload();
+        setTimeout(() => {
+            window.location.reload();
+        }, 800);
         return;
     }
 
     try {
-        const { error } = await window.supabaseClient.auth.signOut();
-        if (error) throw error;
-
-        // Clear cached credentials
-        safeLocalStorage.removeItem('serveart_user_name');
-        safeLocalStorage.removeItem('serveart_user_role');
-        safeLocalStorage.removeItem('serveart_user_email');
-        safeLocalStorage.removeItem('serveart_user_password');
-        safeLocalStorage.removeItem('serveart_premium');
-        safeLocalStorage.removeItem('serveart_avatar_shape');
-        safeLocalStorage.removeItem('serveart_main_specialization');
-
-        window.location.reload();
+        await window.supabaseClient.auth.signOut();
     } catch (err) {
         console.error("SignOut error:", err);
-        window.location.reload();
     }
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 800);
 };
 
 // 4. Auth State Listener Initializer
@@ -323,7 +335,7 @@ window.initAuthListener = function() {
                         name: profile.name,
                         role: profile.role || 'twórca',
                         email: session.user.email,
-                        avatar: profile.avatar || '',
+                        avatar: profile.avatar || session.user.user_metadata.avatar_url || '',
                         city: profile.city || 'Wrocław',
                         joined: profile.joined || 'Sierpień 2023',
                         profession: profile.profession || 'Kolekcjoner i Twórca Rzemiosła',
@@ -348,16 +360,32 @@ window.initAuthListener = function() {
                     safeLocalStorage.setItem('serveart_premium', profile.is_premium ? 'true' : 'false');
                     safeLocalStorage.setItem('serveart_avatar_shape', profile.avatar_shape);
                     safeLocalStorage.setItem('serveart_main_specialization', profile.main_specialization || '');
+                    safeLocalStorage.setItem('serveart_user_avatar', profile.avatar || session.user.user_metadata.avatar_url || '');
+                    safeLocalStorage.setItem('serveart_user_city', profile.city || 'Wrocław');
+                    safeLocalStorage.setItem('serveart_user_joined', profile.joined || 'Sierpień 2023');
+                    safeLocalStorage.setItem('serveart_user_profession', profile.profession || 'Kolekcjoner i Twórca Rzemiosła');
+                    safeLocalStorage.setItem('serveart_user_bio', profile.bio || '');
+                    safeLocalStorage.setItem('serveart_user_exclusions', profile.exclusions || '');
+                    safeLocalStorage.setItem('serveart_user_banner', profile.banner || 'gradient-5');
+                    safeLocalStorage.setItem('serveart_user_tags', JSON.stringify(profile.tags || []));
+                    safeLocalStorage.setItem('serveart_user_customMinBudget', (profile.custom_min_budget || 0).toString());
+                    safeLocalStorage.setItem('serveart_user_customMaxBudget', (profile.custom_max_budget || 0).toString());
+                    safeLocalStorage.setItem('serveart_user_customDeliveryTime', profile.custom_delivery_time || '');
+                    safeLocalStorage.setItem('serveart_user_cooperationEnabled', profile.cooperation_enabled !== false ? 'true' : 'false');
+                    safeLocalStorage.setItem('serveart_user_sought_professions', JSON.stringify(profile.sought_professions || []));
+                    safeLocalStorage.setItem('serveart_user_offering', JSON.stringify(profile.offering || []));
                 } else {
                     // Profile not found in database, build one from auth metadata
                     console.warn("Auth user exists but profile row is missing. Creating fallback profile.");
                     const fallbackName = session.user.user_metadata.full_name || session.user.email.split('@')[0];
                     const fallbackRole = session.user.user_metadata.role || 'twórca';
+                    const avatarUrl = session.user.user_metadata.avatar_url || '';
                     
                     const newProfile = {
                         id: session.user.id,
                         name: fallbackName,
                         role: fallbackRole,
+                        avatar: avatarUrl,
                         city: 'Wrocław',
                         bio: fallbackRole === 'twórca' ? 'Artysta / Rzemieślnik w ServeArt' : 'Miłośnik polskiego rzemiosła i handmade.',
                         tags: fallbackRole === 'twórca' ? ['Rękodzieło'] : ['Kolekcja'],
@@ -365,13 +393,17 @@ window.initAuthListener = function() {
                         banner: 'gradient-5'
                     };
 
-                    await window.supabaseClient.from('profiles').insert(newProfile);
+                    try {
+                        await window.supabaseClient.from('profiles').insert(newProfile);
+                    } catch (insErr) {
+                        console.error("Error inserting profile:", insErr);
+                    }
                     
                     STATE.currentUser = {
                         name: newProfile.name,
                         role: newProfile.role,
                         email: session.user.email,
-                        avatar: '',
+                        avatar: avatarUrl,
                         city: newProfile.city,
                         joined: newProfile.joined,
                         profession: newProfile.role === 'twórca' ? 'Artysta' : 'Pasjonat',
@@ -388,13 +420,42 @@ window.initAuthListener = function() {
                         offering: [],
                         soughtProfessions: []
                     };
+                    
+                    safeLocalStorage.setItem('serveart_user_name', newProfile.name);
+                    safeLocalStorage.setItem('serveart_user_role', newProfile.role);
+                    safeLocalStorage.setItem('serveart_user_email', session.user.email);
+                    safeLocalStorage.setItem('serveart_user_avatar', avatarUrl);
+                    safeLocalStorage.setItem('serveart_user_city', newProfile.city);
+                    safeLocalStorage.setItem('serveart_user_joined', newProfile.joined);
+                    safeLocalStorage.setItem('serveart_user_profession', newProfile.role === 'twórca' ? 'Artysta' : 'Pasjonat');
+                    safeLocalStorage.setItem('serveart_user_bio', newProfile.bio);
+                    safeLocalStorage.setItem('serveart_user_exclusions', 'Brak');
+                    safeLocalStorage.setItem('serveart_user_banner', newProfile.banner);
+                    safeLocalStorage.setItem('serveart_user_tags', JSON.stringify(newProfile.tags));
+                    safeLocalStorage.setItem('serveart_user_customMinBudget', '0');
+                    safeLocalStorage.setItem('serveart_user_customMaxBudget', '0');
+                    safeLocalStorage.setItem('serveart_user_customDeliveryTime', '');
+                    safeLocalStorage.setItem('serveart_user_cooperationEnabled', 'true');
+                    safeLocalStorage.setItem('serveart_user_sought_professions', '[]');
+                    safeLocalStorage.setItem('serveart_user_offering', '[]');
                 }
             } catch (e) {
                 console.error("Error fetching/creating user profile:", e);
             }
 
-            // Sync database collections
-            await window.syncFromSupabase();
+            const authModal = document.getElementById('modal-auth');
+            const wasLoggingIn = authModal && !authModal.classList.contains('hidden');
+
+            // Sync database collections safely
+            try {
+                if (typeof window.syncFromSupabase === 'function') {
+                    await window.syncFromSupabase();
+                } else {
+                    console.warn("window.syncFromSupabase is not defined.");
+                }
+            } catch (syncErr) {
+                console.error("Error during syncFromSupabase in auth listener:", syncErr);
+            }
 
             // Setup profile settings forms if exists
             const settingsName = document.getElementById('settings-username');
@@ -419,6 +480,9 @@ window.initAuthListener = function() {
             
             // Show welcome message
             console.log(`Welcome back, ${STATE.currentUser.name}!`);
+            if (wasLoggingIn && window.showToast) {
+                window.showToast(`Zalogowano pomyślnie! Witaj, ${STATE.currentUser.name}!`, "check_circle");
+            }
         } else {
             // User is Guest
             STATE.isAuthenticated = false;
@@ -447,7 +511,15 @@ window.initAuthListener = function() {
             };
 
             // Sync database collections anyway so guest can browse public details
-            await window.syncFromSupabase();
+            try {
+                if (typeof window.syncFromSupabase === 'function') {
+                    await window.syncFromSupabase();
+                } else {
+                    console.warn("window.syncFromSupabase is not defined.");
+                }
+            } catch (syncErr) {
+                console.error("Error during syncFromSupabase for Guest in auth listener:", syncErr);
+            }
 
             // Re-render UI to display guest experience
             if (window.initializeUserChannels) window.initializeUserChannels();

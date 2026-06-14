@@ -263,3 +263,21 @@ Wdrożono zunifikowany mechanizm rysowania obramowania aktywnej zakładki, uszu 
 * **Wsparcie dla Skalowania i Pozycjonowania w JS**:
   * Funkcja `alignActiveTabGradient()` ustawia teraz zmienne `--content-tab-grad-size`, `--active-tab-left` oraz `--active-tab-right` na kontenerze zawartości, uwzględniając czy aktywny tab to pierwsza zakładka (`prof-tab-sklep`) i odpowiednio korygując zakres wycinania maski.
 
+---
+
+### 11. Poprawki Logowania Google, Wylogowania i Synchronizacji Profilu (Aktualizacja z 14 czerwca 2026)
+
+Wprowadzono kluczowe poprawki stabilności i synchronizacji dla systemu uwierzytelniania Supabase Auth oraz profili użytkowników:
+* **Globalny Komunikat Wylogowania (showToast)**:
+  * Powiązano wewnętrzną funkcję `showToast` z obiektem globalnym `window.showToast = showToast` w [index.html](file:///c:/Users/meyrem/Desktop/Aplikacja%20dla%20artyst%C3%B3w/index.html).
+  * Dzięki temu wywołanie wylogowania w `supabase-auth-sync.js` poprawnie wyświetla komunikat *"Wylogowano pomyślnie!"* w formie estetycznego toastu przed odświeżeniem strony.
+* **Kompleksowe Czyszczenie Pamięci Lokalnej (Sign Out Cleanup)**:
+  * Wzbogacono funkcję `supabaseSignOut` o natychmiastowe usuwanie wszystkich spersonalizowanych kluczy z cache `localStorage` (avatar, bio, miejscowość, zlecenia, exclusions, budżet, data dołączenia itp.). Zapobiega to pozostawaniu szczątkowych danych poprzedniego użytkownika po wylogowaniu.
+* **Bezpieczna Synchronizacja z Supabase (Try-Catch Guard)**:
+  * Wywołania `syncFromSupabase()` wewnątrz nasłuchiwania stanu autoryzacji (`onAuthStateChange`) zostały zabezpieczone blokami `try-catch` oraz weryfikacją obecności funkcji (`typeof window.syncFromSupabase === 'function'`).
+  * Zapobiega to przerwaniu działania (crashowaniu) całego listenera w przypadku błędów sieciowych lub bazodanowych, co wcześniej blokowało zamknięcie modalu autoryzacji i odświeżenie interfejsu.
+* **Automatyczne Zapisywanie i Przywracanie Metadanych Google**:
+  * Dodano zapisywanie pobranych danych profilu (w tym adresu URL awatara pobranego z Google Auth oraz daty dołączenia i opisu) do pamięci lokalnej `localStorage` zaraz po autoryzacji.
+  * Zaktualizowano domyślny konstruktor `STATE.currentUser` w [index.html](file:///c:/Users/meyrem/Desktop/Aplikacja%20dla%20artyst%C3%B3w/index.html), aby w pierwszej kolejności ładował spersonalizowane wartości z `localStorage`, a w przypadku ich braku przechodził do danych demonstracyjnych (Jan Kowalski). Dzięki temu interfejs ładuje się natychmiast z poprawnym awatarem i danymi użytkownika.
+  * Zaktualizowano synchronizację z Supabase w [supabase-sync.js](file:///c:/Users/meyrem/Desktop/Aplikacja%20dla%20artyst%C3%B3w/supabase-sync.js), aby uwzględniała mapowanie i zachowywanie pól `avatar`, `joined` oraz `email` zalogowanego użytkownika, eliminując problem nadpisywania awatara pustą wartością.
+  * Wzbogacono interakcję o toast powitalny *"Zalogowano pomyślnie! Witaj, [Nazwa]!"* wyświetlający się tylko podczas aktywnego procesu logowania.

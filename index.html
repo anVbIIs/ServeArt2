@@ -3226,23 +3226,23 @@
                 role: safeLocalStorage.getItem('serveart_user_role') || 'twórca',
                 email: safeLocalStorage.getItem('serveart_user_email') || 'jan.kowalski@serveart.pl',
                 password: safeLocalStorage.getItem('serveart_user_password') || 'haslo123',
-                avatar: "", // Empty string to trigger default hammer + brush SVG avatar
-                city: "Wrocław",
-                joined: "Sierpień 2023",
-                profession: "Kolekcjoner i Twórca Rzemiosła",
+                avatar: safeLocalStorage.getItem('serveart_user_avatar') || "",
+                city: safeLocalStorage.getItem('serveart_user_city') || "Wrocław",
+                joined: safeLocalStorage.getItem('serveart_user_joined') || "Sierpień 2023",
+                profession: safeLocalStorage.getItem('serveart_user_profession') || "Kolekcjoner i Twórca Rzemiosła",
                 mainSpecialization: safeLocalStorage.getItem('serveart_main_specialization') || "",
-                bio: "Miłośnik polskiego rzemiosła i handmade. Zbieram unikalną ceramikę oraz malarstwo współczesne.",
-                exclusions: "Seryjnej produkcji, dropshippingu, masowej biżuterii, taśmowej stolarki",
-                tags: ["Kolekcja", "Ceramika", "Rękodzieło"],
-                customMinBudget: 300,
-                customMaxBudget: 1500,
-                customDeliveryTime: "10 - 20 dni roboczych",
-                banner: "gradient-5",
-                cooperationEnabled: true,
+                bio: safeLocalStorage.getItem('serveart_user_bio') || "Miłośnik polskiego rzemiosła i handmade. Zbieram unikalną ceramikę oraz malarstwo współczesne.",
+                exclusions: safeLocalStorage.getItem('serveart_user_exclusions') || "Seryjnej produkcji, dropshippingu, masowej biżuterii, taśmowej stolarki",
+                tags: safeLocalStorage.getItem('serveart_user_tags') ? JSON.parse(safeLocalStorage.getItem('serveart_user_tags')) : ["Kolekcja", "Ceramika", "Rękodzieło"],
+                customMinBudget: safeLocalStorage.getItem('serveart_user_customMinBudget') ? parseInt(safeLocalStorage.getItem('serveart_user_customMinBudget')) : 300,
+                customMaxBudget: safeLocalStorage.getItem('serveart_user_customMaxBudget') ? parseInt(safeLocalStorage.getItem('serveart_user_customMaxBudget')) : 1500,
+                customDeliveryTime: safeLocalStorage.getItem('serveart_user_customDeliveryTime') || "10 - 20 dni roboczych",
+                banner: safeLocalStorage.getItem('serveart_user_banner') || "gradient-5",
+                cooperationEnabled: safeLocalStorage.getItem('serveart_user_cooperationEnabled') !== 'false',
                 isPremium: safeLocalStorage.getItem('serveart_premium') === 'true', // Dynamically read persisted Premium state
                 avatarShape: safeLocalStorage.getItem('serveart_avatar_shape') || 'circle', // Dynamically read persisted shape
-                soughtProfessions: ["Ceramik", "Garncarstwo", "Artysta Ceramiki", "Stolarz artystyczny", "Stolarstwo"],
-                offering: [
+                soughtProfessions: safeLocalStorage.getItem('serveart_user_sought_professions') ? JSON.parse(safeLocalStorage.getItem('serveart_user_sought_professions')) : ["Ceramik", "Garncarstwo", "Artysta Ceramiki", "Stolarz artystyczny", "Stolarstwo"],
+                offering: safeLocalStorage.getItem('serveart_user_offering') ? JSON.parse(safeLocalStorage.getItem('serveart_user_offering')) : [
                     "Ręcznie toczone wazy ceramiczne",
                     "Stoły dębowe w stylu industrialnym",
                     "Warsztaty z toczenia na kole",
@@ -5913,6 +5913,7 @@
                 setTimeout(() => toast.remove(), 300);
             }, 2000);
         }
+        window.showToast = showToast;
 
         function toggleSaveMenu(event, btn, itemId) {
             if (event) event.stopPropagation();
@@ -7891,6 +7892,13 @@
             STATE.currentUser.bannerUrl = document.getElementById('edit-banner-url').value.trim();
             STATE.currentUser.banner = editSelectedPresetBanner;
             
+            safeLocalStorage.setItem('serveart_user_name', name);
+            safeLocalStorage.setItem('serveart_user_profession', profession);
+            safeLocalStorage.setItem('serveart_user_city', city);
+            safeLocalStorage.setItem('serveart_user_bio', STATE.currentUser.bio);
+            safeLocalStorage.setItem('serveart_user_avatar', STATE.currentUser.avatar);
+            safeLocalStorage.setItem('serveart_user_banner', editSelectedPresetBanner);
+            
             if (STATE.currentUser.role === 'twórca') {
                 const mainSpec = document.getElementById('edit-main-specialization').value;
                 STATE.currentUser.mainSpecialization = mainSpec;
@@ -7902,6 +7910,7 @@
             
             const tagsInput = document.getElementById('edit-tags').value;
             STATE.currentUser.tags = tagsInput.split(',').map(t => t.trim()).filter(t => t.length > 0);
+            safeLocalStorage.setItem('serveart_user_tags', JSON.stringify(STATE.currentUser.tags));
 
             // Custom crop shape
             STATE.currentUser.avatarShape = editSelectedAvatarShape;
@@ -7915,12 +7924,18 @@
                 if (val) updatedOffering.push(val);
             });
             STATE.currentUser.offering = updatedOffering;
+            safeLocalStorage.setItem('serveart_user_offering', JSON.stringify(updatedOffering));
 
             // Custom settings
             STATE.currentUser.exclusions = document.getElementById('edit-exclusions').value.trim();
             STATE.currentUser.customMinBudget = parseInt(document.getElementById('edit-budget-min').value) || 300;
             STATE.currentUser.customMaxBudget = parseInt(document.getElementById('edit-budget-max').value) || 1500;
             STATE.currentUser.customDeliveryTime = document.getElementById('edit-delivery-time').value.trim();
+
+            safeLocalStorage.setItem('serveart_user_exclusions', STATE.currentUser.exclusions);
+            safeLocalStorage.setItem('serveart_user_customMinBudget', STATE.currentUser.customMinBudget.toString());
+            safeLocalStorage.setItem('serveart_user_customMaxBudget', STATE.currentUser.customMaxBudget.toString());
+            safeLocalStorage.setItem('serveart_user_customDeliveryTime', STATE.currentUser.customDeliveryTime);
 
             closeEditProfileModal();
             openOwnProfile();
