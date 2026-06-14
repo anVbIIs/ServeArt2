@@ -106,11 +106,9 @@ window.updatePasswordChecklist = function(password) {
 window.requireAuth = function(actionCallback) {
     if (!window.supabaseClient) {
         // Fallback offline mode - always authenticated
-        if (actionCallback) actionCallback();
         return true;
     }
     if (STATE.isAuthenticated) {
-        if (actionCallback) actionCallback();
         return true;
     } else {
         window.showAuthModal(actionCallback);
