@@ -1050,44 +1050,29 @@
                     </defs>
                     <path class="profile-folder-svg-path" fill="var(--color-surface-container-lowest)" stroke="url(#folder-border-gradient-saved)" stroke-width="2" />
                 </svg>
-                <div class="p-2 flex justify-between items-center flex-wrap gap-2">
-                    <div class="text-left space-y-1">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="material-symbols-outlined text-primary text-base">bookmark</span>
-                            <h3 class="font-headline-md text-sm font-bold text-on-surface">Zapisane treści</h3>
-                            <span class="bg-surface-container border border-outline-variant/35 text-outline text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 select-none">
-                                <span class="material-symbols-outlined text-[10px] font-bold">lock</span>
-                                Tylko Ty to widzisz (Prywatne)
-                            </span>
-                        </div>
-                        <p class="text-xs text-outline">Przeglądaj swoje listy życzeń oraz zapisane wpisy ze społeczności.</p>
+                
+                <!-- Saved Offers Section -->
+                <div class="space-y-2 pt-2 px-2 text-left">
+                    <h3 class="font-headline-md text-xs font-bold text-on-surface flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-[18px]">shopping_bag</span>
+                        <span>Zapisane oferty (Lista życzeń)</span>
+                    </h3>
+                    <div id="profile-saved-offers-grid" class="flex flex-row overflow-x-auto gap-3 snap-x snap-mandatory pb-2 w-full md:grid md:grid-cols-2 md:gap-4 md:overflow-x-visible md:pb-0">
+                        <!-- Rendered dynamically -->
                     </div>
+                    <div id="profile-saved-offers-more-container" class="flex justify-center w-full mt-2 pb-2"></div>
                 </div>
 
-                <!-- Sub-tabs within Saved section -->
-                <div class="flex border-b border-outline-variant/15 gap-4 mb-2 px-2">
-                    <button id="saved-tab-offers" onclick="switchSavedSubSection('offers')" class="pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-sm">shopping_bag</span>
-                        Zapisane oferty
-                    </button>
-                    <button id="saved-tab-posts" onclick="switchSavedSubSection('posts')" class="pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-sm">bookmark</span>
-                        <span>Zapisane posty</span>
-                    </button>
-                </div>
-
-                <!-- Section: Saved Offers -->
-                <div id="saved-section-offers" class="space-y-4">
-                    <div class="flex flex-col gap-4" id="own-profile-saved-lists-container">
-                        <!-- Dynamic rendering of saved lists and their items -->
+                <!-- Saved Posts Section -->
+                <div class="space-y-2 pt-4 px-2 border-t border-outline-variant/10 text-left">
+                    <h3 class="font-headline-md text-xs font-bold text-on-surface flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-[18px]">bookmark</span>
+                        <span>Zapisane posty społeczności</span>
+                    </h3>
+                    <div id="profile-saved-posts-grid" class="flex flex-row overflow-x-auto gap-3 snap-x snap-mandatory pb-2 w-full md:grid md:grid-cols-2 md:gap-4 md:overflow-x-visible md:pb-0">
+                        <!-- Rendered dynamically -->
                     </div>
-                </div>
-
-                <!-- Section: Saved Posts -->
-                <div id="saved-section-posts" class="hidden space-y-4">
-                    <div class="flex flex-col gap-4" id="own-profile-saved-posts-container">
-                        <!-- Dynamic rendering of saved posts -->
-                    </div>
+                    <div id="profile-saved-posts-more-container" class="flex justify-center w-full mt-2 pb-2"></div>
                 </div>
             </div>
 
@@ -1585,6 +1570,48 @@
 
 
 
+
+    <!-- FLOATING SAVED CONTENTS MODAL -->
+    <div id="modal-saved-all" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
+        <div class="bg-surface w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[85vh] overflow-hidden text-left">
+            <!-- Sticky Header with tabs -->
+            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10">
+                <div class="flex border-b border-outline-variant/15 gap-4">
+                    <button id="modal-saved-tab-offers" onclick="switchModalSavedTab('offers')" class="pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm">shopping_bag</span>
+                        <span>Zapisane oferty</span>
+                    </button>
+                    <button id="modal-saved-tab-posts" onclick="switchModalSavedTab('posts')" class="pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm">bookmark</span>
+                        <span>Zapisane posty</span>
+                    </button>
+                </div>
+                <!-- Close Button -->
+                <button onclick="closeSavedAllModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <!-- Scroll Body -->
+            <div id="modal-saved-all-body" class="p-6 overflow-y-auto flex-1">
+                <!-- Offers view -->
+                <div id="modal-saved-section-offers" class="space-y-4">
+                    <div id="modal-saved-offers-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+                <!-- Posts view -->
+                <div id="modal-saved-section-posts" class="hidden space-y-4">
+                    <div id="modal-saved-posts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+                <!-- Mini spinner -->
+                <div id="modal-saved-all-loading" class="hidden justify-center items-center py-4 w-full">
+                    <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FLOATING CREATOR SHOP MODAL -->
     <div id="modal-creator-shop" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
@@ -2965,6 +2992,9 @@
             activeProfileName: null,
             modalShopLimit: 20,
             modalShopName: '',
+            modalSavedOffersLimit: 20,
+            modalSavedPostsLimit: 10,
+            modalSavedActiveTab: 'offers',
             filters: {
                 category: null,
                 material: null,
@@ -4726,14 +4756,367 @@
                 activeTabEl.className = "profile-tab-folder active";
             }
             if (subtabId === 'saved') {
-                if (typeof switchSavedSubSection === 'function') {
-                    switchSavedSubSection('offers');
-                }
+                renderProfileSavedOffers();
+                renderProfileSavedPostsList();
             }
 
             // Align active tab gradient to content container width & position
             setTimeout(alignActiveTabGradient, 0);
 
+        }
+
+        function renderProfileSavedOffers() {
+            const grid = document.getElementById('profile-saved-offers-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const savedIds = STATE.savedLists.wishlist || [];
+            
+            if (savedIds.length === 0) {
+                grid.innerHTML = '<p class="text-xs text-outline py-6 text-center col-span-full w-full">Brak zapisanych ofert.</p>';
+                const moreContainer = document.getElementById('profile-saved-offers-more-container');
+                if (moreContainer) {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+                setTimeout(alignActiveTabGradient, 50);
+                return;
+            }
+            
+            const initialIds = savedIds.slice(0, 4);
+            initialIds.forEach(itemId => {
+                const item = STATE.listings.find(l => l.id === itemId);
+                if (!item) return;
+                
+                const isSaved = true; // since it is in wishlist
+                
+                let itemTags = [];
+                if (item.tags && item.tags.length > 0) {
+                    itemTags = item.tags.filter(t => {
+                        const lt = t.toLowerCase();
+                        return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
+                    });
+                }
+                if (itemTags.length === 0) {
+                    if (item.category) itemTags.push(item.category);
+                    if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
+                }
+                const visibleTags = itemTags.slice(0, 3);
+                const tagsHtml = visibleTags.map(t => {
+                    return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
+                }).join('');
+                
+                grid.innerHTML += `
+                    <div class="flex flex-col gap-2 cursor-pointer group w-[185px] flex-shrink-0 snap-start md:w-auto md:flex-shrink" onclick="openDetailsModalSim('${item.id}')">
+                        <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
+                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                            ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
+                            
+                            <!-- Quick Save Button -->
+                            <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-primary active:scale-90 flex items-center justify-center shadow-md z-10 transition-all">
+                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+                            </button>
+                        </div>
+                        <div class="text-left space-y-1">
+                            <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
+                                ${tagsHtml}
+                            </div>
+                            <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
+                            <div class="flex justify-between items-center gap-1">
+                                <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
+                                <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const moreContainer = document.getElementById('profile-saved-offers-more-container');
+            if (moreContainer) {
+                if (savedIds.length > 4) {
+                    moreContainer.innerHTML = `
+                        <button onclick="openSavedAllModal('offers')" class="px-6 py-2.5 bg-surface-container border border-outline-variant/25 text-primary hover:bg-primary/5 active:scale-95 text-xs font-bold rounded-2xl shadow-sm transition-all flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm font-bold">zoom_in</span>
+                            Zobacz więcej zapisanych ofert
+                        </button>
+                    `;
+                    moreContainer.classList.remove('hidden');
+                } else {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+            }
+            
+            setTimeout(alignActiveTabGradient, 50);
+        }
+
+        function renderProfileSavedPostsList() {
+            const grid = document.getElementById('profile-saved-posts-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const savedIds = STATE.savedPostIds || [];
+            
+            if (savedIds.length === 0) {
+                grid.innerHTML = '<p class="text-xs text-outline py-6 text-center col-span-full w-full">Brak zapisanych postów.</p>';
+                const moreContainer = document.getElementById('profile-saved-posts-more-container');
+                if (moreContainer) {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+                setTimeout(alignActiveTabGradient, 50);
+                return;
+            }
+            
+            const initialIds = savedIds.slice(0, 4);
+            initialIds.forEach(postId => {
+                const post = STATE.posts.find(p => p.id === postId);
+                if (!post) return;
+                
+                const ch = STATE.channels.find(c => c.id === post.channelId);
+                const channelName = ch ? `art/${ch.name}` : '';
+                const snippet = post.text.length > 80 ? post.text.slice(0, 80) + '...' : post.text;
+                
+                let imgHtml = '';
+                if (post.images && post.images.length > 0) {
+                    imgHtml = `
+                        <div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container ml-auto">
+                            <img src="${post.images[0]}" class="w-full h-full object-cover"/>
+                        </div>
+                    `;
+                }
+                
+                grid.innerHTML += `
+                    <div class="flex-shrink-0 w-[240px] snap-start bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-3 flex gap-2 text-left items-start relative hover:shadow-sm transition-shadow cursor-pointer md:w-auto md:flex-shrink" onclick="goToSavedPost('${post.id}', '${post.channelId}')">
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <div class="flex items-center gap-1 flex-wrap">
+                                <span class="font-bold text-on-surface text-[10px] truncate max-w-[80px]">${post.creator}</span>
+                                <span class="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold truncate">${channelName}</span>
+                            </div>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
+                            <div class="flex pt-1 items-center justify-between">
+                                <span class="text-[8px] text-outline">${post.date}</span>
+                                <button onclick="event.stopPropagation(); toggleSavePost(event, null, '${post.id}')" class="text-outline hover:text-error font-bold text-[9px] uppercase tracking-wider flex items-center gap-0.5 select-none">
+                                    <span class="material-symbols-outlined text-xs">delete</span> Usuń
+                               </button>
+                            </div>
+                        </div>
+                        ${imgHtml}
+                    </div>
+                `;
+            });
+            
+            const moreContainer = document.getElementById('profile-saved-posts-more-container');
+            if (moreContainer) {
+                if (savedIds.length > 4) {
+                    moreContainer.innerHTML = `
+                        <button onclick="openSavedAllModal('posts')" class="px-6 py-2.5 bg-surface-container border border-outline-variant/25 text-primary hover:bg-primary/5 active:scale-95 text-xs font-bold rounded-2xl shadow-sm transition-all flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm font-bold">zoom_in</span>
+                            Zobacz więcej zapisanych postów
+                        </button>
+                    `;
+                    moreContainer.classList.remove('hidden');
+                } else {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+            }
+            
+            setTimeout(alignActiveTabGradient, 50);
+        }
+
+        function openSavedAllModal(tab = 'offers') {
+            STATE.modalSavedActiveTab = tab;
+            STATE.modalSavedOffersLimit = 20;
+            STATE.modalSavedPostsLimit = 10;
+            
+            switchModalSavedTab(tab);
+            
+            const modalBody = document.getElementById('modal-saved-all-body');
+            if (modalBody) {
+                modalBody.scrollTop = 0;
+                modalBody.onscroll = handleModalSavedScroll;
+            }
+            
+            document.getElementById('modal-saved-all').classList.remove('hidden');
+        }
+
+        function closeSavedAllModal() {
+            document.getElementById('modal-saved-all').classList.add('hidden');
+            const modalBody = document.getElementById('modal-saved-all-body');
+            if (modalBody) {
+                modalBody.onscroll = null;
+            }
+        }
+
+        function switchModalSavedTab(tab) {
+            STATE.modalSavedActiveTab = tab;
+            
+            const tabOffers = document.getElementById('modal-saved-tab-offers');
+            const tabPosts = document.getElementById('modal-saved-tab-posts');
+            const secOffers = document.getElementById('modal-saved-section-offers');
+            const secPosts = document.getElementById('modal-saved-section-posts');
+            
+            if (tab === 'offers') {
+                tabOffers.className = "pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5";
+                tabPosts.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5";
+                secOffers.classList.remove('hidden');
+                secPosts.classList.add('hidden');
+            } else {
+                tabOffers.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5";
+                tabPosts.className = "pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5";
+                secOffers.classList.add('hidden');
+                secPosts.classList.remove('hidden');
+            }
+            
+            renderModalSavedGrid();
+        }
+
+        function renderModalSavedGrid() {
+            if (STATE.modalSavedActiveTab === 'offers') {
+                const grid = document.getElementById('modal-saved-offers-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                
+                const savedIds = STATE.savedLists.wishlist || [];
+                const limitedIds = savedIds.slice(0, STATE.modalSavedOffersLimit);
+                
+                limitedIds.forEach(itemId => {
+                    const item = STATE.listings.find(l => l.id === itemId);
+                    if (!item) return;
+                    
+                    let itemTags = [];
+                    if (item.tags && item.tags.length > 0) {
+                        itemTags = item.tags.filter(t => {
+                            const lt = t.toLowerCase();
+                            return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
+                        });
+                    }
+                    if (itemTags.length === 0) {
+                        if (item.category) itemTags.push(item.category);
+                        if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
+                    }
+                    const visibleTags = itemTags.slice(0, 3);
+                    const tagsHtml = visibleTags.map(t => {
+                        return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
+                    }).join('');
+                    
+                    grid.innerHTML += `
+                        <div class="flex flex-col gap-2 cursor-pointer group text-left" onclick="closeSavedAllModal(); openDetailsModalSim('${item.id}')">
+                            <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
+                                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
+                                
+                                <!-- Quick Save Button -->
+                                <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-primary active:scale-90 flex items-center justify-center shadow-md z-10 transition-all">
+                                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+                                </button>
+                            </div>
+                            <div class="text-left space-y-1">
+                                <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
+                                    ${tagsHtml}
+                                </div>
+                                <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
+                                <div class="flex justify-between items-center gap-1">
+                                    <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
+                                    <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                const grid = document.getElementById('modal-saved-posts-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                
+                const savedIds = STATE.savedPostIds || [];
+                const limitedIds = savedIds.slice(0, STATE.modalSavedPostsLimit);
+                
+                limitedIds.forEach(postId => {
+                    const post = STATE.posts.find(p => p.id === postId);
+                    if (!post) return;
+                    
+                    const ch = STATE.channels.find(c => c.id === post.channelId);
+                    const channelName = ch ? `art/${ch.name}` : '';
+                    const snippet = post.text.length > 140 ? post.text.slice(0, 140) + '...' : post.text;
+                    
+                    let imgHtml = '';
+                    if (post.images && post.images.length > 0) {
+                        imgHtml = `
+                            <div class="w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container ml-auto">
+                                <img src="${post.images[0]}" class="w-full h-full object-cover"/>
+                            </div>
+                        `;
+                    }
+                    
+                    grid.innerHTML += `
+                        <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 flex gap-3 text-left items-start relative hover:shadow-sm transition-shadow cursor-pointer" onclick="closeSavedAllModal(); goToSavedPost('${post.id}', '${post.channelId}')">
+                            <div class="flex-1 min-w-0 space-y-2">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-on-surface text-[11px]">${post.creator}</span>
+                                    <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">${channelName}</span>
+                                </div>
+                                <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
+                                <div class="flex pt-1 items-center justify-between">
+                                    <span class="text-[9px] text-outline">${post.date}</span>
+                                    <button onclick="event.stopPropagation(); toggleSavePost(event, null, '${post.id}')" class="text-outline hover:text-error font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 select-none">
+                                        <span class="material-symbols-outlined text-xs">delete</span> Usuń
+                                    </button>
+                                </div>
+                            </div>
+                            ${imgHtml}
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function handleModalSavedScroll() {
+            const modalBody = document.getElementById('modal-saved-all-body');
+            if (!modalBody) return;
+            
+            if (STATE.modalSavedActiveTab === 'offers') {
+                const totalOffers = (STATE.savedLists.wishlist || []).length;
+                if (STATE.modalSavedOffersLimit >= totalOffers) return;
+                
+                if (modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight - 80) {
+                    const spinner = document.getElementById('modal-saved-all-loading');
+                    if (spinner) spinner.className = 'flex';
+                    
+                    modalBody.onscroll = null;
+                    
+                    setTimeout(() => {
+                        STATE.modalSavedOffersLimit += 20;
+                        renderModalSavedGrid();
+                        if (spinner) spinner.className = 'hidden';
+                        
+                        if (STATE.modalSavedOffersLimit < totalOffers) {
+                            modalBody.onscroll = handleModalSavedScroll;
+                        }
+                    }, 300);
+                }
+            } else {
+                const totalPosts = (STATE.savedPostIds || []).length;
+                if (STATE.modalSavedPostsLimit >= totalPosts) return;
+                
+                if (modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight - 80) {
+                    const spinner = document.getElementById('modal-saved-all-loading');
+                    if (spinner) spinner.className = 'flex';
+                    
+                    modalBody.onscroll = null;
+                    
+                    setTimeout(() => {
+                        STATE.modalSavedPostsLimit += 10;
+                        renderModalSavedGrid();
+                        if (spinner) spinner.className = 'hidden';
+                        
+                        if (STATE.modalSavedPostsLimit < totalPosts) {
+                            modalBody.onscroll = handleModalSavedScroll;
+                        }
+                    }, 300);
+                }
+            }
         }
 
         function renderSklepGrid() {
@@ -6256,134 +6639,20 @@
             if (event) event.stopPropagation();
             if (!requireAuth(() => toggleSaveMenu(undefined, btn, itemId))) return;
             
-            // Close any open save menus first
-            const existingMenu = document.getElementById('active-save-menu');
-            if (existingMenu) {
-                const existingItemId = existingMenu.dataset.itemId;
-                existingMenu.remove();
-                document.removeEventListener('click', closeSaveMenuOutside);
-                if (existingItemId === itemId) return;
-            }
-
-            // --- INSTANT SAVE ON CLICK ---
-            // If the item is not saved in any list, save it to the default 'wishlist' immediately
-            const isCurrentlySaved = STATE.savedItemIds.includes(itemId);
-            if (!isCurrentlySaved) {
+            const list = STATE.savedLists.wishlist;
+            const idx = list.indexOf(itemId);
+            
+            if (idx > -1) {
+                list.splice(idx, 1);
+                showToast("Usunięto z listy życzeń!");
+            } else {
                 if (btn) {
                     createPaintBubbles(btn);
                 }
-                if (!STATE.savedLists.wishlist.includes(itemId)) {
-                    STATE.savedLists.wishlist.push(itemId);
-                }
-                updateSavedStateUI(itemId);
-                showToast("Zapisano!");
+                list.push(itemId);
+                showToast("Zapisano w liście życzeń!");
             }
-
-            let listsHtml = '';
-            for (const [key, items] of Object.entries(STATE.savedLists)) {
-                const checked = items.includes(itemId);
-                const displayName = key === 'wishlist' ? 'Lista życzeń' : key;
-                listsHtml += `
-                    <label class="flex items-center gap-2 cursor-pointer hover:text-primary justify-start w-full">
-                        <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleItemInList(event, '${itemId}', '${key}')" class="rounded text-primary border-outline-variant w-3.5 h-3.5"/>
-                        <span>${displayName}</span>
-                    </label>
-                `;
-            }
-
-            const menu = document.createElement('div');
-            menu.id = 'active-save-menu';
-            menu.dataset.itemId = itemId;
-            menu.triggerBtn = btn;
-            menu.className = "fixed z-[100] bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-3 shadow-lg flex flex-col gap-2 text-xs text-on-surface text-left";
-            menu.innerHTML = `
-                <div class="font-bold text-[10px] uppercase text-outline mb-1 text-center">Dodaj do listy:</div>
-                <div class="flex flex-col gap-2 max-h-32 overflow-y-auto pr-1">
-                    ${listsHtml}
-                </div>
-                <div class="border-t border-outline-variant/20 my-1 pt-1.5 flex flex-col gap-1.5">
-                    <button onclick="showCreateListInput(event, '${itemId}')" class="text-[10px] font-bold text-primary hover:text-turquoise transition-colors flex items-center gap-1 justify-center">
-                        <span class="material-symbols-outlined text-xs">add</span> Utwórz listę
-                    </button>
-                    <div id="new-list-input-container-${itemId}" class="hidden flex gap-1 items-center">
-                        <input id="new-list-name-${itemId}" type="text" placeholder="Nazwa..." class="w-full bg-input-bg border border-outline-variant/30 rounded p-1 text-[9px] focus:outline-none" onclick="event.stopPropagation()"/>
-                        <button onclick="createNewList(event, '${itemId}')" class="bg-primary text-white px-1.5 py-0.5 rounded text-[10px] font-bold">+</button>
-                    </div>
-                </div>
-            `;
-            
-            // Stop propagation on menu click to avoid closing it
-            menu.addEventListener('click', (e) => e.stopPropagation());
-
-            document.body.appendChild(menu);
-
-            // Calculate and set position relative to viewport
-            if (btn) {
-                const rect = btn.getBoundingClientRect();
-                const menuWidth = 150;
-                menu.style.width = `${menuWidth}px`;
-                
-                let leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
-                if (leftPos < 10) leftPos = 10;
-                if (leftPos + menuWidth > window.innerWidth - 10) {
-                    leftPos = window.innerWidth - menuWidth - 10;
-                }
-                
-                menu.style.left = `${leftPos}px`;
-                menu.style.top = `${rect.top - 8}px`;
-                menu.style.transform = 'translateY(-100%)';
-            }
-
-            // Close menu on clicking outside
-            setTimeout(() => {
-                document.addEventListener('click', closeSaveMenuOutside);
-            }, 10);
-        }
-
-        function showCreateListInput(event, itemId) {
-            event.stopPropagation();
-            const container = document.getElementById(`new-list-input-container-${itemId}`);
-            if (container) {
-                container.classList.toggle('hidden');
-                const input = document.getElementById(`new-list-name-${itemId}`);
-                if (input) input.focus();
-            }
-        }
-
-        function createNewList(event, itemId) {
-            event.stopPropagation();
-            const input = document.getElementById(`new-list-name-${itemId}`);
-            if (!input) return;
-            const listName = input.value.trim();
-            if (listName) {
-                if (STATE.savedLists[listName]) {
-                    alert("Lista o tej nazwie już istnieje!");
-                    return;
-                }
-                STATE.savedLists[listName] = [];
-                
-                // Refresh active save menu
-                const activeMenu = document.getElementById('active-save-menu');
-                if (activeMenu) {
-                    const btn = activeMenu.triggerBtn;
-                    activeMenu.remove();
-                    document.removeEventListener('click', closeSaveMenuOutside);
-                    toggleSaveMenu(event, btn, itemId);
-                    
-                    // Keep the container open
-                    const container = document.getElementById(`new-list-input-container-${itemId}`);
-                    if (container) container.classList.remove('hidden');
-                }
-                showToast("Utworzono listę!");
-            }
-        }
-
-        function closeSaveMenuOutside(e) {
-            const menu = document.getElementById('active-save-menu');
-            if (menu && !menu.contains(e.target)) {
-                menu.remove();
-                document.removeEventListener('click', closeSaveMenuOutside);
-            }
+            updateSavedStateUI(itemId);
         }
 
         function syncDetailsSaveButtonState(itemId) {
@@ -6426,6 +6695,12 @@
             const shopModal = document.getElementById('modal-creator-shop');
             if (shopModal && !shopModal.classList.contains('hidden')) {
                 renderModalCreatorShopGrid();
+            }
+
+            // Sync modal saved grids if open
+            const savedModal = document.getElementById('modal-saved-all');
+            if (savedModal && !savedModal.classList.contains('hidden')) {
+                renderModalSavedGrid();
             }
         }
 
@@ -7519,88 +7794,7 @@
             }
             safeLocalStorage.setItem('serveart_saved_posts', JSON.stringify(STATE.savedPostIds));
             renderCommunityFeed();
-            renderProfileSavedPosts();
-        }
-
-        function switchSavedSubSection(sub) {
-            const tabOffers = document.getElementById('saved-tab-offers');
-            const tabPosts = document.getElementById('saved-tab-posts');
-            const secOffers = document.getElementById('saved-section-offers');
-            const secPosts = document.getElementById('saved-section-posts');
-            
-            if (!tabOffers || !tabPosts || !secOffers || !secPosts) return;
-
-            if (sub === 'offers') {
-                tabOffers.className = "pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5";
-                tabPosts.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5";
-                secOffers.classList.remove('hidden');
-                secPosts.classList.add('hidden');
-                renderProfileSavedLists();
-            } else {
-                tabOffers.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-outline hover:text-on-surface transition-all flex items-center gap-1.5";
-                tabPosts.className = "pb-2 text-xs font-bold border-b-2 border-primary text-primary transition-all flex items-center gap-1.5";
-                secOffers.classList.add('hidden');
-                secPosts.classList.remove('hidden');
-                renderProfileSavedPosts();
-            }
-        }
-
-        function renderProfileSavedPosts() {
-            const container = document.getElementById('own-profile-saved-posts-container');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            if (!STATE.savedPostIds || STATE.savedPostIds.length === 0) {
-                container.innerHTML = `
-                    <div class="py-12 text-center text-outline text-xs bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 flex flex-col items-center justify-center">
-                        <span class="material-symbols-outlined text-4xl text-outline mb-2">bookmark</span>
-                        <span>Brak zapisanych postów. Dodaj wpisy ze społeczności do ulubionych!</span>
-                    </div>
-                `;
-                return;
-            }
-            
-            STATE.savedPostIds.forEach(id => {
-                const post = STATE.posts.find(p => p.id === id);
-                if (!post) return;
-                
-                const ch = STATE.channels.find(c => c.id === post.channelId);
-                const channelName = ch ? `art/${ch.name}` : '';
-                const snippet = post.text.length > 140 ? post.text.slice(0, 140) + '...' : post.text;
-                
-                const card = document.createElement('div');
-                card.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 flex gap-3 text-left items-start relative hover:shadow-sm transition-shadow";
-                
-                let imgHtml = '';
-                if (post.images && post.images.length > 0) {
-                    imgHtml = `
-                        <div class="w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container">
-                            <img src="${post.images[0]}" class="w-full h-full object-cover"/>
-                        </div>
-                    `;
-                }
-                
-                card.innerHTML = `
-                    <div class="flex-1 min-w-0 space-y-2">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="font-bold text-on-surface text-[11px]">${post.creator}</span>
-                            <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">${channelName}</span>
-                            <span class="text-[9px] text-outline ml-auto">${post.date}</span>
-                        </div>
-                        <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
-                        <div class="flex gap-4 pt-1 items-center">
-                            <button onclick="goToSavedPost('${post.id}', '${post.channelId}')" class="text-primary hover:text-primary-variant font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 select-none">
-                                <span class="material-symbols-outlined text-xs">launch</span> Przejdź do posta
-                            </button>
-                            <button onclick="toggleSavePost(event, null, '${post.id}')" class="text-outline hover:text-error font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 select-none ml-auto">
-                                <span class="material-symbols-outlined text-xs">delete</span> Usuń
-                            </button>
-                        </div>
-                    </div>
-                    ${imgHtml}
-                `;
-                container.appendChild(card);
-            });
+            renderProfileSavedPostsList();
         }
 
         function goToSavedPost(postId, channelId) {
@@ -8026,95 +8220,8 @@
         }
 
         function renderProfileSavedLists() {
-            const container = document.getElementById('own-profile-saved-lists-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            for (const [listKey, itemIds] of Object.entries(STATE.savedLists)) {
-                const displayName = listKey === 'wishlist' ? 'Lista życzeń' : listKey;
-                
-                const listSection = document.createElement('div');
-                listSection.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 space-y-3 text-left";
-                
-                // List Header
-                let deleteBtnHtml = '';
-                if (listKey !== 'wishlist') {
-                    deleteBtnHtml = `
-                        <button onclick="deleteCustomList(event, '${listKey}')" class="text-error hover:opacity-85 text-[10px] font-bold flex items-center gap-0.5">
-                            <span class="material-symbols-outlined text-xs">delete</span> Usuń listę
-                        </button>
-                    `;
-                }
-
-                listSection.innerHTML = `
-                    <div class="flex justify-between items-center border-b border-outline-variant/10 pb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary text-sm">folder</span>
-                            <span class="font-label-md text-xs font-bold text-on-surface">${displayName} (${itemIds.length})</span>
-                        </div>
-                        ${deleteBtnHtml}
-                    </div>
-                `;
-
-                // Horizontal scroll list of items
-                const scrollWrapper = document.createElement('div');
-                if (itemIds.length === 0) {
-                    scrollWrapper.className = "py-6 text-center text-outline text-[11px]";
-                    scrollWrapper.innerHTML = `
-                        <span class="material-symbols-outlined text-xl mb-1 block">bookmark_border</span>
-                        Ta lista jest pusta. Dodaj oferty podczas przeglądania!
-                    `;
-                } else {
-                    scrollWrapper.className = "flex gap-3 overflow-x-auto py-1 hide-scrollbar snap-x";
-                    itemIds.forEach(id => {
-                        const item = STATE.listings.find(l => l.id === id);
-                        if (!item) return;
-
-                        const itemCard = document.createElement('div');
-                        itemCard.className = "flex-shrink-0 w-28 bg-surface-container-lowest border border-outline-variant/25 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow relative snap-center";
-                        itemCard.setAttribute("onclick", `openDetailsModalSim('${item.id}');`);
-
-                        itemCard.innerHTML = `
-                            <div class="relative aspect-square overflow-hidden bg-surface-container">
-                                <img src="${item.image}" class="w-full h-full object-cover"/>
-                                <button onclick="removeItemFromProfileSavedList(event, '${item.id}', '${listKey}')" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors">
-                                    <span class="material-symbols-outlined text-[10px]">close</span>
-                                </button>
-                            </div>
-                            <div class="p-1.5 text-left min-w-0">
-                                <h4 class="text-[9px] font-bold text-on-surface truncate">${item.title}</h4>
-                                <p class="text-[8px] text-on-surface font-semibold">${item.price}</p>
-                            </div>
-                        `;
-                        scrollWrapper.appendChild(itemCard);
-                    });
-                }
-                listSection.appendChild(scrollWrapper);
-                container.appendChild(listSection);
-            }
-        }
-
-        function removeItemFromProfileSavedList(event, itemId, listKey) {
-            event.stopPropagation();
-            const list = STATE.savedLists[listKey];
-            if (!list) return;
-            const idx = list.indexOf(itemId);
-            if (idx > -1) {
-                list.splice(idx, 1);
-            }
-            
-            updateSavedStateUI(itemId);
-            showToast("Usunięto z listy!");
-        }
-
-        function deleteCustomList(event, listKey) {
-            event.stopPropagation();
-            if (confirm(`Czy na pewno chcesz usunąć listę "${listKey}"?`)) {
-                delete STATE.savedLists[listKey];
-                
-                updateSavedStateUI(null);
-                showToast("Usunięto listę!");
-            }
+            renderProfileSavedOffers();
+            renderProfileSavedPostsList();
         }
 
         let activeEditProfileTab = 'basic';
