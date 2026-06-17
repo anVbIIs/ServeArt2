@@ -8192,7 +8192,7 @@
                 if (ownAddListingContainer) ownAddListingContainer.classList.add('hidden');
             }
             document.getElementById('prof-tab-events').classList.add('hidden');
-            document.getElementById('prof-tab-saved').classList.remove('hidden');
+            document.getElementById('prof-tab-saved').classList.add('hidden'); // Deactivated under profile (kept hidden)
             document.getElementById('prof-tab-cooperation').classList.remove('hidden');
             document.getElementById('prof-tab-edit').classList.add('hidden');
 
@@ -8203,7 +8203,7 @@
             if (isCreator) {
                 toggleProfileSubTab('sklep');
             } else {
-                toggleProfileSubTab('saved');
+                toggleProfileSubTab('cooperation');
             }
             
             // Render content
