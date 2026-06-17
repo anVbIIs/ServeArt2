@@ -1244,7 +1244,7 @@
                             <div class="flex gap-2">
                                 <button type="button" onclick="triggerPostPhotoUpload()" class="h-9 px-3 rounded-full hover:bg-surface-container text-primary font-bold text-xs flex items-center gap-1.5 active:scale-95 transition-all">
                                     <span class="material-symbols-outlined text-[18px]">image</span>
-                                    <span>Dodaj zdjęcie</span>
+                                    <span>Dodaj zdjęcia (maks. 3)</span>
                                 </button>
                                 <button type="button" onclick="loadMockPostPhotos()" class="h-9 px-3 rounded-full hover:bg-surface-container text-secondary font-bold text-xs flex items-center gap-1.5 active:scale-95 transition-all">
                                     <span class="material-symbols-outlined text-[18px]">photo_camera</span>
@@ -2826,6 +2826,10 @@
         // WAŻNE: Podmień poniższe wartości na dane ze swojego konta Supabase (Project Settings -> API)
         const SUPABASE_URL = 'https://xjtkzhkmwbkjjmgbnpza.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_wslzG6iZl0WDkvq_SP4EgA_GFuZGDwm';
+        
+        // Storage buckets configuration
+        window.SUPABASE_AVATARS_BUCKET = 'avatars';
+        window.SUPABASE_MEDIA_BUCKET = 'media';
         
         // Zabezpieczenie przed próbą połączenia z domyślnymi wartościami
         window.supabaseClient = null;
@@ -5163,7 +5167,7 @@
             const simulateFail = document.getElementById('chk-simulate-fail').checked;
             alert("Uruchamianie silnik weryfikacji ServeArt. Sprawdzanie artefaktów generowania AI oraz dopasowań dropshippingu...");
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (simulateFail) {
                     alert("Weryfikacja Odrzucona!\nZdjęcie końcowe pasuje do bazy masowego dropshippingu Temu/AliExpress. Oferta została zablokowana.");
                 } else {
@@ -5174,20 +5178,63 @@
                     const materials = document.getElementById('add-materials').value.split(',').map(s => s.trim());
                     const colors = document.getElementById('add-colors').value.split(',').map(s => s.trim());
 
+                    const listingId = `l_${Date.now()}`;
+                    const uploadedProductPics = [];
+                    const uploadedProcessPics = [];
+                    
+                    if (window.supabaseClient && window.supabaseUploadFile) {
+                        showToast("Wgrywanie zdjęć do chmury...", "sync");
+                        
+                        // Upload product pics
+                        for (let i = 0; i < STATE.tempProductPics.length; i++) {
+                            const img = STATE.tempProductPics[i];
+                            if (img.startsWith('data:')) {
+                                const filePath = `listings/${listingId}/product_${i}.jpg`;
+                                const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
+                                if (publicUrl) {
+                                    uploadedProductPics.push(publicUrl);
+                                } else {
+                                    uploadedProductPics.push(img);
+                                }
+                            } else {
+                                uploadedProductPics.push(img);
+                            }
+                        }
+                        
+                        // Upload process pics
+                        for (let i = 0; i < STATE.tempProcessPics.length; i++) {
+                            const img = STATE.tempProcessPics[i];
+                            if (img.startsWith('data:')) {
+                                const filePath = `listings/${listingId}/process_${i}.jpg`;
+                                const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
+                                if (publicUrl) {
+                                    uploadedProcessPics.push(publicUrl);
+                                } else {
+                                    uploadedProcessPics.push(img);
+                                }
+                            } else {
+                                uploadedProcessPics.push(img);
+                            }
+                        }
+                    } else {
+                        uploadedProductPics.push(...STATE.tempProductPics);
+                        uploadedProcessPics.push(...STATE.tempProcessPics);
+                    }
+
                     // Find main thumbnail image: first product photo, fallback to first process photo, fallback to default
-                    const mainImage = STATE.tempProductPics.length > 0 
-                        ? STATE.tempProductPics[0] 
-                        : (STATE.tempProcessPics.length > 0 ? STATE.tempProcessPics[0] : "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80");
+                    const mainImage = uploadedProductPics.length > 0 
+                        ? uploadedProductPics[0] 
+                        : (uploadedProcessPics.length > 0 ? uploadedProcessPics[0] : "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80");
 
                     // Create new simulated item
                     const newItem = {
-                        id: `l_${STATE.listings.length + 1}`,
+                        id: listingId,
                         creator: STATE.currentUser.name, // Logged in user
                         title: title,
                         price: `${price} PLN`,
                         image: mainImage,
-                        productPics: STATE.tempProductPics.length > 0 ? [...STATE.tempProductPics] : [mainImage],
-                        processPics: [...STATE.tempProcessPics],
+                        productPics: uploadedProductPics.length > 0 ? [...uploadedProductPics] : [mainImage],
+                        processPics: [...uploadedProcessPics],
                         tags: cleanTagsForLimit,
                         category: category,
                         itemType: itemtype,
@@ -6352,9 +6399,20 @@
             const files = event.target.files;
             if (!files || files.length === 0) return;
             
-            let filesToProcess = Array.from(files);
-            let processed = 0;
+            let currentCount = STATE.tempPostPics.length;
+            let allowedCount = 3 - currentCount;
             
+            if (allowedCount <= 0) {
+                alert("Możesz dodać maksymalnie 3 zdjęcia do postu.");
+                return;
+            }
+            
+            let filesToProcess = Array.from(files).slice(0, allowedCount);
+            if (files.length > allowedCount) {
+                alert(`Możesz dodać maksymalnie 3 zdjęcia. Wczytano tylko pierwsze ${allowedCount}.`);
+            }
+            
+            let processed = 0;
             for (let file of filesToProcess) {
                 compressImage(file, 400 * 1024, 1200, 1200, function(dataUrl) {
                     STATE.tempPostPics.push(dataUrl);
@@ -6369,6 +6427,10 @@
         }
 
         function loadMockPostPhotos() {
+            if (STATE.tempPostPics.length >= 3) {
+                alert("Możesz dodać maksymalnie 3 zdjęcia do postu.");
+                return;
+            }
             const url = MOCK_COMMUNITY_PHOTOS[STATE.tempPostPics.length % MOCK_COMMUNITY_PHOTOS.length];
             STATE.tempPostPics.push(url);
             renderPostPhotoPreviews();
@@ -6643,7 +6705,7 @@
             validatePostTagsInput();
         }
 
-        function submitCommunityPost() {
+        async function submitCommunityPost() {
             if (!requireAuth(() => submitCommunityPost())) return;
             const textInput = document.getElementById('post-desc-input');
             const tagsInput = document.getElementById('post-tags-input');
@@ -6656,13 +6718,37 @@
                 return;
             }
             
+            const postId = "post_" + Date.now();
+            const uploadedPostPics = [];
+            const picsToUpload = STATE.tempPostPics.slice(0, 3);
+
+            if (window.supabaseClient && window.supabaseUploadFile) {
+                showToast("Wgrywanie zdjęć wpisu...", "sync");
+                for (let i = 0; i < picsToUpload.length; i++) {
+                    const img = picsToUpload[i];
+                    if (img.startsWith('data:')) {
+                        const filePath = `posts/${postId}/img_${i}.jpg`;
+                        const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
+                        if (publicUrl) {
+                            uploadedPostPics.push(publicUrl);
+                        } else {
+                            uploadedPostPics.push(img);
+                        }
+                    } else {
+                        uploadedPostPics.push(img);
+                    }
+                }
+            } else {
+                uploadedPostPics.push(...picsToUpload);
+            }
+
             const newPost = {
-                id: "post_" + Date.now(),
+                id: postId,
                 creator: STATE.currentUser.name,
                 profession: STATE.currentUser.profession || "Rzemieślnik / Artysta",
                 avatar: STATE.currentUser.avatar || "",
                 text: text,
-                images: [...STATE.tempPostPics],
+                images: uploadedPostPics,
                 likes: 0,
                 liked: false,
                 comments: [],
@@ -7012,7 +7098,7 @@
             }
         }
 
-        function submitPostComment(postId) {
+        async function submitPostComment(postId) {
             if (!requireAuth(() => submitPostComment(postId))) return;
             const input = document.getElementById(`comment-input-${postId}`);
             if (!input) return;
@@ -7025,10 +7111,23 @@
             const post = STATE.posts.find(p => p.id === postId);
             if (!post) return;
             
+            let uploadedCommentPic = image;
+            if (image && image.startsWith('data:')) {
+                if (window.supabaseClient && window.supabaseUploadFile) {
+                    showToast("Wgrywanie zdjęcia...", "sync");
+                    const commentId = `comment_${Date.now()}`;
+                    const filePath = `comments/${postId}/${commentId}.jpg`;
+                    const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, image);
+                    if (publicUrl) {
+                        uploadedCommentPic = publicUrl;
+                    }
+                }
+            }
+
             const newComment = {
                 author: STATE.currentUser.name,
                 text: text,
-                image: image,
+                image: uploadedCommentPic,
                 time: "Przed chwilą"
             };
             
@@ -9037,18 +9136,35 @@
         function handleAvatarFileChange(e) {
             const file = e.target.files[0];
             if (file) {
-                compressImage(file, 150 * 1024, 400, 400, function(dataUrl) {
-                    STATE.currentUser.avatar = dataUrl;
-                    
-                    // Update UI immediately
+                compressImage(file, 150 * 1024, 400, 400, async function(dataUrl) {
+                    // Update UI immediately for fast response
                     renderAvatarHelper('profile-avatar-img', 'profile-avatar-placeholder', dataUrl);
                     applyAvatarShape('profile-avatar-img', 'profile-avatar-placeholder', 'profile-avatar-container', STATE.currentUser.avatarShape || 'circle');
+                    
+                    if (window.supabaseClient && window.supabaseUploadFile) {
+                        showToast("Wgrywanie zdjęcia profilowego...", "sync");
+                        const userId = STATE.currentUser.id || 'default_user';
+                        const fileExt = 'jpg';
+                        const filePath = `${userId}.${fileExt}`;
+                        
+                        const publicUrl = await window.supabaseUploadFile(window.SUPABASE_AVATARS_BUCKET || 'avatars', filePath, dataUrl);
+                        if (publicUrl) {
+                            STATE.currentUser.avatar = publicUrl;
+                            safeLocalStorage.setItem('serveart_user_avatar', publicUrl);
+                            showToast("Zdjęcie zapisane w chmurze!", "check_circle");
+                        } else {
+                            STATE.currentUser.avatar = dataUrl;
+                            showToast("Błąd zapisu w chmurze. Zapisano lokalnie.", "warning");
+                        }
+                    } else {
+                        STATE.currentUser.avatar = dataUrl;
+                        showToast("Tryb offline: Zapisano lokalnie.");
+                    }
                     
                     // Sync with Supabase immediately for fast avatar edit
                     if (window.supabaseSyncProfile) {
                         window.supabaseSyncProfile(STATE.currentUser);
                     }
-                    showToast("Zaktualizowano i zapisano zdjęcie profilowe!");
                 });
             }
         }
@@ -9061,9 +9177,26 @@
         function handleEditAvatarFileChange(e) {
             const file = e.target.files[0];
             if (file) {
-                compressImage(file, 150 * 1024, 400, 400, function(dataUrl) {
-                    document.getElementById('edit-avatar-url').value = dataUrl;
-                    updateEditAvatarPreview();
+                compressImage(file, 150 * 1024, 400, 400, async function(dataUrl) {
+                    renderAvatarHelper('edit-avatar-preview-img', 'edit-avatar-preview-placeholder', dataUrl);
+                    
+                    if (window.supabaseClient && window.supabaseUploadFile) {
+                        showToast("Wgrywanie zdjęcia...", "sync");
+                        const userId = STATE.currentUser.id || 'default_user';
+                        const fileExt = 'jpg';
+                        const filePath = `${userId}.${fileExt}`;
+                        
+                        const publicUrl = await window.supabaseUploadFile(window.SUPABASE_AVATARS_BUCKET || 'avatars', filePath, dataUrl);
+                        if (publicUrl) {
+                            document.getElementById('edit-avatar-url').value = publicUrl;
+                            showToast("Zdjęcie wgrane!", "check_circle");
+                        } else {
+                            document.getElementById('edit-avatar-url').value = dataUrl;
+                            showToast("Zapisano tymczasowo.", "warning");
+                        }
+                    } else {
+                        document.getElementById('edit-avatar-url').value = dataUrl;
+                    }
                 });
             }
         }

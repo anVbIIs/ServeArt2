@@ -327,3 +327,57 @@ window.supabaseSyncMessage = async function(chatPartner, message) {
         console.error("Supabase Message Sync failed:", e);
     }
 };
+
+// Helper to convert base64/dataURL to a Blob
+window.dataURLtoBlob = function(dataurl) {
+    try {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    } catch (e) {
+        console.error("Failed to convert dataURL to blob:", e);
+        return null;
+    }
+};
+
+// Helper to upload a file (base64 or Blob) to Supabase Storage and return its public URL
+window.supabaseUploadFile = async function(bucketName, filePath, base64OrBlob) {
+    if (!window.supabaseClient) {
+        console.warn("Supabase client not initialized.");
+        return null;
+    }
+
+    try {
+        let fileBody = base64OrBlob;
+        if (typeof base64OrBlob === 'string' && base64OrBlob.startsWith('data:')) {
+            fileBody = window.dataURLtoBlob(base64OrBlob);
+        }
+
+        if (!fileBody) {
+            throw new Error("Invalid file content.");
+        }
+
+        // Upload the file to the specified bucket
+        const { data, error } = await window.supabaseClient.storage
+            .from(bucketName)
+            .upload(filePath, fileBody, {
+                upsert: true,
+                contentType: fileBody.type || 'image/jpeg'
+            });
+
+        if (error) throw error;
+
+        // Get public URL
+        const { data: urlData } = window.supabaseClient.storage
+            .from(bucketName)
+            .getPublicUrl(filePath);
+
+        return urlData ? urlData.publicUrl : null;
+    } catch (err) {
+        console.error(`Upload to bucket '${bucketName}' failed:`, err);
+        return null;
+    }
+};
