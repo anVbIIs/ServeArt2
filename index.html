@@ -943,7 +943,7 @@
             <div class="profile-folder-wrapper relative z-10">
                 <!-- Profile Sub-navigation (Folder tabs) -->
                 <div class="profile-tabs-container pl-0 pr-2 overflow-x-auto hide-scrollbar">
-                    <button id="prof-tab-sklep" onclick="toggleProfileSubTab('sklep')" class="profile-tab-folder active">Dzieła (Sklep)</button>
+                    <button id="prof-tab-sklep" onclick="toggleProfileSubTab('sklep')" class="profile-tab-folder active">Sklep</button>
                     <button id="prof-tab-portfolio" onclick="toggleProfileSubTab('portfolio')" class="profile-tab-folder">Portfolio / Procesy</button>
                     <button id="prof-tab-events" onclick="toggleProfileSubTab('events')" class="profile-tab-folder">Wydarzenia</button>
                     <button id="prof-tab-saved" onclick="toggleProfileSubTab('saved')" class="profile-tab-folder hidden flex items-center gap-1.5">
@@ -974,9 +974,10 @@
                              Dodaj ofertę
                          </button>
                     </div>
-                    <div id="profile-subtab-sklep-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-gutter">
+                    <div id="profile-subtab-sklep-grid" class="flex flex-row overflow-x-auto gap-3 snap-x snap-mandatory pb-2 w-full md:grid md:grid-cols-2 md:gap-4 md:overflow-x-visible md:pb-0">
                         <!-- Injected via profile loading -->
                     </div>
+                    <div id="profile-subtab-sklep-more-container" class="flex justify-center w-full mt-4 pb-2"></div>
                 </div>
 
             <!-- Subtab B: Portfolio i Procesy -->
@@ -1584,6 +1585,50 @@
 
 
 
+
+    <!-- FLOATING CREATOR SHOP MODAL -->
+    <div id="modal-creator-shop" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
+        <div class="bg-surface w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[85vh] overflow-hidden text-left">
+            <!-- Sticky Header with creator summary -->
+            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10 flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <!-- Mini avatar, name, location -->
+                    <div id="modal-shop-avatar-container" class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/15 flex-shrink-0">
+                        <img id="modal-shop-avatar" src="https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="flex flex-col">
+                        <span id="modal-shop-creator-name" class="font-bold text-on-surface text-sm"></span>
+                        <span id="modal-shop-creator-loc" class="text-outline text-xs flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[12px]">location_on</span>
+                            <span id="modal-shop-creator-loc-text"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <!-- Skontaktuj się button -->
+                    <button id="modal-shop-contact-btn" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 shadow-sm">
+                        <span class="material-symbols-outlined text-sm">chat_bubble</span>
+                        <span>Skontaktuj się</span>
+                    </button>
+                    <!-- Close Button -->
+                    <button onclick="closeCreatorShopModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Shop Listings scroll body -->
+            <div id="modal-creator-shop-body" class="p-6 overflow-y-auto flex-1">
+                <h4 class="font-headline-md text-base font-bold text-on-surface mb-4">Wszystkie oferty</h4>
+                <div id="modal-creator-shop-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Full shop listings cards rendered here -->
+                </div>
+                <!-- Mini spinner / loading indicator if scrolled at the end -->
+                <div id="modal-creator-shop-loading" class="hidden justify-center items-center py-4 w-full">
+                    <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL B: FORMULARZ ZAMÓWIENIA CUSTOM (Custom Order Sheet) -->
     <div id="modal-commission" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
@@ -2918,6 +2963,8 @@
             savedPostIds: JSON.parse(safeLocalStorage.getItem('serveart_saved_posts') || '[]'), // saved community posts
             searchMode: 'items', // 'items' | 'jobs'
             activeProfileName: null,
+            modalShopLimit: 20,
+            modalShopName: '',
             filters: {
                 category: null,
                 material: null,
@@ -4583,7 +4630,7 @@
 
             if (isCreator) {
                 tabSklep.classList.remove('hidden', 'opacity-40', 'pointer-events-none');
-                tabSklep.innerHTML = 'Dzieła (Sklep)';
+                tabSklep.innerHTML = 'Sklep';
                 tabSklep.removeAttribute('data-disabled');
                 
                 tabPortfolio.classList.remove('hidden', 'opacity-40', 'pointer-events-none');
@@ -4594,7 +4641,7 @@
             } else {
                 tabSklep.classList.remove('hidden');
                 tabSklep.classList.add('opacity-40', 'pointer-events-none');
-                tabSklep.innerHTML = 'Dzieła (Sklep) (dla twórców)';
+                tabSklep.innerHTML = 'Sklep (dla twórców)';
                 tabSklep.setAttribute('data-disabled', 'true');
                 
                 tabPortfolio.classList.remove('hidden');
@@ -4620,23 +4667,7 @@
 
             // Render Sklep subtab if they are a creator
             if (isCreator) {
-                const sklepGrid = document.getElementById('profile-subtab-sklep-grid');
-                sklepGrid.innerHTML = '';
-                const creatorItems = STATE.listings.filter(l => l.creator === creator.name);
-                creatorItems.forEach(item => {
-                    sklepGrid.innerHTML += `
-                        <div class="flex flex-col gap-2 cursor-pointer group" onclick="openDetailsModalSim('${item.id}')">
-                            <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
-                                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                                ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
-                            </div>
-                            <div class="text-left">
-                                <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
-                                <p class="font-headline-md text-sm text-on-surface font-bold">${item.price}</p>
-                            </div>
-                        </div>
-                    `;
-                });
+                renderSklepGrid();
 
                 // Render Portfolio processes subtab
                 const portfolioGrid = document.getElementById('portfolio-grid-process');
@@ -4702,6 +4733,243 @@
             // Align active tab gradient to content container width & position
             setTimeout(alignActiveTabGradient, 0);
 
+        }
+
+        function renderSklepGrid() {
+            const sklepGrid = document.getElementById('profile-subtab-sklep-grid');
+            if (!sklepGrid) return;
+            
+            sklepGrid.innerHTML = '';
+            const creatorName = STATE.activeProfileName;
+            if (!creatorName) return;
+            
+            const creatorItems = STATE.listings.filter(l => l.creator === creatorName);
+            
+            if (creatorItems.length === 0) {
+                sklepGrid.innerHTML = '<p class="text-xs text-outline py-6 text-center col-span-full w-full">Ten twórca nie ma jeszcze żadnych ofert w sklepie.</p>';
+                const moreContainer = document.getElementById('profile-subtab-sklep-more-container');
+                if (moreContainer) {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+                setTimeout(alignActiveTabGradient, 50);
+                return;
+            }
+            
+            // Limit to max 4 items for initial view
+            const initialItems = creatorItems.slice(0, 4);
+            
+            initialItems.forEach(item => {
+                const isSaved = STATE.savedItemIds.includes(item.id);
+                
+                let itemTags = [];
+                if (item.tags && item.tags.length > 0) {
+                    itemTags = item.tags.filter(t => {
+                        const lt = t.toLowerCase();
+                        return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
+                    });
+                }
+                if (itemTags.length === 0) {
+                    if (item.category) itemTags.push(item.category);
+                    if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
+                }
+                const visibleTags = itemTags.slice(0, 3);
+                const tagsHtml = visibleTags.map(t => {
+                    return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
+                }).join('');
+                
+                sklepGrid.innerHTML += `
+                    <div class="flex flex-col gap-2 cursor-pointer group w-[185px] flex-shrink-0 snap-start md:w-auto md:flex-shrink" onclick="openDetailsModalSim('${item.id}')">
+                        <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
+                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                            ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
+                            
+                            <!-- Quick Save Button -->
+                            <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-on-surface active:scale-90 flex items-center justify-center shadow-md z-10 transition-all ${isSaved ? 'text-primary' : 'text-outline'}">
+                                <span class="material-symbols-outlined text-[16px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
+                            </button>
+                        </div>
+                        <div class="text-left space-y-1">
+                            <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
+                                ${tagsHtml}
+                            </div>
+                            <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
+                            <div class="flex justify-between items-center gap-1">
+                                <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
+                                <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Manage "+ więcej" button
+            const moreContainer = document.getElementById('profile-subtab-sklep-more-container');
+            if (moreContainer) {
+                if (creatorItems.length > 4) {
+                    moreContainer.innerHTML = `
+                        <button id="profile-subtab-sklep-more-btn" onclick="openCreatorShopModal()" class="px-6 py-2.5 bg-surface-container border border-outline-variant/25 text-primary hover:bg-primary/5 active:scale-95 text-xs font-bold rounded-2xl shadow-sm transition-all flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm font-bold">zoom_in</span>
+                            Zobacz więcej ofert
+                        </button>
+                    `;
+                    moreContainer.classList.remove('hidden');
+                } else {
+                    moreContainer.innerHTML = '';
+                    moreContainer.classList.add('hidden');
+                }
+            }
+            
+            setTimeout(alignActiveTabGradient, 50);
+        }
+
+        function openCreatorShopModal() {
+            const creatorName = STATE.activeProfileName;
+            if (!creatorName) return;
+            
+            STATE.modalShopName = creatorName;
+            STATE.modalShopLimit = 20; // reset pagination limit
+            
+            let creator = STATE.creators.find(c => c.name === creatorName);
+            if (!creator) {
+                const coop = STATE.cooperations.find(c => c.creator === creatorName);
+                if (coop) {
+                    creator = {
+                        name: coop.creator,
+                        city: coop.city || "Polska",
+                        avatar: coop.avatar || "",
+                    };
+                }
+            }
+            if (!creator) {
+                creator = {
+                    name: creatorName,
+                    city: "Polska",
+                    avatar: ""
+                };
+            }
+            
+            // Set header details
+            document.getElementById('modal-shop-creator-name').innerText = creator.name;
+            document.getElementById('modal-shop-creator-loc-text').innerText = `${creator.city}, PL`;
+            
+            const avatarImg = document.getElementById('modal-shop-avatar');
+            if (avatarImg) {
+                avatarImg.src = creator.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png';
+            }
+            
+            // Bind contact button
+            const contactBtn = document.getElementById('modal-shop-contact-btn');
+            if (contactBtn) {
+                contactBtn.onclick = function() {
+                    closeCreatorShopModal();
+                    openChatModalFromProfile();
+                };
+            }
+            
+            // Initial render
+            renderModalCreatorShopGrid();
+            
+            // Setup scroll listener on the body
+            const modalBody = document.getElementById('modal-creator-shop-body');
+            if (modalBody) {
+                modalBody.scrollTop = 0; // reset scroll position
+                modalBody.onscroll = handleModalShopScroll;
+            }
+            
+            document.getElementById('modal-creator-shop').classList.remove('hidden');
+        }
+
+        function closeCreatorShopModal() {
+            document.getElementById('modal-creator-shop').classList.add('hidden');
+            const modalBody = document.getElementById('modal-creator-shop-body');
+            if (modalBody) {
+                modalBody.onscroll = null; // clean up event
+            }
+        }
+
+        function renderModalCreatorShopGrid() {
+            const modalGrid = document.getElementById('modal-creator-shop-grid');
+            if (!modalGrid) return;
+            
+            modalGrid.innerHTML = '';
+            const creatorName = STATE.modalShopName;
+            const creatorItems = STATE.listings.filter(l => l.creator === creatorName);
+            
+            const limitedItems = creatorItems.slice(0, STATE.modalShopLimit);
+            
+            limitedItems.forEach(item => {
+                const isSaved = STATE.savedItemIds.includes(item.id);
+                
+                let itemTags = [];
+                if (item.tags && item.tags.length > 0) {
+                    itemTags = item.tags.filter(t => {
+                        const lt = t.toLowerCase();
+                        return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
+                    });
+                }
+                if (itemTags.length === 0) {
+                    if (item.category) itemTags.push(item.category);
+                    if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
+                }
+                const visibleTags = itemTags.slice(0, 3);
+                const tagsHtml = visibleTags.map(t => {
+                    return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
+                }).join('');
+                
+                modalGrid.innerHTML += `
+                    <div class="flex flex-col gap-2 cursor-pointer group text-left" onclick="closeCreatorShopModal(); openDetailsModalSim('${item.id}')">
+                        <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
+                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                            ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
+                            
+                            <!-- Quick Save Button -->
+                            <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-on-surface active:scale-90 flex items-center justify-center shadow-md z-10 transition-all ${isSaved ? 'text-primary' : 'text-outline'}">
+                                <span class="material-symbols-outlined text-[16px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
+                            </button>
+                        </div>
+                        <div class="text-left space-y-1">
+                            <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
+                                ${tagsHtml}
+                            </div>
+                            <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
+                            <div class="flex justify-between items-center gap-1">
+                                <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
+                                <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleModalShopScroll() {
+            const modalBody = document.getElementById('modal-creator-shop-body');
+            if (!modalBody) return;
+            
+            const totalItems = STATE.listings.filter(l => l.creator === STATE.modalShopName).length;
+            if (STATE.modalShopLimit >= totalItems) return; // all items already loaded
+            
+            // Check if user scrolled near the bottom (within 80px)
+            if (modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight - 80) {
+                // Temporarily show loading spinner
+                const spinner = document.getElementById('modal-creator-shop-loading');
+                if (spinner) spinner.className = 'flex';
+                
+                // Temporarily disable scroll handler to prevent multiple triggers
+                modalBody.onscroll = null;
+                
+                setTimeout(() => {
+                    STATE.modalShopLimit += 20;
+                    renderModalCreatorShopGrid();
+                    if (spinner) spinner.className = 'hidden';
+                    
+                    // Restore scroll handler if more items still available
+                    if (STATE.modalShopLimit < totalItems) {
+                        modalBody.onscroll = handleModalShopScroll;
+                    }
+                }, 300); // 300ms simulated dynamic load latency
+            }
         }
 
         function alignActiveTabGradient() {
@@ -6149,6 +6417,15 @@
             renderProfileSavedLists();
             renderSavedListItems();
             syncDetailsSaveButtonState(itemId);
+            
+            // Sync profile shop grid
+            renderSklepGrid();
+            
+            // Sync modal shop grid if it is open
+            const shopModal = document.getElementById('modal-creator-shop');
+            if (shopModal && !shopModal.classList.contains('hidden')) {
+                renderModalCreatorShopGrid();
+            }
         }
 
         function toggleItemInList(event, itemId, listKey) {
@@ -7532,25 +7809,7 @@
 
         function renderOwnProfileListings() {
             // Render Sklep subtab for own profile
-            const sklepGrid = document.getElementById('profile-subtab-sklep-grid');
-            if (sklepGrid) {
-                sklepGrid.innerHTML = '';
-                const ownItems = STATE.listings.filter(l => l.creator === STATE.currentUser.name);
-                ownItems.forEach(item => {
-                    sklepGrid.innerHTML += `
-                        <div class="flex flex-col gap-2 cursor-pointer group" onclick="openDetailsModalSim('${item.id}')">
-                            <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
-                                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                                ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
-                            </div>
-                            <div class="text-left">
-                                <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
-                                <p class="font-headline-md text-sm text-on-surface font-bold">${item.price}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+            renderSklepGrid();
 
             // Render Portfolio processes subtab for own profile
             const portfolioGrid = document.getElementById('portfolio-grid-process');
@@ -7716,7 +7975,7 @@
 
             if (isCreator) {
                 tabSklep.classList.remove('hidden', 'opacity-40', 'pointer-events-none');
-                tabSklep.innerHTML = 'Dzieła (Sklep)';
+                tabSklep.innerHTML = 'Sklep';
                 tabSklep.removeAttribute('data-disabled');
                 
                 tabPortfolio.classList.remove('hidden', 'opacity-40', 'pointer-events-none');
@@ -7727,7 +7986,7 @@
             } else {
                 tabSklep.classList.remove('hidden');
                 tabSklep.classList.add('opacity-40', 'pointer-events-none');
-                tabSklep.innerHTML = 'Dzieła (Sklep) (dla twórców)';
+                tabSklep.innerHTML = 'Sklep (dla twórców)';
                 tabSklep.setAttribute('data-disabled', 'true');
                 
                 tabPortfolio.classList.remove('hidden');
