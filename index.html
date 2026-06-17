@@ -4748,6 +4748,9 @@
                     } else {
                         tabEl.className = "profile-tab-folder";
                     }
+                    if (id === 'saved') {
+                        tabEl.classList.add('hidden');
+                    }
                 }
             });
             const activeSubtabEl = document.getElementById(`profile-subtab-${subtabId}`);
