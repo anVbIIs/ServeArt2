@@ -374,8 +374,7 @@
             width: 100%;
             max-width: 170px;
             justify-self: start;
-            font-size: 0.73em !important;
-            line-height: 1.4 !important;
+            zoom: 0.7; /* Scale down by 30% */
         }
         @media (min-width: 768px) {
             .saved-scaled-down-grid article,
@@ -383,13 +382,15 @@
                 max-width: 250px;
             }
         }
-        .saved-scaled-down-grid article *,
-        .saved-scaled-down-grid .community-post-card * {
-            font-size: 92% !important;
-        }
-        .saved-scaled-down-grid article .material-symbols-outlined,
-        .saved-scaled-down-grid .community-post-card .material-symbols-outlined {
-            font-size: 1.22em !important;
+        /* Firefox fallback */
+        @-moz-document url-prefix() {
+            .saved-scaled-down-grid article,
+            .saved-scaled-down-grid .community-post-card {
+                transform: scale(0.7);
+                transform-origin: top left;
+                width: 142.8% !important;
+                margin-bottom: -42.8% !important;
+            }
         }
 
         /* COMMUNITY EXPANSION CUSTOM CSS */
@@ -1631,13 +1632,13 @@
             <div id="modal-saved-all-body" class="p-6 overflow-y-auto flex-1">
                 <!-- Offers view -->
                 <div id="modal-saved-section-offers" class="space-y-4">
-                    <div id="modal-saved-offers-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div id="modal-saved-offers-grid" class="saved-scaled-down-grid">
                         <!-- Rendered dynamically -->
                     </div>
                 </div>
                 <!-- Posts view -->
                 <div id="modal-saved-section-posts" class="hidden space-y-4">
-                    <div id="modal-saved-posts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="modal-saved-posts-grid" class="saved-scaled-down-grid">
                         <!-- Rendered dynamically -->
                     </div>
                 </div>
@@ -4829,47 +4830,10 @@
                 const item = STATE.listings.find(l => l.id === itemId);
                 if (!item) return;
                 
-                const isSaved = true; // since it is in wishlist
-                
-                let itemTags = [];
-                if (item.tags && item.tags.length > 0) {
-                    itemTags = item.tags.filter(t => {
-                        const lt = t.toLowerCase();
-                        return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
-                    });
-                }
-                if (itemTags.length === 0) {
-                    if (item.category) itemTags.push(item.category);
-                    if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
-                }
-                const visibleTags = itemTags.slice(0, 3);
-                const tagsHtml = visibleTags.map(t => {
-                    return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
-                }).join('');
-                
-                grid.innerHTML += `
-                    <div class="flex flex-col gap-2 cursor-pointer group w-[185px] flex-shrink-0 snap-start md:w-auto md:flex-shrink" onclick="openDetailsModalSim('${item.id}')">
-                        <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
-                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                            ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
-                            
-                            <!-- Quick Save Button -->
-                            <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-primary active:scale-90 flex items-center justify-center shadow-md z-10 transition-all">
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
-                            </button>
-                        </div>
-                        <div class="text-left space-y-1">
-                            <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
-                                ${tagsHtml}
-                            </div>
-                            <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
-                            <div class="flex justify-between items-center gap-1">
-                                <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
-                                <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                const itemDiv = document.createElement('article');
+                itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between w-[185px] flex-shrink-0 snap-start md:w-auto md:flex-shrink";
+                itemDiv.innerHTML = getExploreCardHtml(item);
+                grid.appendChild(itemDiv);
             });
             
             const moreContainer = document.getElementById('profile-saved-offers-more-container');
@@ -4914,37 +4878,11 @@
                 const post = STATE.posts.find(p => p.id === postId);
                 if (!post) return;
                 
-                const ch = STATE.channels.find(c => c.id === post.channelId);
-                const channelName = ch ? `art/${ch.name}` : '';
-                const snippet = post.text.length > 80 ? post.text.slice(0, 80) + '...' : post.text;
-                
-                let imgHtml = '';
-                if (post.images && post.images.length > 0) {
-                    imgHtml = `
-                        <div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container ml-auto">
-                            <img src="${post.images[0]}" class="w-full h-full object-cover"/>
-                        </div>
-                    `;
-                }
-                
-                grid.innerHTML += `
-                    <div class="flex-shrink-0 w-[240px] snap-start bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-3 flex gap-2 text-left items-start relative hover:shadow-sm transition-shadow cursor-pointer md:w-auto md:flex-shrink" onclick="goToSavedPost('${post.id}', '${post.channelId}')">
-                        <div class="flex-1 min-w-0 space-y-1">
-                            <div class="flex items-center gap-1 flex-wrap">
-                                <span class="font-bold text-on-surface text-[10px] truncate max-w-[80px]">${post.creator}</span>
-                                <span class="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold truncate">${channelName}</span>
-                            </div>
-                            <p class="text-[11px] text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
-                            <div class="flex pt-1 items-center justify-between">
-                                <span class="text-[8px] text-outline">${post.date}</span>
-                                <button onclick="event.stopPropagation(); toggleSavePost(event, null, '${post.id}')" class="text-outline hover:text-error font-bold text-[9px] uppercase tracking-wider flex items-center gap-0.5 select-none">
-                                    <span class="material-symbols-outlined text-xs">delete</span> Usuń
-                               </button>
-                            </div>
-                        </div>
-                        ${imgHtml}
-                    </div>
-                `;
+                const card = document.createElement('div');
+                card.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm space-y-3 relative flex-shrink-0 w-[240px] snap-start md:w-auto md:flex-shrink";
+                card.id = `community-post-card-${post.id}`;
+                card.innerHTML = getCommunityPostCardHtml(post);
+                grid.appendChild(card);
             });
             
             const moreContainer = document.getElementById('profile-saved-posts-more-container');
@@ -5026,45 +4964,10 @@
                     const item = STATE.listings.find(l => l.id === itemId);
                     if (!item) return;
                     
-                    let itemTags = [];
-                    if (item.tags && item.tags.length > 0) {
-                        itemTags = item.tags.filter(t => {
-                            const lt = t.toLowerCase();
-                            return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
-                        });
-                    }
-                    if (itemTags.length === 0) {
-                        if (item.category) itemTags.push(item.category);
-                        if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
-                    }
-                    const visibleTags = itemTags.slice(0, 3);
-                    const tagsHtml = visibleTags.map(t => {
-                        return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-tighter bg-surface-container border border-outline-variant/35 text-outline">${t}</span>`;
-                    }).join('');
-                    
-                    grid.innerHTML += `
-                        <div class="flex flex-col gap-2 cursor-pointer group text-left" onclick="closeSavedAllModal(); openDetailsModalSim('${item.id}')">
-                            <div class="relative aspect-square overflow-hidden rounded-2xl bg-surface-container shadow-sm border border-outline-variant/10">
-                                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                                ${item.isAiFree ? '<span class="absolute top-2 left-2 bg-black text-white px-2.5 py-0.5 rounded-full font-label-sm text-[8px] uppercase font-bold">[AI FREE]</span>' : ''}
-                                
-                                <!-- Quick Save Button -->
-                                <button onclick="toggleSaveMenu(event, this, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 dark:bg-black/70 hover:bg-white dark:hover:bg-black text-primary active:scale-90 flex items-center justify-center shadow-md z-10 transition-all">
-                                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
-                                </button>
-                            </div>
-                            <div class="text-left space-y-1">
-                                <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
-                                    ${tagsHtml}
-                                </div>
-                                <h4 class="font-label-md text-xs text-on-surface font-bold truncate">${item.title}</h4>
-                                <div class="flex justify-between items-center gap-1">
-                                    <p class="text-[10px] text-outline truncate flex-1 min-w-0">${item.category}</p>
-                                    <p class="font-headline-md text-sm text-on-surface font-bold flex-shrink-0">${item.price}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    const itemDiv = document.createElement('article');
+                    itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
+                    itemDiv.innerHTML = getExploreCardHtml(item);
+                    grid.appendChild(itemDiv);
                 });
             } else {
                 const grid = document.getElementById('modal-saved-posts-grid');
@@ -5078,37 +4981,11 @@
                     const post = STATE.posts.find(p => p.id === postId);
                     if (!post) return;
                     
-                    const ch = STATE.channels.find(c => c.id === post.channelId);
-                    const channelName = ch ? `art/${ch.name}` : '';
-                    const snippet = post.text.length > 140 ? post.text.slice(0, 140) + '...' : post.text;
-                    
-                    let imgHtml = '';
-                    if (post.images && post.images.length > 0) {
-                        imgHtml = `
-                            <div class="w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container ml-auto">
-                                <img src="${post.images[0]}" class="w-full h-full object-cover"/>
-                            </div>
-                        `;
-                    }
-                    
-                    grid.innerHTML += `
-                        <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 flex gap-3 text-left items-start relative hover:shadow-sm transition-shadow cursor-pointer" onclick="closeSavedAllModal(); goToSavedPost('${post.id}', '${post.channelId}')">
-                            <div class="flex-1 min-w-0 space-y-2">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="font-bold text-on-surface text-[11px]">${post.creator}</span>
-                                    <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">${channelName}</span>
-                                </div>
-                                <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
-                                <div class="flex pt-1 items-center justify-between">
-                                    <span class="text-[9px] text-outline">${post.date}</span>
-                                    <button onclick="event.stopPropagation(); toggleSavePost(event, null, '${post.id}')" class="text-outline hover:text-error font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 select-none">
-                                        <span class="material-symbols-outlined text-xs">delete</span> Usuń
-                                    </button>
-                                </div>
-                            </div>
-                            ${imgHtml}
-                        </div>
-                    `;
+                    const card = document.createElement('div');
+                    card.className = "community-post-card bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm space-y-3 relative";
+                    card.id = `community-post-card-${post.id}`;
+                    card.innerHTML = getCommunityPostCardHtml(post);
+                    grid.appendChild(card);
                 });
             }
         }
