@@ -356,6 +356,42 @@
             margin-top: -2px !important; /* Overlap bottom edge of tabs to align */
         }
 
+        /* Saved Screen Scaled Down Grid Rules */
+        .saved-scaled-down-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .saved-scaled-down-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+        }
+        .saved-scaled-down-grid article,
+        .saved-scaled-down-grid .community-post-card {
+            width: 100%;
+            max-width: 170px;
+            justify-self: start;
+            font-size: 0.73em !important;
+            line-height: 1.4 !important;
+        }
+        @media (min-width: 768px) {
+            .saved-scaled-down-grid article,
+            .saved-scaled-down-grid .community-post-card {
+                max-width: 250px;
+            }
+        }
+        .saved-scaled-down-grid article *,
+        .saved-scaled-down-grid .community-post-card * {
+            font-size: 92% !important;
+        }
+        .saved-scaled-down-grid article .material-symbols-outlined,
+        .saved-scaled-down-grid .community-post-card .material-symbols-outlined {
+            font-size: 1.22em !important;
+        }
+
         /* COMMUNITY EXPANSION CUSTOM CSS */
         .community-sub-tab {
             position: relative;
@@ -1351,7 +1387,7 @@
 
                 <!-- Content Area -->
                 <div class="py-6">
-                    <div id="saved-list-items" class="grid grid-cols-2 gap-3">
+                    <div id="saved-list-items" class="saved-scaled-down-grid">
                         <!-- Dynamic saved list items -->
                     </div>
                 </div>
@@ -1360,7 +1396,7 @@
             <!-- Posts Section Wrapper -->
             <div id="modal-saved-posts-wrapper" class="hidden">
                 <div class="py-6">
-                    <div id="modal-saved-posts-container" class="flex flex-col gap-4">
+                    <div id="modal-saved-posts-container" class="saved-scaled-down-grid">
                         <!-- Dynamic saved community posts -->
                     </div>
                 </div>
@@ -3546,6 +3582,112 @@
             renderExploreFeed();
         }
 
+        function getExploreCardHtml(item) {
+            const creator = STATE.creators.find(c => c.name === item.creator) || STATE.creators[0];
+            const isFollowing = STATE.followedCreators.includes(creator.name);
+            const isSaved = STATE.savedItemIds.includes(item.id);
+
+            // Build tags array (max 8 custom tags: 3 main + max 5 specialized)
+            let itemTags = [];
+            if (item.tags && item.tags.length > 0) {
+                itemTags = item.tags.filter(t => {
+                    const lt = t.toLowerCase();
+                    return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
+                });
+            }
+            if (itemTags.length === 0) {
+                if (item.category) itemTags.push(item.category);
+                if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
+                if (item.itemType) itemTags.push(item.itemType);
+            }
+            itemTags = itemTags.slice(0, 8);
+
+            const visibleTags = itemTags.slice(0, 3);
+            const hiddenTags = itemTags.slice(3);
+            
+            let tagsHtml = visibleTags.map(t => {
+                let styleClass = "bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px]";
+                if (t === "AI FREE") styleClass = "bg-black text-white border-black hover:opacity-90 hover:-translate-y-[1.5px]";
+                if (t === "HANDMADE") styleClass = "bg-white dark:bg-surface-container-lowest text-secondary border border-turquoise hover:border-secondary hover:-translate-y-[1.5px]";
+                return `<span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] ${styleClass} flex-shrink-0">${t}</span>`;
+            }).join('');
+            
+            if (hiddenTags.length > 0) {
+                tagsHtml += `<button onclick="expandOfferTags(event)" class="px-1 md:px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[6px] md:text-[8px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>`;
+                tagsHtml += hiddenTags.map(t => {
+                    let styleClass = "bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px]";
+                    if (t === "AI FREE") styleClass = "bg-black text-white border-black hover:opacity-90 hover:-translate-y-[1.5px]";
+                    if (t === "HANDMADE") styleClass = "bg-white dark:bg-surface-container-lowest text-secondary border border-turquoise hover:border-secondary hover:-translate-y-[1.5px]";
+                    return `<span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-offer-tag hidden px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] ${styleClass} flex-shrink-0">${t}</span>`;
+                }).join('');
+            }
+
+            return `
+                <!-- Header -->
+                <div class="p-1.5 md:p-2.5 flex items-center justify-between gap-1 border-b border-outline-variant/10">
+                    <div class="flex items-center gap-1 md:gap-1.5 cursor-pointer min-w-0" onclick="openCreatorProfileSim('${creator.name}')">
+                        <div class="w-5 h-5 md:w-6 md:h-6 rounded-full p-[1px] ${creator.mainSpecialization ? 'brand-triple-gradient' : 'bg-surface-container-lowest border border-outline-variant/30'} flex-shrink-0 overflow-hidden">
+                            <img alt="${creator.name}" class="w-full h-full object-cover rounded-full" src="${creator.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}"/>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-0.5">
+                                <span class="font-label-sm text-[9px] md:text-[10px] text-on-surface font-semibold truncate block">${creator.name}</span>
+                                <span class="material-symbols-outlined text-[10px] md:text-[11px] text-turquoise flex-shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
+                            </div>
+                            <span class="text-[7px] md:text-[8px] text-outline block truncate">${creator.city}</span>
+                        </div>
+                    </div>
+                    <button onclick="toggleFollowSim(this, '${creator.name}')" class="${isFollowing ? 'brand-text-triple-gradient font-bold' : 'text-primary'} font-label-sm text-[8px] md:text-[9px] hover:opacity-75 transition-opacity flex-shrink-0">
+                        ${isFollowing ? 'Obserwujesz' : 'Obserwuj'}
+                    </button>
+                </div>
+
+                <!-- Body Image -->
+                <div class="relative aspect-[4/5] overflow-hidden bg-surface-container cursor-pointer" onclick="openDetailsModalSim('${item.id}')">
+                    <img alt="${item.title}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-500" src="${item.image}"/>
+                    
+                    <!-- AI FREE & HANDMADE Badges -->
+                    <div class="absolute bottom-1.5 left-1.5 md:bottom-2 md:left-2 flex flex-wrap gap-1 pointer-events-auto z-10">
+                        ${item.isAiFree ? `<span onclick="event.stopPropagation(); clickTag('AI FREE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-black/70 text-white border border-black/30 hover:bg-black hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">AI FREE</span>` : ''}
+                        ${item.isHandmade ? `<span onclick="event.stopPropagation(); clickTag('HANDMADE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-white/85 dark:bg-surface-container-lowest/85 text-secondary border border-turquoise/50 hover:border-turquoise hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">HANDMADE</span>` : ''}
+                    </div>
+                    
+                    <!-- Floating Share Button -->
+                    <button onclick="openShareModal(event, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/40 text-on-surface-variant hover:bg-white/60 backdrop-blur-[2px] transition-colors active:scale-90 flex items-center justify-center shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] z-10" title="Udostępnij">
+                        <span class="material-symbols-outlined text-[10px] md:text-xs text-on-surface-variant">share</span>
+                    </button>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-2 md:p-3 space-y-1.5">
+                    <!-- Tags List (Max 5) -->
+                    <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
+                        ${tagsHtml}
+                    </div>
+                    <div class="flex justify-between items-start gap-1">
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-label-md text-[10px] md:text-xs text-on-surface font-bold truncate cursor-pointer hover:text-primary" onclick="openDetailsModalSim('${item.id}')">${item.title}</h3>
+                            <p class="text-[8px] md:text-[10px] text-outline truncate">${item.category}</p>
+                        </div>
+                        <span class="text-on-surface font-label-md text-[10px] md:text-xs font-bold flex-shrink-0">${item.price}</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center justify-between pt-1 md:pt-1.5 border-t border-outline-variant/10">
+                        <div class="flex items-center gap-1.5">
+                            <button class="flex items-center gap-1 px-2 py-0.5 rounded-md transition-all active:scale-95 relative ${isSaved ? 'brand-gradient text-white font-bold shadow-sm' : 'bg-surface-container-lowest dark:bg-surface-container text-outline border border-outline-variant/20 dark:border-white/40 hover:text-primary'}" onclick="toggleSaveMenu(event, this, '${item.id}')">
+                                <span class="material-symbols-outlined text-[10px] md:text-xs" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
+                                <span class="text-[7px] md:text-[9px]">${isSaved ? 'Zapisano!' : 'Zapisz'}</span>
+                            </button>
+                        </div>
+                        <button onclick="addToCartSim('${item.title}')" class="brand-triple-gradient text-white px-1.5 py-0.5 md:px-2.5 md:py-1 rounded md:rounded-lg font-label-sm text-[8px] md:text-[9px] font-bold shadow-md hover:opacity-90 active:scale-95 transition-all">
+                            Do koszyka
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
         // Render Feed Products (vertical layout)
         function renderExploreFeed() {
             // Render Cooperation Proposals Bar
@@ -3610,113 +3752,9 @@
             }
 
             filteredListings.forEach(item => {
-                const creator = STATE.creators.find(c => c.name === item.creator) || STATE.creators[0];
                 const itemDiv = document.createElement('article');
                 itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
-                
-                const isFollowing = STATE.followedCreators.includes(creator.name);
-                const isSaved = STATE.savedItemIds.includes(item.id);
-
-                // Build tags array (max 8 custom tags: 3 main + max 5 specialized)
-                let itemTags = [];
-                if (item.tags && item.tags.length > 0) {
-                    itemTags = item.tags.filter(t => {
-                        const lt = t.toLowerCase();
-                        return !lt.includes("ai-free") && !lt.includes("ai free") && !lt.includes("handmade") && !lt.includes("[") && !lt.includes("]");
-                    });
-                }
-                if (itemTags.length === 0) {
-                    if (item.category) itemTags.push(item.category);
-                    if (item.materials && item.materials[0]) itemTags.push(item.materials[0]);
-                    if (item.itemType) itemTags.push(item.itemType);
-                }
-                itemTags = itemTags.slice(0, 8);
-
-                const visibleTags = itemTags.slice(0, 3);
-                const hiddenTags = itemTags.slice(3);
-                
-                let tagsHtml = visibleTags.map(t => {
-                    let styleClass = "bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px]";
-                    if (t === "AI FREE") styleClass = "bg-black text-white border-black hover:opacity-90 hover:-translate-y-[1.5px]";
-                    if (t === "HANDMADE") styleClass = "bg-white dark:bg-surface-container-lowest text-secondary border border-turquoise hover:border-secondary hover:-translate-y-[1.5px]";
-                    return `<span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] ${styleClass} flex-shrink-0">${t}</span>`;
-                }).join('');
-                
-                if (hiddenTags.length > 0) {
-                    tagsHtml += `<button onclick="expandOfferTags(event)" class="px-1 md:px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[6px] md:text-[8px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>`;
-                    tagsHtml += hiddenTags.map(t => {
-                        let styleClass = "bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px]";
-                        if (t === "AI FREE") styleClass = "bg-black text-white border-black hover:opacity-90 hover:-translate-y-[1.5px]";
-                        if (t === "HANDMADE") styleClass = "bg-white dark:bg-surface-container-lowest text-secondary border border-turquoise hover:border-secondary hover:-translate-y-[1.5px]";
-                        return `<span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-offer-tag hidden px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] ${styleClass} flex-shrink-0">${t}</span>`;
-                    }).join('');
-                }
-
-                itemDiv.innerHTML = `
-                    <!-- Header -->
-                    <div class="p-1.5 md:p-2.5 flex items-center justify-between gap-1 border-b border-outline-variant/10">
-                        <div class="flex items-center gap-1 md:gap-1.5 cursor-pointer min-w-0" onclick="openCreatorProfileSim('${creator.name}')">
-                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full p-[1px] ${creator.mainSpecialization ? 'brand-triple-gradient' : 'bg-surface-container-lowest border border-outline-variant/30'} flex-shrink-0 overflow-hidden">
-                                <img alt="${creator.name}" class="w-full h-full object-cover rounded-full" src="${creator.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}"/>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-0.5">
-                                    <span class="font-label-sm text-[9px] md:text-[10px] text-on-surface font-semibold truncate block">${creator.name}</span>
-                                    <span class="material-symbols-outlined text-[10px] md:text-[11px] text-turquoise flex-shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                </div>
-                                <span class="text-[7px] md:text-[8px] text-outline block truncate">${creator.city}</span>
-                            </div>
-                        </div>
-                        <button onclick="toggleFollowSim(this, '${creator.name}')" class="${isFollowing ? 'brand-text-triple-gradient font-bold' : 'text-primary'} font-label-sm text-[8px] md:text-[9px] hover:opacity-75 transition-opacity flex-shrink-0">
-                            ${isFollowing ? 'Obserwujesz' : 'Obserwuj'}
-                        </button>
-                    </div>
-
-                    <!-- Body Image -->
-                    <div class="relative aspect-[4/5] overflow-hidden bg-surface-container cursor-pointer" onclick="openDetailsModalSim('${item.id}')">
-                        <img alt="${item.title}" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-500" src="${item.image}"/>
-                        
-                        <!-- AI FREE & HANDMADE Badges -->
-                        <div class="absolute bottom-1.5 left-1.5 md:bottom-2 md:left-2 flex flex-wrap gap-1 pointer-events-auto z-10">
-                            ${item.isAiFree ? `<span onclick="event.stopPropagation(); clickTag('AI FREE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-black/70 text-white border border-black/30 hover:bg-black hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">AI FREE</span>` : ''}
-                            ${item.isHandmade ? `<span onclick="event.stopPropagation(); clickTag('HANDMADE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-white/85 dark:bg-surface-container-lowest/85 text-secondary border border-turquoise/50 hover:border-turquoise hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">HANDMADE</span>` : ''}
-                        </div>
-                        
-                        <!-- Floating Share Button -->
-                        <button onclick="openShareModal(event, '${item.id}')" class="absolute top-2 right-2 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/40 text-on-surface-variant hover:bg-white/60 backdrop-blur-[2px] transition-colors active:scale-90 flex items-center justify-center shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] z-10" title="Udostępnij">
-                            <span class="material-symbols-outlined text-[10px] md:text-xs text-on-surface-variant">share</span>
-                        </button>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="p-2 md:p-3 space-y-1.5">
-                        <!-- Tags List (Max 5) -->
-                        <div class="flex flex-nowrap items-center gap-1 overflow-x-auto hide-scrollbar w-full">
-                            ${tagsHtml}
-                        </div>
-                        <div class="flex justify-between items-start gap-1">
-                            <div class="min-w-0 flex-1">
-                                <h3 class="font-label-md text-[10px] md:text-xs text-on-surface font-bold truncate cursor-pointer hover:text-primary" onclick="openDetailsModalSim('${item.id}')">${item.title}</h3>
-                                <p class="text-[8px] md:text-[10px] text-outline truncate">${item.category}</p>
-                            </div>
-                            <span class="text-on-surface font-label-md text-[10px] md:text-xs font-bold flex-shrink-0">${item.price}</span>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex items-center justify-between pt-1 md:pt-1.5 border-t border-outline-variant/10">
-                            <div class="flex items-center gap-1.5">
-                                <button class="flex items-center gap-1 px-2 py-0.5 rounded-md transition-all active:scale-95 relative ${isSaved ? 'brand-gradient text-white font-bold shadow-sm' : 'bg-surface-container-lowest dark:bg-surface-container text-outline border border-outline-variant/20 dark:border-white/40 hover:text-primary'}" onclick="toggleSaveMenu(event, this, '${item.id}')">
-                                    <span class="material-symbols-outlined text-[10px] md:text-xs" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
-                                    <span class="text-[7px] md:text-[9px]">${isSaved ? 'Zapisano!' : 'Zapisz'}</span>
-                                </button>
-
-                            </div>
-                            <button onclick="addToCartSim('${item.title}')" class="brand-triple-gradient text-white px-1.5 py-0.5 md:px-2.5 md:py-1 rounded md:rounded-lg font-label-sm text-[8px] md:text-[9px] font-bold shadow-md hover:opacity-90 active:scale-95 transition-all">
-                                Do koszyka
-                            </button>
-                        </div>
-                    </div>
-                `;
+                itemDiv.innerHTML = getExploreCardHtml(item);
                 container.appendChild(itemDiv);
             });
         }
@@ -6802,27 +6840,14 @@
                 return;
             }
 
-            container.className = "grid grid-cols-2 gap-3";
+            container.className = "saved-scaled-down-grid";
             listIds.forEach(id => {
                 const item = STATE.listings.find(l => l.id === id);
                 if (!item) return;
 
-                const itemDiv = document.createElement('div');
-                itemDiv.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow relative";
-                itemDiv.setAttribute("onclick", `closeSavedListsModal(); openDetailsModalSim('${item.id}');`);
-
-                itemDiv.innerHTML = `
-                    <div class="relative aspect-square overflow-hidden bg-surface-container">
-                        <img src="${item.image}" class="w-full h-full object-cover"/>
-                        <button onclick="removeItemFromSavedList(event, '${item.id}', '${activeSavedListTab}')" class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors">
-                            <span class="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                    </div>
-                    <div class="p-2 text-left">
-                        <h4 class="text-[11px] font-bold text-on-surface truncate">${item.title}</h4>
-                        <p class="text-[10px] text-on-surface font-semibold">${item.price}</p>
-                    </div>
-                `;
+                const itemDiv = document.createElement('article');
+                itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
+                itemDiv.innerHTML = getExploreCardHtml(item);
                 container.appendChild(itemDiv);
             });
         }
@@ -6869,7 +6894,7 @@
             
             if (!STATE.savedPostIds || STATE.savedPostIds.length === 0) {
                 container.innerHTML = `
-                    <div class="py-12 text-center text-outline text-xs bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 flex flex-col items-center justify-center">
+                    <div class="py-12 text-center text-outline text-xs bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 flex flex-col items-center justify-center col-span-full">
                         <span class="material-symbols-outlined text-4xl text-outline mb-2">bookmark</span>
                         <span>Brak zapisanych postów. Dodaj wpisy ze społeczności do ulubionych!</span>
                     </div>
@@ -6881,40 +6906,10 @@
                 const post = STATE.posts.find(p => p.id === id);
                 if (!post) return;
                 
-                const ch = STATE.channels.find(c => c.id === post.channelId);
-                const channelName = ch ? `art/${ch.name}` : '';
-                const snippet = post.text.length > 100 ? post.text.slice(0, 100) + '...' : post.text;
-                
                 const card = document.createElement('div');
-                card.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 flex gap-3 text-left items-start relative hover:shadow-sm transition-shadow";
-                
-                let imgHtml = '';
-                if (post.images && post.images.length > 0) {
-                    imgHtml = `
-                        <div class="w-12 h-12 rounded-lg overflow-hidden border border-outline-variant/15 flex-shrink-0 bg-surface-container">
-                            <img src="${post.images[0]}" class="w-full h-full object-cover"/>
-                        </div>
-                    `;
-                }
-                
-                card.innerHTML = `
-                    <div class="flex-1 min-w-0 space-y-2">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="font-bold text-on-surface text-[10px]">${post.creator}</span>
-                            <span class="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">${channelName}</span>
-                        </div>
-                        <p class="text-[11px] text-on-surface-variant leading-relaxed line-clamp-2">${snippet}</p>
-                        <div class="flex gap-4 pt-1 items-center">
-                            <button onclick="closeSavedListsModal(); goToSavedPost('${post.id}', '${post.channelId}')" class="text-primary hover:text-primary-variant font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
-                                <span class="material-symbols-outlined text-xs">launch</span> Przejdź do posta
-                            </button>
-                            <button onclick="toggleSavePost(event, null, '${post.id}'); renderModalSavedPosts();" class="text-outline hover:text-error font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none ml-auto">
-                                <span class="material-symbols-outlined text-xs">delete</span> Zdejmij
-                            </button>
-                        </div>
-                    </div>
-                    ${imgHtml}
-                `;
+                card.className = "community-post-card bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm space-y-3 relative";
+                card.id = `community-post-card-${post.id}`;
+                card.innerHTML = getCommunityPostCardHtml(post);
                 container.appendChild(card);
             });
         }
@@ -7333,28 +7328,131 @@
             
             if (images.length === 1) {
                 return `
-                    <div class="relative w-full overflow-hidden rounded-2xl bg-surface-container border border-outline-variant/10 shadow-sm aspect-[4/3] md:aspect-[16/9] mt-3">
-                        <img src="${images[0]}" class="w-full h-full object-cover" />
+                    <div class="relative w-full overflow-h        function getCommunityPostCardHtml(post) {
+            const isLiked = post.liked;
+            const isSaved = STATE.savedPostIds.includes(post.id);
+            const avatarUrl = post.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png';
+            const ch = STATE.channels.find(c => c.id === post.channelId);
+            const channelBadge = ch ? `
+                <span onclick="enterChannel('${ch.id}')" class="bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 text-[9px] font-bold px-2 py-0.5 rounded-full cursor-pointer flex items-center gap-1 select-none">
+                    <span class="material-symbols-outlined text-[10px]">${ch.icon}</span> art/${ch.name}
+                </span>
+            ` : '';
+
+            // Build tags pills HTML (limit to 5 tagów, with # symbol visible, similar to offer tags)
+            let tagsHtml = '';
+            if (post.tags && post.tags.length > 0) {
+                tagsHtml = `<div class="flex flex-wrap gap-1.5 pt-1">`;
+                post.tags.slice(0, 5).forEach(tag => {
+                    const isSelected = STATE.activeCommunityTag === tag;
+                    const activeChipStyle = isSelected ? "bg-turquoise text-white border-turquoise" : "bg-turquoise/5 text-secondary border-turquoise/15";
+                    tagsHtml += `
+                        <span onclick="filterByTag('${tag}')" class="community-tag-chip border ${activeChipStyle} text-[9px] font-bold select-none cursor-pointer">
+                            #${tag}
+                        </span>
+                    `;
+                });
+                tagsHtml += `</div>`;
+            }
+            
+            let commentsHtml = '';
+            post.comments.forEach(comment => {
+                const commentImgHtml = comment.image ? `
+                    <div class="mt-1.5 max-w-[120px] aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm cursor-zoom-in" onclick="openCommentImageZoom('${comment.image}')">
+                        <img src="${comment.image}" class="w-full h-full object-cover" />
                     </div>
-                `;
-            } else if (images.length === 2) {
-                return `
-                    <div class="grid grid-cols-2 gap-2 overflow-hidden rounded-2xl border border-outline-variant/10 shadow-sm aspect-[4/3] md:aspect-[16/9] mt-3">
-                        <img src="${images[0]}" class="w-full h-full object-cover" />
-                        <img src="${images[1]}" class="w-full h-full object-cover" />
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="grid grid-cols-3 gap-2 overflow-hidden rounded-2xl border border-outline-variant/10 shadow-sm aspect-[4/3] md:aspect-[16/9] mt-3">
-                        <img src="${images[0]}" class="w-full h-full object-cover col-span-2 animate-pulse-once" style="max-height: 100%; object-fit: cover;" />
-                        <div class="flex flex-col gap-2 h-full">
-                            <img src="${images[1]}" class="w-full h-full object-cover flex-1 min-h-0" />
-                            <img src="${images[2] || images[0]}" class="w-full h-full object-cover flex-1 min-h-0" />
+                ` : '';
+                commentsHtml += `
+                    <div class="flex gap-2 items-start text-xs border-b border-outline-variant/5 pb-2 last:border-0 last:pb-0">
+                        <div class="w-6 h-6 rounded-full overflow-hidden border border-outline-variant/25 flex-shrink-0 bg-surface-container">
+                            <img class="w-full h-full object-cover" src="https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png" alt="commenter avatar" />
+                        </div>
+                        <div class="flex-1 min-w-0 text-left">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-bold text-on-surface text-[10px] flex items-center gap-1">${comment.author}${getUserRoleBadge(comment.author)}</span>
+                                <span class="text-[8px] text-outline">${comment.time || '1 godz. temu'}</span>
+                            </div>
+                            <p class="text-on-surface-variant text-[10px] leading-relaxed mt-0.5">${comment.text}</p>
+                            ${commentImgHtml}
                         </div>
                     </div>
                 `;
+            });
+            
+            if (post.comments.length === 0) {
+                commentsHtml = `<p class="text-[10px] text-outline text-center py-2" id="empty-comments-text-${post.id}">Brak komentarzy. Dodaj pierwszy komentarz!</p>`;
             }
+
+            return `
+                <!-- Header -->
+                <div class="flex justify-between items-start">
+                    <div class="flex gap-2.5 items-center">
+                        <div class="w-9 h-9 rounded-full overflow-hidden border border-outline-variant/35 flex-shrink-0 bg-surface-container">
+                            <img class="w-full h-full object-cover" src="${avatarUrl}" alt="${post.creator}" />
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-label-md text-xs text-on-surface font-bold flex items-center gap-1">${post.creator}${getUserRoleBadge(post.creator)}</h4>
+                            <p class="text-[9px] text-outline font-medium">${post.profession}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${channelBadge}
+                        <div class="text-[9px] text-outline">${post.date}</div>
+                    </div>
+                </div>
+                
+                <!-- Post Text -->
+                <p class="text-xs text-on-surface leading-relaxed text-left whitespace-pre-line">${post.text}</p>
+                
+                <!-- Images Grid -->
+                ${renderPostImagesHtml(post.images)}
+                
+                <!-- Tagi pills -->
+                ${tagsHtml}
+                
+                <!-- Action Bar -->
+                <div class="flex gap-4 items-center pt-2 border-t border-outline-variant/10 text-xs">
+                    <button onclick="toggleLikePost('${post.id}')" class="flex items-center gap-1 hover:text-primary font-bold ${isLiked ? 'text-red-500' : 'text-outline'} active:scale-90 transition-transform">
+                        <span class="material-symbols-outlined text-[18px]" style="${isLiked ? "font-variation-settings: 'FILL' 1;" : ''}">${isLiked ? 'favorite' : 'favorite_border'}</span>
+                        <span>${post.likes}</span>
+                    </button>
+                    <button onclick="togglePostComments('${post.id}')" class="flex items-center gap-1 text-outline hover:text-primary font-bold active:scale-90 transition-transform">
+                        <span class="material-symbols-outlined text-[18px]">chat_bubble_outline</span>
+                        <span>${post.comments.length}</span>
+                    </button>
+                    <button onclick="toggleSavePost(event, this, '${post.id}')" class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container active:scale-95 transition-all ml-auto ${isSaved ? 'text-primary' : 'text-outline'}" title="${isSaved ? 'Usuń z zapisanych' : 'Zapisz post'}">
+                        <span class="material-symbols-outlined text-[18px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
+                    </button>
+                </div>
+                
+                <!-- Comments Collapsible Section -->
+                <div id="comments-container-${post.id}" class="hidden bg-surface-container-low border border-outline-variant/10 rounded-xl p-3 space-y-3 mt-2">
+                    <div id="comments-list-${post.id}" class="space-y-2.5 max-h-48 overflow-y-auto pr-1">
+                        ${commentsHtml}
+                    </div>
+                    <!-- Image Preview Box for Comments -->
+                    <div id="comment-preview-container-${post.id}" class="hidden flex items-center gap-2 p-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl">
+                        <!-- Selected comment photo preview -->
+                    </div>
+
+                    <div class="flex gap-2 items-center pt-2 border-t border-outline-variant/10">
+                        <div class="flex gap-1.5 flex-shrink-0">
+                            <!-- Upload image -->
+                            <button type="button" onclick="triggerCommentPhotoUpload('${post.id}')" class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 hover:bg-surface-container text-primary flex items-center justify-center active:scale-95 transition-all" title="Dodaj zdjęcie z komputera">
+                                <span class="material-symbols-outlined text-[16px]">image</span>
+                            </button>
+                            <!-- Mock image -->
+                            <button type="button" onclick="loadMockCommentPhoto('${post.id}')" class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 hover:bg-surface-container text-secondary flex items-center justify-center active:scale-95 transition-all" title="Dodaj zdjęcie testowe (Mock)">
+                                <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                            </button>
+                        </div>
+                        <input id="comment-input-${post.id}" type="text" placeholder="Napisz komentarz..." class="flex-1 bg-surface-container-lowest border border-outline-variant/30 rounded-full px-3 py-1.5 text-[11px] text-on-surface focus:outline-none focus:border-primary/45" onkeydown="if(event.key === 'Enter') submitPostComment('${post.id}')"/>
+                        <button onclick="submitPostComment('${post.id}')" class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow hover:opacity-90 active:scale-95 transition-all">
+                            <span class="material-symbols-outlined text-sm">send</span>
+                        </button>
+                    </div>
+                </div>
+            `;
         }
 
         function renderCommunityFeed() {
@@ -7501,133 +7599,10 @@
             }
             
             filteredPosts.forEach(post => {
-                const isLiked = post.liked;
-                const isSaved = STATE.savedPostIds.includes(post.id);
-                const avatarUrl = post.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png';
-                const ch = STATE.channels.find(c => c.id === post.channelId);
-                const channelBadge = ch ? `
-                    <span onclick="enterChannel('${ch.id}')" class="bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 text-[9px] font-bold px-2 py-0.5 rounded-full cursor-pointer flex items-center gap-1 select-none">
-                        <span class="material-symbols-outlined text-[10px]">${ch.icon}</span> art/${ch.name}
-                    </span>
-                ` : '';
-
-                // Build tags pills HTML (limit to 5 tagów, with # symbol visible, similar to offer tags)
-                let tagsHtml = '';
-                if (post.tags && post.tags.length > 0) {
-                    tagsHtml = `<div class="flex flex-wrap gap-1.5 pt-1">`;
-                    post.tags.slice(0, 5).forEach(tag => {
-                        const isSelected = STATE.activeCommunityTag === tag;
-                        const activeChipStyle = isSelected ? "bg-turquoise text-white border-turquoise" : "bg-turquoise/5 text-secondary border-turquoise/15";
-                        tagsHtml += `
-                            <span onclick="filterByTag('${tag}')" class="community-tag-chip border ${activeChipStyle} text-[9px] font-bold select-none cursor-pointer">
-                                #${tag}
-                            </span>
-                        `;
-                    });
-                    tagsHtml += `</div>`;
-                }
-                
-                let commentsHtml = '';
-                post.comments.forEach(comment => {
-                    const commentImgHtml = comment.image ? `
-                        <div class="mt-1.5 max-w-[120px] aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm cursor-zoom-in" onclick="openCommentImageZoom('${comment.image}')">
-                            <img src="${comment.image}" class="w-full h-full object-cover" />
-                        </div>
-                    ` : '';
-                    commentsHtml += `
-                        <div class="flex gap-2 items-start text-xs border-b border-outline-variant/5 pb-2 last:border-0 last:pb-0">
-                            <div class="w-6 h-6 rounded-full overflow-hidden border border-outline-variant/25 flex-shrink-0 bg-surface-container">
-                                <img class="w-full h-full object-cover" src="https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png" alt="commenter avatar" />
-                            </div>
-                            <div class="flex-1 min-w-0 text-left">
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="font-bold text-on-surface text-[10px] flex items-center gap-1">${comment.author}${getUserRoleBadge(comment.author)}</span>
-                                    <span class="text-[8px] text-outline">${comment.time || '1 godz. temu'}</span>
-                                </div>
-                                <p class="text-on-surface-variant text-[10px] leading-relaxed mt-0.5">${comment.text}</p>
-                                ${commentImgHtml}
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                if (post.comments.length === 0) {
-                    commentsHtml = `<p class="text-[10px] text-outline text-center py-2" id="empty-comments-text-${post.id}">Brak komentarzy. Dodaj pierwszy komentarz!</p>`;
-                }
-                
                 const card = document.createElement('div');
                 card.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm space-y-3 relative";
                 card.id = `community-post-card-${post.id}`;
-                card.innerHTML = `
-                    <!-- Header -->
-                    <div class="flex justify-between items-start">
-                        <div class="flex gap-2.5 items-center">
-                            <div class="w-9 h-9 rounded-full overflow-hidden border border-outline-variant/35 flex-shrink-0 bg-surface-container">
-                                <img class="w-full h-full object-cover" src="${avatarUrl}" alt="${post.creator}" />
-                            </div>
-                            <div class="text-left">
-                                <h4 class="font-label-md text-xs text-on-surface font-bold flex items-center gap-1">${post.creator}${getUserRoleBadge(post.creator)}</h4>
-                                <p class="text-[9px] text-outline font-medium">${post.profession}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${channelBadge}
-                            <div class="text-[9px] text-outline">${post.date}</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Post Text -->
-                    <p class="text-xs text-on-surface leading-relaxed text-left whitespace-pre-line">${post.text}</p>
-                    
-                    <!-- Images Grid -->
-                    ${renderPostImagesHtml(post.images)}
-                    
-                    <!-- Tagi pills -->
-                    ${tagsHtml}
-                    
-                    <!-- Action Bar -->
-                    <div class="flex gap-4 items-center pt-2 border-t border-outline-variant/10 text-xs">
-                        <button onclick="toggleLikePost('${post.id}')" class="flex items-center gap-1 hover:text-primary font-bold ${isLiked ? 'text-red-500' : 'text-outline'} active:scale-90 transition-transform">
-                            <span class="material-symbols-outlined text-[18px]" style="${isLiked ? "font-variation-settings: 'FILL' 1;" : ''}">${isLiked ? 'favorite' : 'favorite_border'}</span>
-                            <span>${post.likes}</span>
-                        </button>
-                        <button onclick="togglePostComments('${post.id}')" class="flex items-center gap-1 text-outline hover:text-primary font-bold active:scale-90 transition-transform">
-                            <span class="material-symbols-outlined text-[18px]">chat_bubble_outline</span>
-                            <span>${post.comments.length}</span>
-                        </button>
-                        <button onclick="toggleSavePost(event, this, '${post.id}')" class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container active:scale-95 transition-all ml-auto ${isSaved ? 'text-primary' : 'text-outline'}" title="${isSaved ? 'Usuń z zapisanych' : 'Zapisz post'}">
-                            <span class="material-symbols-outlined text-[18px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">bookmark</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Comments Collapsible Section -->
-                    <div id="comments-container-${post.id}" class="hidden bg-surface-container-low border border-outline-variant/10 rounded-xl p-3 space-y-3 mt-2">
-                        <div id="comments-list-${post.id}" class="space-y-2.5 max-h-48 overflow-y-auto pr-1">
-                            ${commentsHtml}
-                        </div>
-                        <!-- Image Preview Box for Comments -->
-                        <div id="comment-preview-container-${post.id}" class="hidden flex items-center gap-2 p-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl">
-                            <!-- Selected comment photo preview -->
-                        </div>
-
-                        <div class="flex gap-2 items-center pt-2 border-t border-outline-variant/10">
-                            <div class="flex gap-1.5 flex-shrink-0">
-                                <!-- Upload image -->
-                                <button type="button" onclick="triggerCommentPhotoUpload('${post.id}')" class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 hover:bg-surface-container text-primary flex items-center justify-center active:scale-95 transition-all" title="Dodaj zdjęcie z komputera">
-                                    <span class="material-symbols-outlined text-[16px]">image</span>
-                                </button>
-                                <!-- Mock image -->
-                                <button type="button" onclick="loadMockCommentPhoto('${post.id}')" class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 hover:bg-surface-container text-secondary flex items-center justify-center active:scale-95 transition-all" title="Dodaj zdjęcie testowe (Mock)">
-                                    <span class="material-symbols-outlined text-[16px]">photo_camera</span>
-                                </button>
-                            </div>
-                            <input id="comment-input-${post.id}" type="text" placeholder="Napisz komentarz..." class="flex-1 bg-surface-container-lowest border border-outline-variant/30 rounded-full px-3 py-1.5 text-[11px] text-on-surface focus:outline-none focus:border-primary/45" onkeydown="if(event.key === 'Enter') submitPostComment('${post.id}')"/>
-                            <button onclick="submitPostComment('${post.id}')" class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow hover:opacity-90 active:scale-95 transition-all">
-                                <span class="material-symbols-outlined text-sm">send</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
+                card.innerHTML = getCommunityPostCardHtml(post);
                 container.appendChild(card);
             });
         }
