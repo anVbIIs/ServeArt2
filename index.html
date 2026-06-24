@@ -2964,6 +2964,29 @@
             }
         };
         window.safeLocalStorage = safeLocalStorage;
+
+        // Inicjalizacja klienta Supabase
+        const SUPABASE_URL = 'https://xjtkzhkmwbkjjmgbnpza.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_wslzG6iZl0WDkvq_SP4EgA_GFuZGDwm';
+        
+        window.SUPABASE_AVATARS_BUCKET = 'avatars';
+        window.SUPABASE_MEDIA_BUCKET = 'media';
+        
+        window.supabaseClient = null;
+        try {
+            if (SUPABASE_URL && SUPABASE_URL !== 'https://twoj-projekt.supabase.co') {
+                if (window.supabase) {
+                    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log("Supabase client połączony!");
+                } else {
+                    console.warn("Biblioteka Supabase nie została załadowana z CDN.");
+                }
+            } else {
+                console.warn("Skonfiguruj połączenie z Supabase.");
+            }
+        } catch (e) {
+            console.error("Błąd inicjalizacji Supabase:", e);
+        }
         function getUserRoleLabel(name) {
             if (name === STATE.currentUser.name) {
                 return STATE.currentUser.role || 'twórca';
@@ -5743,7 +5766,7 @@
                         for (let i = 0; i < STATE.tempProductPics.length; i++) {
                             const img = STATE.tempProductPics[i];
                             if (img.startsWith('data:')) {
-                                const filePath = `listings/${listingId}/product_${i}.jpg`;
+                                const filePath = `listings/${STATE.currentUser.id || 'default_user'}/${listingId}/product_${i}.jpg`;
                                 const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
                                 if (publicUrl) {
                                     uploadedProductPics.push(publicUrl);
@@ -5759,7 +5782,7 @@
                         for (let i = 0; i < STATE.tempProcessPics.length; i++) {
                             const img = STATE.tempProcessPics[i];
                             if (img.startsWith('data:')) {
-                                const filePath = `listings/${listingId}/process_${i}.jpg`;
+                                const filePath = `listings/${STATE.currentUser.id || 'default_user'}/${listingId}/process_${i}.jpg`;
                                 const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
                                 if (publicUrl) {
                                     uploadedProcessPics.push(publicUrl);
@@ -7139,7 +7162,7 @@
                 for (let i = 0; i < picsToUpload.length; i++) {
                     const img = picsToUpload[i];
                     if (img.startsWith('data:')) {
-                        const filePath = `posts/${postId}/img_${i}.jpg`;
+                        const filePath = `posts/${STATE.currentUser.id || 'default_user'}/${postId}/img_${i}.jpg`;
                         const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, img);
                         if (publicUrl) {
                             uploadedPostPics.push(publicUrl);
@@ -7508,7 +7531,7 @@
                 if (window.supabaseClient && window.supabaseUploadFile) {
                     showToast("Wgrywanie zdjęcia...", "sync");
                     const commentId = `comment_${Date.now()}`;
-                    const filePath = `comments/${postId}/${commentId}.jpg`;
+                    const filePath = `comments/${STATE.currentUser.id || 'default_user'}/${postId}/${commentId}.jpg`;
                     const publicUrl = await window.supabaseUploadFile(window.SUPABASE_MEDIA_BUCKET || 'media', filePath, image);
                     if (publicUrl) {
                         uploadedCommentPic = publicUrl;
