@@ -2933,8 +2933,7 @@
     <script>
         // Global Error Boundary for diagnostic purposes
         window.onerror = function(msg, url, line, col, error) {
-            console.error("Błąd JS: " + msg + "\nPlik: " + url + "\nLinia: " + line + "\nKolumna: " + col + "\nBłąd: " + error);
-            // Don't alert everything to not spam, but log it
+            alert("Błąd JS: " + msg + "\nPlik: " + url + "\nLinia: " + line + "\nKolumna: " + col + "\nBłąd: " + error);
             return false;
         };
 
@@ -2964,6 +2963,16 @@
             }
         };
         window.safeLocalStorage = safeLocalStorage;
+
+        // Safe JSON parsing helper to prevent crashes from corrupted localStorage data
+        function safeJsonParse(str, fallback) {
+            try {
+                return str ? JSON.parse(str) : fallback;
+            } catch (e) {
+                console.warn("Failed to parse JSON, using fallback:", e);
+                return fallback;
+            }
+        }
 
         // Inicjalizacja klienta Supabase
         const SUPABASE_URL = 'https://xjtkzhkmwbkjjmgbnpza.supabase.co';
@@ -3031,7 +3040,7 @@
             tempPostTags: [], // list of tags for the new post
             tempCommentPics: {}, // selected comment photos (postId -> dataUrl)
             activeCommentPhotoPostId: null, // active post for upload dialog
-            savedPostIds: JSON.parse(safeLocalStorage.getItem('serveart_saved_posts') || '[]'), // saved community posts
+            savedPostIds: safeJsonParse(safeLocalStorage.getItem('serveart_saved_posts'), []), // saved community posts
             searchMode: 'items', // 'items' | 'jobs'
             activeProfileName: null,
             modalShopLimit: 20,
@@ -3379,7 +3388,7 @@
                 mainSpecialization: safeLocalStorage.getItem('serveart_main_specialization') || "",
                 bio: safeLocalStorage.getItem('serveart_user_bio') || "Miłośnik polskiego rzemiosła i handmade. Zbieram unikalną ceramikę oraz malarstwo współczesne.",
                 exclusions: safeLocalStorage.getItem('serveart_user_exclusions') || "Seryjnej produkcji, dropshippingu, masowej biżuterii, taśmowej stolarki",
-                tags: safeLocalStorage.getItem('serveart_user_tags') ? JSON.parse(safeLocalStorage.getItem('serveart_user_tags')) : ["Kolekcja", "Ceramika", "Rękodzieło"],
+                tags: safeJsonParse(safeLocalStorage.getItem('serveart_user_tags'), ["Kolekcja", "Ceramika", "Rękodzieło"]),
                 customMinBudget: safeLocalStorage.getItem('serveart_user_customMinBudget') ? parseInt(safeLocalStorage.getItem('serveart_user_customMinBudget')) : 300,
                 customMaxBudget: safeLocalStorage.getItem('serveart_user_customMaxBudget') ? parseInt(safeLocalStorage.getItem('serveart_user_customMaxBudget')) : 1500,
                 customDeliveryTime: safeLocalStorage.getItem('serveart_user_customDeliveryTime') || "10 - 20 dni roboczych",
@@ -3387,8 +3396,8 @@
                 cooperationEnabled: safeLocalStorage.getItem('serveart_user_cooperationEnabled') !== 'false',
                 isPremium: safeLocalStorage.getItem('serveart_premium') === 'true', // Dynamically read persisted Premium state
                 avatarShape: safeLocalStorage.getItem('serveart_avatar_shape') || 'circle', // Dynamically read persisted shape
-                soughtProfessions: safeLocalStorage.getItem('serveart_user_sought_professions') ? JSON.parse(safeLocalStorage.getItem('serveart_user_sought_professions')) : ["Ceramik", "Garncarstwo", "Artysta Ceramiki", "Stolarz artystyczny", "Stolarstwo"],
-                offering: safeLocalStorage.getItem('serveart_user_offering') ? JSON.parse(safeLocalStorage.getItem('serveart_user_offering')) : [
+                soughtProfessions: safeJsonParse(safeLocalStorage.getItem('serveart_user_sought_professions'), ["Ceramik", "Garncarstwo", "Artysta Ceramiki", "Stolarz artystyczny", "Stolarstwo"]),
+                offering: safeJsonParse(safeLocalStorage.getItem('serveart_user_offering'), [
                     "Ręcznie toczone wazy ceramiczne",
                     "Stoły dębowe w stylu industrialnym",
                     "Warsztaty z toczenia na kole",
