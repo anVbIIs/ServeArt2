@@ -519,7 +519,7 @@
                     shareLocation: true
                 }
             ],
-            followedCreators: ["Anna Kowalska"], // Default followed creator
+            followedCreators: safeJsonParse(safeLocalStorage.getItem('serveart_followed_creators'), ["Anna Kowalska"]), // Default followed creator
             tempProductPics: [],
             tempProcessPics: [],
             activeChatPartner: null,
@@ -647,6 +647,9 @@
 
         // Toggle feed switch
         function toggleFeedFilter(filter) {
+            if (filter === 'following' && !requireAuth(() => toggleFeedFilter('following'))) {
+                return;
+            }
             STATE.feedFilter = filter;
             const btnForyou = document.getElementById('feed-tab-foryou');
             const btnFollow = document.getElementById('feed-tab-following');
@@ -776,23 +779,61 @@
             container.innerHTML = '';
             container.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-gutter";
 
-            let filteredListings = STATE.listings;
-            
+            // Safety check: Guests cannot view the 'following' feed
+            if (STATE.feedFilter === 'following' && !STATE.isAuthenticated) {
+                STATE.feedFilter = 'foryou';
+                const btnForyou = document.getElementById('feed-tab-foryou');
+                const btnFollow = document.getElementById('feed-tab-following');
+                if (btnForyou && btnFollow) {
+                    btnForyou.className = "flex-1 py-4 text-center border-b-2 border-primary text-primary font-label-md text-label-md transition-colors";
+                    btnFollow.className = "flex-1 py-4 text-center border-b-2 border-transparent text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors";
+                }
+            }
+
             if (STATE.feedFilter === 'following') {
-                // Filter to simulated followed creators
-                filteredListings = STATE.listings.filter(l => STATE.followedCreators.includes(l.creator));
-                if (filteredListings.length === 0) {
+                // Unified Feed: get both Listings and Posts from followed creators
+                const followedListings = STATE.listings
+                    .filter(l => STATE.followedCreators.includes(l.creator))
+                    .map(l => ({ ...l, feedType: 'listing' }));
+                
+                const followedPosts = STATE.posts
+                    .filter(p => STATE.followedCreators.includes(p.creator))
+                    .map(p => ({ ...p, feedType: 'post' }));
+                
+                // Mix them chronologically (using numeric timestamps parsed from IDs)
+                const combinedFeed = [...followedListings, ...followedPosts].sort((a, b) => {
+                    const valA = parseInt((a.id.match(/\d+/) || [0])[0]);
+                    const valB = parseInt((b.id.match(/\d+/) || [0])[0]);
+                    return valB - valA;
+                });
+
+                if (combinedFeed.length === 0) {
                     container.innerHTML = `
                         <div class="p-8 text-center text-outline text-xs bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-sm col-span-full">
                             <span class="material-symbols-outlined text-[32px] text-outline mb-2">person_add</span>
-                            <p>Brak prac od obserwowanych artystów.</p>
-                            <p class="text-[10px] mt-1">Zaobserwuj twórców w zakładce Odkrywaj lub Profil, aby ich tu zobaczyć!</p>
+                            <p>Brak aktywności od obserwowanych artystów.</p>
+                            <p class="text-[10px] mt-1">Zaobserwuj twórców w zakładce Odkrywaj lub Profil, aby zobaczyć ich nowe posty i oferty!</p>
                         </div>
                     `;
                     return;
                 }
+
+                combinedFeed.forEach(item => {
+                    const itemDiv = document.createElement('article');
+                    if (item.feedType === 'listing') {
+                        itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
+                        itemDiv.innerHTML = getExploreCardHtml(item);
+                    } else {
+                        // Community Post - styled to span the full grid width
+                        itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm p-4 text-left flex flex-col gap-3 col-span-2 md:col-span-3 lg:col-span-4";
+                        itemDiv.innerHTML = getCommunityPostCardHtml(item);
+                    }
+                    container.appendChild(itemDiv);
+                });
+
             } else {
                 // 'foryou' - Similarity based recommendation logic!
+                let filteredListings = STATE.listings;
                 if (STATE.savedItemIds.length > 0) {
                     // Create copy and map similarity score based on savedItemIds
                     filteredListings = [...STATE.listings].map(item => {
@@ -828,14 +869,14 @@
                     `;
                     container.appendChild(recBar);
                 }
-            }
 
-            filteredListings.forEach(item => {
-                const itemDiv = document.createElement('article');
-                itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
-                itemDiv.innerHTML = getExploreCardHtml(item);
-                container.appendChild(itemDiv);
-            });
+                filteredListings.forEach(item => {
+                    const itemDiv = document.createElement('article');
+                    itemDiv.className = "bg-surface-container-lowest rounded-xl md:rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden text-left flex flex-col justify-between";
+                    itemDiv.innerHTML = getExploreCardHtml(item);
+                    container.appendChild(itemDiv);
+                });
+            }
         }
 
         // Search engine filter controllers
@@ -1114,6 +1155,7 @@
             }
             
             const nowFollowing = STATE.followedCreators.includes(creatorName);
+            safeLocalStorage.setItem('serveart_followed_creators', JSON.stringify(STATE.followedCreators));
             const followBtn = document.getElementById('btn-profile-follow');
             if (nowFollowing) {
                 followBtn.className = "px-4 py-1.5 followed-btn-gradient-border text-on-surface text-xs font-bold rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
@@ -3876,8 +3918,9 @@
                 alert(`Przestałeś obserwować twórcę: ${creatorName}`);
             } else {
                 STATE.followedCreators.push(creatorName);
-                alert(`Zaobserwowałeś twórcę: ${creatorName}. Jego nowe prace pojawią się w zakładce Obserwowani.`);
+                alert(`Zaobserwowałeś twórcę: ${creatorName}. Jego nowe prace i posty pojawią się w zakładce Obserwowani.`);
             }
+            safeLocalStorage.setItem('serveart_followed_creators', JSON.stringify(STATE.followedCreators));
             renderExploreFeed();
         }
 
