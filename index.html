@@ -91,19 +91,19 @@
             --color-primary: #6666FF;
             --color-secondary: #00CEC8;
             --color-turquoise: #00CEC8;
-            --color-coral: #FF6347;
-            --color-surface: #131313;
-            --color-surface-dim: #131313;
-            --color-surface-bright: #393939;
-            --color-surface-container-lowest: #0e0e0e;
-            --color-surface-container-low: #1c1b1b;
-            --color-surface-container: #201f1f;
-            --color-surface-container-high: #2a2a2a;
-            --color-on-surface: #e5e2e1;
-            --color-on-surface-variant: #e2bfb8;
-            --color-outline: #a98a83;
-            --color-outline-variant: #5a413c;
-            --color-input-bg: #1c1b1b;
+            --color-coral: #FF5533;
+            --color-surface: #242936;
+            --color-surface-dim: #1f2430;
+            --color-surface-bright: #353e52;
+            --color-surface-container-lowest: #161b24;
+            --color-surface-container-low: #2a3242;
+            --color-surface-container: #30394c;
+            --color-surface-container-high: #3b465c;
+            --color-on-surface: #cbd5e1;
+            --color-on-surface-variant: #94a3b8;
+            --color-outline: #5e6f85;
+            --color-outline-variant: #3b465c;
+            --color-input-bg: #2a3242;
         }
 
         html {
@@ -119,7 +119,7 @@
             background: radial-gradient(at 0% 0%, rgba(102, 102, 255, 0.12) 0px, transparent 50%),
                         radial-gradient(at 100% 0%, rgba(0, 206, 200, 0.1) 0px, transparent 50%),
                         radial-gradient(at 50% 100%, rgba(102, 102, 255, 0.08) 0px, transparent 50%),
-                        #131313; /* szałwia w nocy surface base */
+                        #242936; /* szałwia w nocy surface base */
             background-attachment: fixed;
         }
 
@@ -139,7 +139,7 @@
         }
 
         html.dark #app-bg-blur {
-            background-color: rgba(24, 24, 30, 0.65); /* Zdecydowanie bardziej ciemnoszare, przezroczyste tło w trybie ciemnym */
+            background-color: rgba(36, 41, 54, 0.65); /* Zdecydowanie bardziej ciemnoszare, przezroczyste tło w trybie ciemnym */
         }
 
 
@@ -189,6 +189,26 @@
                               linear-gradient(135deg, #00CEC8 0%, var(--color-primary) 50%, var(--color-coral) 100%);
             background-origin: border-box;
             background-clip: padding-box, border-box;
+        }
+        .follow-btn-primary {
+            background-color: rgba(70, 67, 223, 0.08) !important;
+            border: 1px solid rgba(70, 67, 223, 0.15) !important;
+            color: var(--color-primary) !important;
+        }
+        html.dark .follow-btn-primary {
+            background-color: #111c3a !important;
+            border: 1px solid #1e2d5a !important;
+            color: var(--color-on-surface) !important;
+        }
+        .follow-btn-secondary {
+            background-color: rgba(0, 106, 103, 0.08) !important;
+            border: 1px solid rgba(0, 106, 103, 0.15) !important;
+            color: var(--color-secondary) !important;
+        }
+        html.dark .follow-btn-secondary {
+            background-color: #1d2c60 !important;
+            border: 1px solid #283a7a !important;
+            color: var(--color-on-surface) !important;
         }
         .role-badge-gradient-border {
             border: 1px solid transparent;
@@ -362,6 +382,11 @@
             margin-top: -2px !important; /* Overlap bottom edge of tabs to align */
         }
 
+        .profile-tab-content-container > *:not(.profile-folder-svg-bg) {
+            position: relative;
+            z-index: 2;
+        }
+
         /* Saved Screen Scaled Down Grid Rules */
         .saved-scaled-down-grid {
             display: grid;
@@ -435,7 +460,7 @@
             inset: -2px;
             border-radius: 26px;
             padding: 2px;
-            background: linear-gradient(135deg, var(--color-turquoise, #00CEC8), var(--color-primary, #4643df), var(--color-coral, #FF7E6B));
+            background: linear-gradient(135deg, var(--color-turquoise, #00CEC8), var(--color-primary, #4643df), var(--color-coral, #FF5533));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -447,7 +472,7 @@
             position: absolute;
             inset: 0;
             border-radius: 24px;
-            background: linear-gradient(135deg, var(--color-turquoise, #00CEC8), var(--color-primary, #4643df), var(--color-coral, #FF7E6B));
+            background: linear-gradient(135deg, var(--color-turquoise, #00CEC8), var(--color-primary, #4643df), var(--color-coral, #FF5533));
             filter: blur(15px);
             opacity: 0.18;
             z-index: -1;
@@ -560,8 +585,8 @@
         <section id="screen-explore" class="space-y-stack-lg text-left pt-4">
             <!-- Search bar with trigger -->
             <div class="relative flex items-center group bg-gray-200 border border-gray-300 dark:bg-zinc-800 dark:border-zinc-700 rounded-full focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary dark:focus-within:border-primary transition-all w-full">
-                <span class="material-symbols-outlined absolute left-4 text-gray-500 group-focus-within:text-primary dark:text-white dark:group-focus-within:text-white transition-colors">search</span>
-                <input id="search-input" oninput="runSearch()" class="w-full h-12 pl-12 pr-12 bg-transparent border-none focus:ring-0 focus:outline-none font-body-md text-gray-900 dark:text-white" placeholder="Szukaj przedmiotu lub zawodu..." type="text"/>
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 group-focus-within:text-primary dark:text-zinc-300 dark:group-focus-within:text-zinc-300 transition-colors">search</span>
+                <input id="search-input" oninput="runSearch()" class="w-full h-12 pl-12 pr-12 bg-transparent border-none focus:ring-0 focus:outline-none font-body-md text-gray-900 dark:text-zinc-200" placeholder="Szukaj przedmiotu lub zawodu..." type="text"/>
                 <button class="absolute right-4 text-primary hover:opacity-80 active:scale-90 transition-transform" onclick="toggleFiltersAccordion()">
                     <span class="material-symbols-outlined">tune</span>
                 </button>
@@ -721,7 +746,7 @@
                                     <span class="bg-primary/10 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded">Malarstwo</span>
                                 </div>
                                 <p class="text-xs text-on-surface-variant font-medium">Temat: Obraz "Głębia Wisły"</p>
-                                <p class="text-xs text-outline line-clamp-1">Jasne, mogę dostosować rozmiar ramy. Kiedy planujesz zakup?</p>
+                                <p class="text-xs text-outline dark:text-zinc-300 line-clamp-1">Jasne, mogę dostosować rozmiar ramy. Kiedy planujesz zakup?</p>
                             </div>
                         </div>
                         <div class="text-right flex flex-col items-end gap-1">
@@ -742,7 +767,7 @@
                                     <span class="bg-secondary/15 text-secondary text-[8px] font-bold px-1.5 py-0.5 rounded">Stolarka</span>
                                 </div>
                                 <p class="text-xs text-primary font-bold">Zlecenie Custom: Zaakceptowane</p>
-                                <p class="text-xs text-outline line-clamp-1">Status: W produkcji. Rozpocząłem struganie nóg.</p>
+                                <p class="text-xs text-outline dark:text-zinc-300 line-clamp-1">Status: W produkcji. Rozpocząłem struganie nóg.</p>
                             </div>
                         </div>
                         <div class="text-right flex flex-col items-end gap-1">
@@ -800,7 +825,7 @@
         <!-- ================= 5. PROFILE SCREEN (TWÓRCA) ================= -->
         <section id="screen-profile" class="hidden space-y-stack-lg text-left pb-16">
             <!-- Custom header navigation for profile -->
-            <div class="flex justify-between items-center -mt-8 pb-3 border-b border-outline-variant/20 sticky top-16 bg-surface/90 backdrop-blur z-20">
+            <div class="flex justify-between items-center -mt-8 pb-3 border-b border-outline-variant/20 sticky top-16 bg-surface z-20">
                 <button onclick="switchTab('explore')" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container-high active:scale-90 transition-all">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
@@ -890,7 +915,7 @@
 
                         <!-- Follow and Tip Buttons -->
                         <div class="flex justify-center md:justify-start gap-2 pt-4 border-t border-outline-variant/10 mt-4 w-full" id="profile-follow-tip-container">
-                            <button id="btn-profile-follow" onclick="handleProfileFollowToggle(event)" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible">
+                            <button id="btn-profile-follow" onclick="handleProfileFollowToggle(event)" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 hover:shadow-[0_8px_20px_rgba(70,67,223,0.4)] active:scale-95 transition-all flex items-center gap-1 relative overflow-visible">
                                 <span class="material-symbols-outlined text-[16px]">person_add</span> <span id="btn-profile-follow-text">Zaobserwuj</span>
                             </button>
                             <button onclick="openTipModal()" class="px-4 py-1.5 bg-surface-container border border-outline-variant/30 text-on-surface text-xs font-bold rounded-full hover:bg-surface-container-high active:scale-95 transition-all flex items-center gap-1">
@@ -1056,26 +1081,17 @@
                     </defs>
                     <path class="profile-folder-svg-path" fill="var(--color-surface-container-lowest)" stroke="url(#folder-border-gradient-events)" stroke-width="2" />
                 </svg>
-                <!-- Dynamic workshops card -->
-                <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl overflow-hidden shadow-sm group">
-                    <div class="aspect-video bg-surface-container relative">
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwU6YC8ksGULa3b8o8jTecnfFgWHlVRSJUlaQz7XMh_gsJuk6BTtJQO3dTgNQ2FP65n_hsGtwsURqReDJfNXdLN2zKMseAznG2rfg_ucB5dxEJkWw1l29C0XCjFv10bVep46mIFmct0ZI0r8qZfMmKNw6IFmXd9i0zDBVV95LIqB9J5nM6mfC5eQpbYwcDfmO9YtpFbf7E6ezIJ_4r4uXfIZJ_CHIiHL_uQCTuOOh-6jR9aKVe9hX5snXzQgM6HGAtwe58FL5bP1Y" class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"/>
-                        <span class="absolute top-2 left-2 bg-secondary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Warsztaty stacjonarne</span>
-                    </div>
-                    <div class="p-4 space-y-2 text-left">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-headline-md text-base font-bold">Mistrzowskie formowanie płótna i akrylu</h4>
-                            <span class="text-on-surface font-bold text-sm">180 PLN</span>
-                        </div>
-                        <p class="text-xs text-outline">Naucz się przygotowywać naturalne podkłady malarskie i miksować techniki.</p>
-                        <div class="text-[11px] text-on-surface-variant space-y-1">
-                            <p class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_today</span> Sobota, 16:00 - 19:00</p>
-                            <p class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">location_on</span> Pracownia ServeArt, Toruń</p>
-                        </div>
-                        <button onclick="openBookingModalSim('Mistrzowskie formowanie płótna i akrylu', 180)" class="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:opacity-90 active:scale-95 transition-all">
-                            Zarezerwuj Bilet na Warsztaty
-                        </button>
-                    </div>
+                <!-- Add Workshop Button (visible to profile owner) -->
+                <div id="own-profile-add-workshop-container" class="hidden text-right pt-2 pb-1.5">
+                     <button onclick="openAddWorkshopModal()" class="inline-flex items-center gap-2 px-6 py-3 border border-primary bg-surface-container-lowest dark:bg-surface-container text-primary hover:bg-primary/5 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95 font-bold text-xs rounded-2xl transition-all shadow-md">
+                         <span class="material-symbols-outlined text-sm font-bold">add</span>
+                         Dodaj warsztat
+                     </button>
+                </div>
+
+                <!-- Workshops Notice/Grid Container -->
+                <div id="profile-workshops-content" class="space-y-4 pt-2">
+                    <!-- Dynamic Notice or Workshops Grid will be injected here -->
                 </div>
             </div>
 
@@ -1132,7 +1148,7 @@
                     <path class="profile-folder-svg-path" fill="var(--color-surface-container-lowest)" stroke="url(#folder-border-gradient-cooperation)" stroke-width="2" />
                 </svg>
                 <!-- Toggle Cooperation matching -->
-                <div id="profile-coop-toggle-panel" class="flex justify-between items-center p-2 border-b border-outline-variant/10 pb-4">
+                <div id="profile-coop-toggle-panel" class="hidden flex justify-between items-center p-2 border-b border-outline-variant/10 pb-4">
                     <div class="text-left space-y-0.5">
                         <h4 class="font-label-md text-xs font-bold text-on-surface">Szukam współpracy</h4>
                         <p class="text-[10px] text-outline">Aktywuj status poszukiwania partnerów i wyświetlaj oferty na pulpicie Odkrywaj.</p>
@@ -1144,7 +1160,7 @@
                 </div>
 
                 <!-- Sought Competencies checklist -->
-                <div id="profile-coop-checklist-panel" class="p-2 space-y-3 text-left">
+                <div id="profile-coop-checklist-panel" class="hidden p-2 space-y-3 text-left">
                     <h4 class="font-label-md text-xs font-bold text-on-surface flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-primary text-sm">construction</span>
                         Szukane kompetencje partnerskie
@@ -1815,86 +1831,93 @@
 
 
     <!-- MODAL B2: FORMULARZ WSPÓŁPRACY (Cooperation Modal Form) -->
+    <!-- MODAL B: EDYCJA/DODAWANIE WSPÓŁPRACY (Cooperation Create/Edit Modal) -->
     <div id="modal-cooperation" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
-        <div class="bg-surface w-full max-w-lg rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[90vh] overflow-y-auto text-left">
-            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10">
-                <h3 class="font-headline-lg text-headline-lg text-primary" id="coop-modal-title">Opublikuj ogłoszenie o współpracy</h3>
+        <div class="bg-surface w-full max-w-lg rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[90vh] overflow-hidden text-left">
+            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10 flex-shrink-0">
+                <h3 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-xl">campaign</span>
+                    <span id="coop-modal-title">Opublikuj ogłoszenie o współpracy</span>
+                </h3>
                 <button onclick="closeCooperationModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
 
-            <form id="coop-form" onsubmit="handleCoopFormSubmit(event)" class="p-6 space-y-5">
-                <input type="hidden" id="coop-edit-id" value=""/>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-4">
+                <form id="coop-form" onsubmit="handleCoopFormSubmit(event)" class="space-y-4">
+                    <input type="hidden" id="coop-edit-id" value=""/>
 
-                <!-- Rodzaj ogłoszenia -->
-                <div class="space-y-1.5">
-                    <label class="font-label-md text-[11px] text-on-surface font-bold uppercase tracking-wider">Rodzaj ogłoszenia</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 bg-input-bg border border-outline-variant/10 rounded-xl cursor-pointer hover:bg-surface-container transition-all">
-                            <input type="radio" name="coop-type" value="wspolpraca" checked class="text-primary focus:ring-primary/20 w-4 h-4" onchange="toggleCoopFormType()"/>
-                            <div class="text-xs">
-                                <span class="font-bold text-on-surface block">Współpraca</span>
-                                <span class="text-[10px] text-outline">Kooperacja twórców</span>
-                            </div>
-                        </label>
-                        <label class="flex items-center gap-2 p-3 bg-input-bg border border-outline-variant/10 rounded-xl cursor-pointer hover:bg-surface-container transition-all">
-                            <input type="radio" name="coop-type" value="zlecenie" class="text-primary focus:ring-primary/20 w-4 h-4" onchange="toggleCoopFormType()"/>
-                            <div class="text-xs">
-                                <span class="font-bold text-on-surface block">Zlecenie</span>
-                                <span class="text-[10px] text-outline">Dla twórców i odbiorców</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 1. My Profession (Główny tag) -->
-                <div class="space-y-1">
-                    <label id="coop-label-profession" class="font-label-md text-[11px] text-on-surface font-bold uppercase tracking-wider">Moja profesja (główny tag projektu)</label>
-                    <input id="coop-modal-profession" type="text" required oninput="validateCoopModalForm()" class="w-full h-11 px-4 bg-input-bg border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-sm" placeholder="np. Projektant Mebli"/>
-                </div>
-
-                <!-- 2. Sought Competencies (Tag Selection & Real-time Filter) -->
-                <div class="space-y-2">
-                    <label id="coop-label-sought" class="font-label-md text-[11px] text-on-surface font-bold uppercase tracking-wider">Poszukiwane kompetencje (Wybierz z listy)</label>
-                    
-                    <!-- Selected Tags Container -->
-                    <div id="coop-modal-selected-tags" class="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-[#F5F5F5] rounded-xl border border-outline-variant/20">
-                        <span class="text-xs text-outline italic self-center px-1">Brak wybranych kompetencji...</span>
+                    <!-- Tytuł ogłoszenia -->
+                    <div class="space-y-1.5">
+                        <label for="coop-title" class="text-xs font-bold text-on-surface">Tytuł ogłoszenia *</label>
+                        <input type="text" id="coop-title" required placeholder="np. Wspólny projekt stołu z kaflami ceramicznymi" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
                     </div>
 
-                    <!-- Search Input with magnifying glass (lupka) -->
-                    <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3 text-outline text-lg">search</span>
-                        <input id="coop-modal-tag-search" type="text" oninput="filterCoopModalTags()" class="w-full h-10 pl-9 pr-4 bg-input-bg border border-outline-variant/20 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Wyszukaj kompetencję/profesję..."/>
+                    <!-- Rodzaj/Kogo szuka -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-on-surface">Typ ogłoszenia *</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 p-3 bg-surface-container-low border border-outline-variant/10 rounded-xl cursor-pointer hover:bg-surface-container transition-all">
+                                <input type="radio" id="coop-type-wspolpraca" name="coop-type" value="wspolpraca" checked class="text-primary focus:ring-primary/20 w-4 h-4"/>
+                                <div class="text-xs">
+                                    <span class="font-bold text-on-surface block">Współpraca</span>
+                                    <span class="text-[10px] text-outline">Szukam partnera</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 bg-surface-container-low border border-outline-variant/10 rounded-xl cursor-pointer hover:bg-surface-container transition-all">
+                                <input type="radio" id="coop-type-zlecenie" name="coop-type" value="zlecenie" class="text-primary focus:ring-primary/20 w-4 h-4"/>
+                                <div class="text-xs">
+                                    <span class="font-bold text-on-surface block">Realizacja</span>
+                                    <span class="text-[10px] text-outline">Szukam wykonawcy</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
-                    <!-- Filtered Tags List -->
-                    <div id="coop-modal-tag-suggestions" class="max-h-32 overflow-y-auto border border-outline-variant/10 rounded-xl p-2 bg-surface-container-lowest grid grid-cols-2 gap-1.5">
-                        <!-- Filled dynamically -->
+                    <!-- Główne tagi (Dziedzina / Zawód) -->
+                    <div class="space-y-1.5">
+                        <label for="coop-profession" class="text-xs font-bold text-on-surface">Dziedzina / Szukany zawód (rozdziel spacjami) *</label>
+                        <input type="text" id="coop-profession" required placeholder="np. #stolarka #malarstwo #krawiectwo #ceramika" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        <span class="text-[9px] text-outline block">Podaj profesje neutralne płciowo (np. #stolarka, #krawiectwo, #ceramika), oddzielając je spacjami.</span>
                     </div>
-                </div>
 
-                <!-- 3. Description (Czym się zajmuję i projekt) -->
-                <div class="space-y-1.5">
-                    <div class="flex justify-between items-center text-xs">
-                        <label class="font-label-md text-[11px] text-on-surface font-bold uppercase tracking-wider">Czym się zajmuję (Opis projektu / kim jestem)</label>
-                        <span id="coop-modal-desc-counter" class="text-[10px] font-bold text-error">0/300 (Min. 150)</span>
+                    <!-- Tagi drugorzędne (Produkt) -->
+                    <div class="space-y-1.5">
+                        <label for="coop-products" class="text-xs font-bold text-on-surface">Dotyczy produktu (tagi drugorzędne, rozdziel spacjami)</label>
+                        <input type="text" id="coop-products" placeholder="np. #obraz #maskotka #rzeźba #ubrania" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        <span class="text-[9px] text-outline block">Określ powiązane produkty (np. #obraz, #meble, #czapka), oddzielając je spacjami.</span>
                     </div>
-                    <textarea id="coop-modal-description" rows="3" oninput="validateCoopModalForm()" class="w-full p-4 bg-input-bg border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder-outline" placeholder="Opisz krótko czym się zajmujesz, jaki projekt planujesz i jakiego wkładu oczekujesz (minimum 150 znaków, maks. 300)..."></textarea>
-                </div>
 
-                <!-- 4. Location sharing check -->
-                <div class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" id="coop-modal-share-location" checked class="rounded text-primary border-outline-variant w-4.5 h-4.5"/>
-                    <label for="coop-modal-share-location" class="text-xs text-on-surface font-medium cursor-pointer">Pokaż moją miejscowość w ogłoszeniu</label>
-                </div>
+                    <!-- Opis ogłoszenia -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <label for="coop-description" class="font-bold text-on-surface">Opis projektu *</label>
+                            <span id="coop-desc-counter" class="text-[10px] font-bold text-primary">0/150 słów</span>
+                        </div>
+                        <textarea id="coop-description" required rows="4" oninput="countCoopWords()" class="w-full p-4 bg-surface-container-low border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/45 text-sm placeholder-outline" placeholder="Opisz krótko na czym polega projekt, kogo szukasz i co wspólnie stworzycie (maksymalnie 150 słów)..."></textarea>
+                        <span id="coop-word-warning" class="text-[10px] text-error font-bold hidden">Przekroczono limit 150 słów!</span>
+                    </div>
 
-                <!-- Submit / Save button -->
-                <button type="submit" id="coop-modal-submit-btn" disabled class="w-full h-12 bg-gradient-to-r from-primary to-turquoise text-white font-bold rounded-xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none">
-                    <span class="material-symbols-outlined">campaign</span> <span id="coop-modal-submit-text">Opublikuj ogłoszenie</span>
-                </button>
-            </form>
+                    <!-- Miejscowość -->
+                    <div class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="coop-share-location" checked class="rounded text-primary border-outline-variant w-4.5 h-4.5"/>
+                        <label for="coop-share-location" class="text-xs text-on-surface font-medium cursor-pointer">Pokaż moją miejscowość w ogłoszeniu</label>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-3 pt-4 border-t border-outline-variant/15 flex-shrink-0">
+                        <button type="button" onclick="closeCooperationModal()" class="flex-1 h-12 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold rounded-xl active:scale-95 transition-all text-xs">
+                            Anuluj
+                        </button>
+                        <button type="submit" id="coop-submit-btn" class="flex-1 h-12 bg-gradient-to-r from-primary to-turquoise text-white font-bold rounded-xl shadow-lg hover:opacity-95 active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm font-normal">campaign</span>
+                            <span id="coop-submit-text">Opublikuj ogłoszenie</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -1926,8 +1949,11 @@
             
             <div class="space-y-2">
                 <p class="text-sm font-bold text-on-surface" id="book-title">Nazwa warsztatów</p>
-                <p class="text-xs text-on-surface-variant" id="book-date">Sobota, 16:00</p>
-                <p class="text-xs text-outline">Cena jednostkowa: <span id="book-unit-price">180</span> PLN</p>
+                <p class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-xs text-outline">calendar_today</span> <span id="book-date">Sobota, 16:00</span></p>
+                <p class="text-xs text-outline">Pełna cena: <span id="book-unit-price">180</span> PLN</p>
+                <div id="book-advance-info-container" class="hidden p-3 bg-secondary/10 border border-secondary/20 rounded-xl text-[10px] text-secondary font-bold leading-normal">
+                    Wymagana zaliczka: <span id="book-advance-price">50</span> PLN / bilet (pozostała kwota płatna na warsztatach).
+                </div>
             </div>
 
             <!-- Ticket Counter -->
@@ -1941,7 +1967,7 @@
             </div>
 
             <div class="flex justify-between items-center text-sm pt-2">
-                <span class="font-bold">Razem do zapłaty:</span>
+                <span class="font-bold" id="book-payment-label">Razem do zapłaty:</span>
                 <span class="text-lg font-bold text-on-surface" id="book-total-price">180 PLN</span>
             </div>
 
@@ -2417,8 +2443,8 @@
             <!-- Search bar inside Modal -->
             <div class="px-6 py-3 border-b border-outline-variant/10 bg-surface/95 sticky top-[73px] z-10">
                 <div class="relative flex items-center bg-gray-200 border border-gray-300 dark:bg-zinc-800 dark:border-zinc-700 rounded-full focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary dark:focus-within:border-primary transition-all w-full">
-                    <span class="material-symbols-outlined absolute left-4 text-gray-500 group-focus-within:text-primary dark:text-white dark:group-focus-within:text-white transition-colors">search</span>
-                    <input id="modal-category-search-input" oninput="filterModalCategories()" class="w-full h-10 pl-12 pr-4 bg-transparent border-none focus:ring-0 focus:outline-none font-body-md text-gray-900 dark:text-white text-sm" placeholder="Wyszukaj kategorię (np. ceramika, tkactwo)..." type="text"/>
+                    <span class="material-symbols-outlined absolute left-4 text-gray-500 group-focus-within:text-primary dark:text-zinc-300 dark:group-focus-within:text-zinc-300 transition-colors">search</span>
+                    <input id="modal-category-search-input" oninput="filterModalCategories()" class="w-full h-10 pl-12 pr-4 bg-transparent border-none focus:ring-0 focus:outline-none font-body-md text-gray-900 dark:text-zinc-200 text-sm" placeholder="Wyszukaj kategorię (np. ceramika, tkactwo)..." type="text"/>
                 </div>
             </div>
 
@@ -2632,6 +2658,159 @@
         </div>
     </div>
 
+    <!-- MODAL W: DODAWANIE WARSZTATÓW (Add Workshop Modal) -->
+    <div id="modal-add-workshop" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
+        <div class="bg-surface w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[90vh] overflow-hidden text-left">
+            <!-- Header -->
+            <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10 flex-shrink-0">
+                <h3 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-xl">event</span>
+                    <span id="workshop-modal-title">Ogłoś nowe warsztaty</span>
+                </h3>
+                <button onclick="closeAddWorkshopModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <form id="add-workshop-form" onsubmit="handleNewWorkshopSubmit(event)" class="space-y-4">
+                    <input type="hidden" id="workshop-edit-id" value=""/>
+                    <!-- Title -->
+                    <div class="space-y-1.5">
+                        <label for="workshop-title" class="text-xs font-bold text-on-surface">Nazwa warsztatów *</label>
+                        <input type="text" id="workshop-title" required placeholder="np. Mistrzowskie formowanie płótna i akrylu" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="space-y-1.5">
+                        <label for="workshop-desc" class="text-xs font-bold text-on-surface">Opis warsztatów *</label>
+                        <textarea id="workshop-desc" required rows="3" placeholder="Opisz, czego uczestnicy nauczą się podczas Twoich warsztatów..." class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"></textarea>
+                    </div>
+
+                    <!-- Category & Format -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label for="workshop-category" class="text-xs font-bold text-on-surface">Rodzaj warsztatów *</label>
+                            <select id="workshop-category" required class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45">
+                                <option value="edukacyjne">Edukacyjne (nauka technik)</option>
+                                <option value="pokazowe">Pokazowe (prezentacja rzemiosła)</option>
+                                <option value="inne">Inne</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="workshop-format" class="text-xs font-bold text-on-surface">Format warsztatów *</label>
+                            <select id="workshop-format" required class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45">
+                                <option value="grupowe">Spotkanie grupowe (kilka osób)</option>
+                                <option value="indywidualne">Spotkanie indywidualne (1 na 1)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Meeting Type & Details -->
+                    <div class="space-y-3 p-4 bg-surface-container rounded-2xl border border-outline-variant/20">
+                        <span class="text-xs font-bold text-on-surface block">Miejsce i Typ spotkania *</span>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 text-xs font-bold text-on-surface cursor-pointer select-none">
+                                <input type="radio" id="workshop-type-stacjonarnie" name="workshop-type" value="stacjonarnie" checked onchange="toggleWorkshopLocationFields()" class="w-4 h-4 text-primary focus:ring-primary/20"/>
+                                Stacjonarnie
+                            </label>
+                            <label class="flex items-center gap-2 text-xs font-bold text-on-surface cursor-pointer select-none">
+                                <input type="radio" id="workshop-type-online" name="workshop-type" value="online" onchange="toggleWorkshopLocationFields()" class="w-4 h-4 text-primary focus:ring-primary/20"/>
+                                Online (Internet)
+                            </label>
+                        </div>
+                        
+                        <!-- Location Fields -->
+                        <div id="workshop-field-stacjonarnie" class="space-y-1.5 pt-2">
+                            <label for="workshop-address" class="text-[11px] font-bold text-outline">Adres / Lokalizacja *</label>
+                            <input type="text" id="workshop-address" placeholder="np. Pracownia ServeArt, ul. Szeroka 12, Toruń" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        </div>
+                        <div id="workshop-field-online" class="hidden space-y-1.5 pt-2">
+                            <label for="workshop-link" class="text-[11px] font-bold text-outline">Link do spotkania (np. Zoom, Google Meet) *</label>
+                            <input type="text" id="workshop-link" placeholder="np. https://zoom.us/j/123456789" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        </div>
+                    </div>
+
+                    <!-- Date, Capacity, Difficulty Level -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-1.5">
+                            <label for="workshop-dates" class="text-xs font-bold text-on-surface">Termin *</label>
+                            <input type="text" id="workshop-dates" required placeholder="np. Sobota, 16:00 - 19:00" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="workshop-capacity" class="text-xs font-bold text-on-surface">Liczba miejsc *</label>
+                            <input type="number" id="workshop-capacity" required min="1" value="10" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="workshop-difficulty" class="text-xs font-bold text-on-surface">Poziom trudności</label>
+                            <select id="workshop-difficulty" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45">
+                                <option value="początkujący">Początkujący</option>
+                                <option value="średniozaawansowany" selected>Średniozaawansowany</option>
+                                <option value="zaawansowany">Zaawansowany</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Payment and advance details -->
+                    <div class="space-y-3 p-4 bg-surface-container rounded-2xl border border-outline-variant/20">
+                        <span class="text-xs font-bold text-on-surface block">Opłaty i Koszt *</span>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 text-xs font-bold text-on-surface cursor-pointer select-none">
+                                <input type="radio" id="workshop-payment-paid" name="workshop-payment-type" value="paid" checked onchange="toggleWorkshopPaymentFields()" class="w-4 h-4 text-primary focus:ring-primary/20"/>
+                                Płatne
+                            </label>
+                            <label class="flex items-center gap-2 text-xs font-bold text-on-surface cursor-pointer select-none">
+                                <input type="radio" id="workshop-payment-free" name="workshop-payment-type" value="free" onchange="toggleWorkshopPaymentFields()" class="w-4 h-4 text-primary focus:ring-primary/20"/>
+                                Darmowe warsztaty
+                            </label>
+                        </div>
+                        
+                        <!-- Paid fields -->
+                        <div id="workshop-payment-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div class="space-y-1.5">
+                                <label for="workshop-price" class="text-[11px] font-bold text-outline">Pełna cena (PLN) *</label>
+                                <input type="number" id="workshop-price" min="0" value="150" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="workshop-advance" class="text-[11px] font-bold text-outline">Zaliczka na rezerwację (PLN, 0 = brak)</label>
+                                <input type="number" id="workshop-advance" min="0" value="30" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail & Materials option -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label for="workshop-image" class="text-xs font-bold text-on-surface">Link do miniaturki / Zdjęcie</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="workshop-image" placeholder="Wklej link do zdjęcia lub kliknij 'Mock'" class="flex-1 bg-surface-container-low border border-outline-variant/30 rounded-xl h-11 px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/45"/>
+                                <button type="button" onclick="loadMockWorkshopThumbnail()" class="px-3 bg-surface-container hover:bg-surface-container-high rounded-xl text-xs font-bold border border-outline-variant/30 transition-all select-none">Mock</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center pt-5">
+                            <label class="flex items-center gap-2.5 text-xs font-bold text-on-surface cursor-pointer select-none">
+                                <input type="checkbox" id="workshop-materials" checked class="w-4 h-4 rounded text-primary focus:ring-primary/20"/>
+                                Materiały wliczone w cenę warsztatów
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-3 pt-4 border-t border-outline-variant/15 flex-shrink-0">
+                        <button type="button" onclick="closeAddWorkshopModal()" class="flex-1 h-12 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold rounded-xl active:scale-95 transition-all text-xs">
+                            Anuluj
+                        </button>
+                        <button type="submit" class="flex-1 h-12 bg-gradient-to-r from-primary to-turquoise text-white font-bold rounded-xl shadow-lg hover:opacity-95 active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm font-bold">check</span>
+                            Zapisz warsztaty
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL I: DODAWANIE OFERTY (Add Product Modal) -->
     <div id="modal-add-listing" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex justify-center items-end md:items-center p-0 md:p-4">
         <div class="bg-surface w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl border border-outline-variant/20 flex flex-col max-h-[90vh] overflow-hidden text-left">
@@ -2835,6 +3014,25 @@
                     </svg>
                     Zaloguj się przez Google
                 </button>
+                <div class="flex items-center gap-3 my-2">
+                    <div class="h-px bg-outline-variant/10 flex-1"></div>
+                    <span class="text-[9px] text-on-surface-variant/40 font-bold uppercase tracking-wider">Konta testowe (Szybki start)</span>
+                    <div class="h-px bg-outline-variant/10 flex-1"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="quickSignIn('admin')" class="py-2 px-1 bg-primary/10 hover:bg-primary/20 text-primary font-bold rounded-xl active:scale-95 transition-all text-[10px] text-center shadow-sm border border-primary/20 flex flex-col items-center justify-center gap-0.5">
+                        <span class="text-xs">🔑</span>
+                        <span>Admin</span>
+                    </button>
+                    <button onclick="quickSignIn('tworca')" class="py-2 px-1 bg-turquoise/10 hover:bg-turquoise/20 text-turquoise font-bold rounded-xl active:scale-95 transition-all text-[10px] text-center shadow-sm border border-turquoise/20 flex flex-col items-center justify-center gap-0.5">
+                        <span class="text-xs">🎨</span>
+                        <span>Artysta</span>
+                    </button>
+                    <button onclick="quickSignIn('kupujacy')" class="py-2 px-1 bg-coral/10 hover:bg-coral/20 text-coral font-bold rounded-xl active:scale-95 transition-all text-[10px] text-center shadow-sm border border-coral/20 flex flex-col items-center justify-center gap-0.5">
+                        <span class="text-xs">🛍️</span>
+                        <span>Kupujący</span>
+                    </button>
+                </div>
                 <div class="text-center pt-2">
                     <button onclick="switchAuthView('register')" class="text-xs text-primary hover:text-turquoise font-bold transition-colors">
                         Nie masz konta? Zarejestruj się
@@ -3013,15 +3211,34 @@
         function getUserRoleBadge(name) {
             const role = getUserRoleLabel(name);
             if (role === 'entuzjasta') {
-                return `<span class="bg-turquoise/10 text-turquoise border border-turquoise/20 text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-1">Entuzjasta</span>`;
+                return `<span class="bg-turquoise/10 text-turquoise border border-primary/45 text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-1">Entuzjasta</span>`;
             } else {
-                return `<span class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-1">Twórca</span>`;
+                return `<span class="bg-primary/10 text-primary border border-primary/45 text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-1">Twórca</span>`;
             }
         }
 
 
-        // Database State Simulator
         const STATE = {
+            workshops: safeJsonParse(safeLocalStorage.getItem('serveart_workshops'), [
+                {
+                    id: "w_1",
+                    creator: "Anna Kowalska",
+                    title: "Mistrzowskie formowanie płótna i akrylu",
+                    description: "Naucz się przygotowywać naturalne podkłady malarskie, naciągać płótno dębowe oraz miksować techniki akrylowe i strukturalne.",
+                    price: 180,
+                    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAwU6YC8ksGULa3b8o8jTecnfFgWHlVRSJUlaQz7XMh_gsJuk6BTtJQO3dTgNQ2FP65n_hsGtwsURqReDJfNXdLN2zKMseAznG2rfg_ucB5dxEJkWw1l29C0XCjFv10bVep46mIFmct0ZI0r8qZfMmKNw6IFmXd9i0zDBVV95LIqB9J5nM6mfC5eQpbYwcDfmO9YtpFbf7E6ezIJ_4r4uXfIZJ_CHIiHL_uQCTuOOh-6jR9aKVe9hX5snXzQgM6HGAtwe58FL5bP1Y",
+                    meetingType: "stacjonarnie",
+                    address: "Pracownia ServeArt, Toruń",
+                    category: "edukacyjne",
+                    format: "grupowe",
+                    dates: "Sobota, 16:00 - 19:00",
+                    capacity: 12,
+                    bookingsCount: 3,
+                    advancePayment: 50,
+                    difficultyLevel: "średniozaawansowany",
+                    materialsIncluded: true
+                }
+            ]),
             activeTab: 'explore',
             feedFilter: 'foryou', // 'foryou' | 'following'
             // Community Expansion States
@@ -3411,50 +3628,65 @@
                     creator: "Jan Kowalski",
                     city: "Wrocław",
                     avatar: "",
+                    title: "Nowoczesne stoły loftowe z ceramicznymi inkrustacjami",
                     description: "Projektuję nowoczesne stoły i krzesła w stylu loftowym. Poszukuję rzemieślnika artysty ceramika do stworzenia unikalnych kafli glinianych, które zostaną wbudowane bezpośrednio w drewniane blaty moich projektów meblarskich.",
-                    soughtProfessions: ["Ceramik", "Garncarstwo", "Artysta Ceramiki"],
+                    soughtProfessions: ["#ceramika", "#garncarstwo"],
+                    productTags: ["#kafle", "#stół", "#meble"],
                     profession: "Projektant Mebli",
-                    shareLocation: true
+                    shareLocation: true,
+                    type: "wspolpraca"
                 },
                 {
                     id: "c_1",
                     creator: "Anna Kowalska",
                     city: "Toruń",
                     avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCbIDMmyRq579SSViGJZuDXmWafXlN4NN-Zxg5O9AguNdR22TRo-NdN5dFVR11KdjhIZcYuu_3NDzCDMo4edD6oj_mqlNS5dcJNQZlgRt9_Ytb_LoYaUBenu4emp-rBcuUc9eaqfeDWfEsJIKFSmAihQPjePt1UwgLz0OXGokeo-vbUPapxqFWywjZXUbAfmP6Bqq8xzOdxpRm6lDLrVM2DEMJV6h4w4d2ufAsq0MrZBogLVSmNx0bme3o5BTu2Y7u5fMod-xguXm8",
-                    description: "Tworzę tradycyjne, wielkoformatowe płótna pejzażowe, inspirowane głębią polskich lasów oraz dziką naturą doliny Wisły. W mojej codziennej pracy kładę ogromny nacisk na autentyczność, stosując wyłącznie sprawdzone, historyczne techniki gruntowania i naciągania lnu. Każdy pejzaż powstaje przez wiele tygodni, wymagając niezwykłej precyzji oraz skupienia. Poszukuję partnera rzemieślnika do wykonania rzeźbionych ram z litego drewna dębowego lub lipowego. Zależy mi na tym, aby ramy były unikalne, zdobione motywami roślinnymi lub abstrakcyjnymi reliefami, które podkreślą mistyczny charakter moich dzieł. Idealny kandydat powinien mieć doświadczenie w snycerstwie, cierpliwość do pracy z detalami oraz pasję do wydobywania naturalnego piękna drewna. Chciałabym stworzyć spójną kolekcję, gdzie rama i obraz stanowią nierozerwalną całość artystyczną. Zapewniam pełne wsparcie koncepcyjne, regularną komunikację na każdym etapie oraz uczciwy podział zysków ze sprzedaży gotowych kompletów na wystawach i w galerii ServeArt. Jeśli kochasz zapach drewna i chcesz stworzyć coś wyjątkowego, zapraszam serdecznie do kontaktu i wspólnego projektowania tej niesamowitej kolekcji.",
-                    soughtProfessions: ["Stolarz artystyczny", "Stolarstwo"],
+                    title: "Ręcznie rzeźbione ramy dębowe do obrazów olejnych",
+                    description: "Tworzę tradycyjne, wielkoformatowe płótna pejzażowe, inspirowane głębią polskich lasów oraz doliny Wisły. Poszukuję partnera rzemieślnika do wykonania rzeźbionych ram z litego drewna dębowego lub lipowego. Zależy mi na tym, aby ramy były unikalne, zdobione motywami roślinnymi lub reliefami, które podkreślą mistyczny charakter moich dzieł snycerskich.",
+                    soughtProfessions: ["#stolarstwo", "#snycerstwo"],
+                    productTags: ["#rama", "#obraz", "#płótno"],
                     profession: "Malarstwo",
-                    shareLocation: true
+                    shareLocation: true,
+                    type: "zlecenie"
                 },
                 {
                     id: "c_2",
                     creator: "Marek Zieliński",
                     city: "Gdańsk",
                     avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCZ0fhjrzvsMQ-uF0knD74twrPXfNqfb66A7_1W3iEpiD_a5znfh105QyfBtpYF1uBQrmpEXIUU70r6I_pCcsSeIYG6lPWRiTrjBpQHm_KOAfvMQ8rDtiAWYf0NqaTutx3Bb9jRDqHUH8ft58sUDfiMBG0HylHoBrisI5c4YUVXMcQq0XV71ztPbEaWu3Y4hnCPzJ5CKxXtE8IxMPn-GEUtsJAdUrpIlsEmIYr2O2xerS-VwPGYrKYYfJxvQ5I1dh5dvhEC6C5Db1Y",
-                    description: "Wypalam unikalne naczynia ceramiczne, koncentrując się na tradycyjnych formach kamionkowych oraz eksperymentalnych technikach zdobienia szkliwem strukturalnym. Inspiracje czerpię głównie z nadmorskiego krajobrazu, faktury skał i surowej estetyki północnej przyrody. Moje wazy i patery powstają na kole garncarskim z gliny pozyskiwanej z lokalnych złóż. Szukam jubilera lub metaloplastyka do ozdobienia krawędzi naczyń miedzią, mosiądzem lub surowym srebrem. Wyobrażam sobie subtelne, metalowe inkrustacje, owinięcia lub kute obręcze, które połączą surowość wypalonej gliny z elegancją metalu. Taka fuzja rzemiosł pozwoli na stworzenie ekskluzywnej linii ceramiki użytkowej i dekoracyjnej. Oczekuję otwartości na eksperymenty, dokładności oraz doświadczenia w pracy z delikatnymi materiałami. Wspólnie wypracujemy unikalną metodę montażu elementów metalowych na ceramice, dbając o trwałość i estetykę każdego detalu. Oferuję pełną swobodę twórczą w interpretacji form, dostęp do mojej pracowni w Gdańsku w celu przymiarek oraz zaangażowanie w promocję naszej wspólnej marki w mediach społecznościowych ServeArt. Czekam na Twoje pomysły i portfolio rzemieślnicze!",
-                    soughtProfessions: ["Jubiler", "Metaloplastyka", "Jubilerstwo"],
+                    title: "Kolekcja ceramiki użytkowej z elementami kutego metalu",
+                    description: "Wypalam unikalne naczynia ceramiczne inspirowane kolorytem Bałtyku. Szukam jubilera lub metaloplastyka do ozdobienia krawędzi naczyń miedzią, mosiądzem lub surowym srebrem. Wyobrażam sobie subtelne, metalowe inkrustacje, owinięcia lub kute obręcze, które połączą surowość wypalonej gliny z elegancją metalu.",
+                    soughtProfessions: ["#metaloplastyka", "#jubilerstwo"],
+                    productTags: ["#waza", "#patera", "#czarka"],
                     profession: "Ceramika",
-                    shareLocation: true
+                    shareLocation: true,
+                    type: "wspolpraca"
                 },
                 {
                     id: "c_3",
                     creator: "Anna z Lasu",
                     city: "Bieszczady",
                     avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-0JdvCha_HbwhqpBqhXnrtIKXvccvn0NYG5kaiD6aWztamYV2a-s2Hha1Gy8fRd2C2iKX0tVQJMRRngyQc6R85Wog898KqOJd57VLQhA9VRZW9JpLv-expTtCOmjk3zHJzg-3ilXxVHTS_UFj7GrtzS3RfyEw_qOewiprLIWCqsaipjd9vhqKDXyslosTq22F0hADLjQ7c4358e4jllQT611TfDxKPtUjC1c1R1EBv_5288I4CWZhhnbeu-z0o3UJ5bSvDq7zEpU",
-                    description: "Wykuwam biżuterię miedzianą z bursztynami. Szukam artysty szydełkowego do stworzenia ozdobnych etui z wełny merino.",
-                    soughtProfessions: ["Szydełkowanie", "Szydełko"],
+                    title: "Szydełkowe etui z wełny merino do biżuterii miedzianej",
+                    description: "Wykuwam biżuterię miedzianą z bursztynami. Szukam artysty szydełkowego do stworzenia ozdobnych etui z wełny merino, które będą chronić naszyjniki i bransolety podczas transportu.",
+                    soughtProfessions: ["#szydełkowanie", "#tkactwo"],
+                    productTags: ["#etui", "#naszyjnik", "#worek"],
                     profession: "Jubilerstwo",
-                    shareLocation: true
+                    shareLocation: true,
+                    type: "zlecenie"
                 },
                 {
                     id: "c_4",
                     creator: "Marek Wiśniewski",
                     city: "Zakopane",
                     avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCdzWF219RbLeFe5fSAK4OpluiKZ1v9gFE-BPdP9HuTG2nkQ6gcE4uK2Qe8EmRtsO7isTGJtfc-PV7E2DgyUitUGQKipfcyus117fYiMN-Q7dEGRiFPLyCjhrdDVLpucP_W0kCUZ_42_qYOZV-kCGAx6EXS2hERQs2E498kLLqKnsGO2CJgFN3GT8I6PjYJWknj6w1diTWdR3W81Ivhzpi448ar0feYpUqejDoVipt3T4OeBYyaCFt0UsStL6YBEixKrTdTVfDB640",
-                    description: "Projektuję rustykalne stoły dębowe. Poszukuję ceramika do przygotowania ręcznie robionych kafli glinianych pod blaty.",
-                    soughtProfessions: ["Ceramik", "Garncarstwo", "Artysta Ceramiki"],
+                    title: "Rustykalne stoły dębowe z wbudowanymi kaflami",
+                    description: "Projektuję rustykalne stoły dębowe o surowym charakterze. Poszukuję ceramika do przygotowania ręcznie robionych kafli glinianych, które wtopię w centralną część blatu stołowego.",
+                    soughtProfessions: ["#ceramika", "#garncarstwo"],
+                    productTags: ["#stół", "#blat", "#kafle"],
                     profession: "Stolarstwo",
-                    shareLocation: true
+                    shareLocation: true,
+                    type: "wspolpraca"
                 }
             ],
             followedCreators: safeJsonParse(safeLocalStorage.getItem('serveart_followed_creators'), ["Anna Kowalska"]), // Default followed creator
@@ -3657,7 +3889,7 @@
                             <span class="text-[7px] md:text-[8px] text-outline block truncate">${creator.city}</span>
                         </div>
                     </div>
-                    <button onclick="toggleFollowSim(this, '${creator.name}')" class="${isFollowing ? 'brand-text-triple-gradient font-bold' : 'text-primary'} font-label-sm text-[8px] md:text-[9px] hover:opacity-75 transition-opacity flex-shrink-0">
+                    <button onclick="toggleFollowSim(this, '${creator.name}')" class="${isFollowing ? 'follow-btn-secondary hover:bg-turquoise hover:text-white hover:shadow-[0_8px_24px_rgba(0,206,200,0.65)] shadow-[0_4px_12px_rgba(0,206,200,0.12)] dark:shadow-[0_4px_12px_rgba(0,206,200,0.25)]' : 'follow-btn-primary hover:bg-primary hover:text-white hover:shadow-[0_8px_24px_rgba(102,102,255,0.65)] shadow-[0_4px_12px_rgba(70,67,223,0.12)] dark:shadow-[0_4px_12px_rgba(70,67,223,0.25)]'} px-2 py-0.5 md:px-3 md:py-1 rounded-full font-label-sm text-[8px] md:text-[9px] font-bold transition-all duration-300 active:scale-95 flex-shrink-0 cursor-pointer flex items-center justify-center">
                         ${isFollowing ? 'Obserwujesz' : 'Obserwuj'}
                     </button>
                 </div>
@@ -3669,7 +3901,6 @@
                     <!-- AI FREE & HANDMADE Badges -->
                     <div class="absolute bottom-1.5 left-1.5 md:bottom-2 md:left-2 flex flex-wrap gap-1 pointer-events-auto z-10">
                         ${item.isAiFree ? `<span onclick="event.stopPropagation(); clickTag('AI FREE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-black/70 text-white border border-black/30 hover:bg-black hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">AI FREE</span>` : ''}
-                        ${item.isHandmade ? `<span onclick="event.stopPropagation(); clickTag('HANDMADE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-white/85 dark:bg-surface-container-lowest/85 text-secondary border border-turquoise/50 hover:border-turquoise hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">HANDMADE</span>` : ''}
                     </div>
                     
                     <!-- Floating Share Button -->
@@ -4096,10 +4327,10 @@
             safeLocalStorage.setItem('serveart_followed_creators', JSON.stringify(STATE.followedCreators));
             const followBtn = document.getElementById('btn-profile-follow');
             if (nowFollowing) {
-                followBtn.className = "px-4 py-1.5 followed-btn-gradient-border text-on-surface text-xs font-bold rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
+                followBtn.className = "px-4 py-1.5 followed-btn-gradient-border text-on-surface text-xs font-bold rounded-full hover:opacity-90 hover:shadow-[0_8px_20px_rgba(0,206,200,0.4)] active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
                 followBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">person_remove</span> <span id="btn-profile-follow-text">Obserwujesz</span>`;
             } else {
-                followBtn.className = "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
+                followBtn.className = "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 hover:shadow-[0_8px_20px_rgba(70,67,223,0.4)] active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
                 followBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">person_add</span> <span id="btn-profile-follow-text">Zaobserwuj</span>`;
             }
             renderExploreFeed();
@@ -4497,7 +4728,6 @@
                             <!-- AI FREE & HANDMADE Badges -->
                             <div class="absolute bottom-1.5 left-1.5 md:bottom-2 md:left-2 flex flex-wrap gap-1 pointer-events-auto z-10">
                                 ${item.isAiFree ? `<span onclick="event.stopPropagation(); clickTag('AI FREE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-black/70 text-white border border-black/30 hover:bg-black hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">AI FREE</span>` : ''}
-                                ${item.isHandmade ? `<span onclick="event.stopPropagation(); clickTag('HANDMADE')" class="px-1 md:px-1.5 py-0.5 rounded text-[6px] md:text-[8px] font-bold uppercase tracking-tighter bg-white/85 dark:bg-surface-container-lowest/85 text-secondary border border-turquoise/50 hover:border-turquoise hover:opacity-100 hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] flex-shrink-0">HANDMADE</span>` : ''}
                             </div>
                             
                             <!-- Floating Share Button -->
@@ -4741,10 +4971,10 @@
                 const followBtn = document.getElementById('btn-profile-follow');
                 if (followBtn) {
                     if (isFollowing) {
-                        followBtn.className = "px-4 py-1.5 followed-btn-gradient-border text-on-surface text-xs font-bold rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
+                        followBtn.className = "px-4 py-1.5 followed-btn-gradient-border text-on-surface text-xs font-bold rounded-full hover:opacity-90 hover:shadow-[0_8px_20px_rgba(0,206,200,0.4)] active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
                         followBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">person_remove</span> <span id="btn-profile-follow-text">Obserwujesz</span>`;
                     } else {
-                        followBtn.className = "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
+                        followBtn.className = "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow hover:opacity-90 hover:shadow-[0_8px_20px_rgba(70,67,223,0.4)] active:scale-95 transition-all flex items-center gap-1 relative overflow-visible";
                         followBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">person_add</span> <span id="btn-profile-follow-text">Zaobserwuj</span>`;
                     }
                 }
@@ -4765,6 +4995,7 @@
                 tabPortfolio.removeAttribute('data-disabled');
                 
                 tabEvents.classList.remove('hidden');
+                tabEvents.innerText = 'Warsztaty';
             } else {
                 tabSklep.classList.remove('hidden');
                 tabSklep.classList.add('opacity-40', 'pointer-events-none');
@@ -4780,11 +5011,17 @@
             }
             document.getElementById('prof-tab-saved').classList.add('hidden');
             
-            const hasCoop = STATE.cooperations.some(c => c.creator === creator.name);
-            if (hasCoop) {
-                document.getElementById('prof-tab-cooperation').classList.remove('hidden');
-            } else {
-                document.getElementById('prof-tab-cooperation').classList.add('hidden');
+            const tabCoop = document.getElementById('prof-tab-cooperation');
+            if (tabCoop) {
+                tabCoop.classList.remove('hidden');
+                const hasCoop = STATE.cooperations.some(c => c.creator === creator.name);
+                if (hasCoop) {
+                    tabCoop.classList.remove('opacity-40', 'pointer-events-none');
+                    tabCoop.removeAttribute('data-disabled');
+                } else {
+                    tabCoop.classList.add('opacity-40', 'pointer-events-none');
+                    tabCoop.setAttribute('data-disabled', 'true');
+                }
             }
             
             document.getElementById('prof-tab-edit').classList.add('hidden');
@@ -4858,6 +5095,10 @@
             if (subtabId === 'saved') {
                 renderProfileSavedOffers();
                 renderProfileSavedPostsList();
+            } else if (subtabId === 'events') {
+                renderProfileEvents();
+            } else if (subtabId === 'cooperation') {
+                renderProfileCooperationTab();
             }
 
             // Align active tab gradient to content container width & position
@@ -5950,28 +6191,16 @@
             }
 
             if (coop) {
-                const tags = getCreatorTags(coop.creator);
                 let tagsHtml = '';
-                if (tags.length > 0) {
-                    tagsHtml += `<div class="coop-tags-list flex flex-nowrap items-center gap-1.5 pt-1 overflow-x-auto hide-scrollbar w-full" data-coop-id="${coop.id}">`;
-                    const visibleTags = tags.slice(0, 2);
-                    const hiddenTags = tags.slice(2);
-                    
-                    visibleTags.forEach(t => {
-                        tagsHtml += `
-                            <span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
-                        `;
-                    });
-                    
-                    if (hiddenTags.length > 0) {
-                        tagsHtml += `
-                            <button onclick="expandCoopTags(event, '${coop.id}')" class="coop-expand-btn px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[8px] md:text-[9px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>
-                            ${hiddenTags.map(t => `
-                                <span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
-                            `).join('')}
-                        `;
-                    }
-                    tagsHtml += `</div>`;
+                if (coop.soughtProfessions && coop.soughtProfessions.length > 0) {
+                    tagsHtml = `
+                        <div class="flex items-center gap-1.5 mt-1 border-b border-outline-variant/10 pb-2">
+                            <span class="font-bold text-coral text-[10px]">Szukam:</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
                 }
 
                 // Render cooperation details card at the top
@@ -5982,7 +6211,7 @@
                                 <img src="${coop.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}" class="w-9 h-9 rounded-full object-cover border border-outline-variant/30"/>
                                 <div class="min-w-0">
                                     <h4 class="font-bold text-on-surface truncate">${coop.creator}</h4>
-                                    ${coop.shareLocation ? `<p class="text-[9px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
+                                    ${coop.shareLocation ? `<p class="text-[9px] text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
                                 </div>
                             </div>
                             <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${coop.type === 'zlecenie' ? 'bg-turquoise/15 text-secondary border border-turquoise/35' : 'bg-primary/10 text-primary border border-primary/20'}">
@@ -5992,14 +6221,8 @@
                         
                         ${tagsHtml}
 
-                        <div class="space-y-1.5 text-[11px] leading-relaxed text-on-surface-variant border-t border-outline-variant/15 pt-2">
+                        <div class="space-y-1.5 text-[11px] leading-relaxed text-on-surface-variant dark:text-zinc-300 border-t border-outline-variant/15 pt-2">
                             <p><span class="font-bold text-primary">Kim jestem / Projekt:</span> ${coop.description}</p>
-                            <div class="space-y-1 pt-1">
-                                <span class="font-bold text-secondary">Poszukiwane kompetencje:</span>
-                                <div class="flex flex-wrap gap-1.5 mt-0.5">
-                                    ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-secondary/45 hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -6254,9 +6477,6 @@
             if (item.isAiFree) {
                 badgesBar.innerHTML += `<div class="bg-black text-white px-3 py-1.5 rounded-full text-xs font-bold font-label-md">[AI FREE]</div>`;
             }
-            if (item.isHandmade) {
-                badgesBar.innerHTML += `<div class="border border-turquoise text-secondary bg-turquoise/5 px-3 py-1.5 rounded-full text-xs font-bold font-label-md">[TRUE HANDMADE]</div>`;
-            }
             badgesBar.innerHTML += `<div class="border border-primary text-primary bg-primary/5 px-3 py-1.5 rounded-full text-xs font-bold font-label-md">[LOKALNE MATERIAŁY]</div>`;
 
             // Setup Media Carousel (Mobile)
@@ -6440,15 +6660,30 @@
 
         // ==================== WORKSHOPS BOOKINGS ====================
 
-        function openBookingModalSim(name, price) {
+        function openBookingModalSim(name, price, dates = 'Sobota, 16:00', advance = 0) {
             document.getElementById('book-title').innerText = name;
             document.getElementById('book-unit-price').innerText = price;
+            document.getElementById('book-date').innerText = dates;
+            
+            const advanceContainer = document.getElementById('book-advance-info-container');
+            const advancePriceEl = document.getElementById('book-advance-price');
+            
+            if (advance > 0) {
+                if (advanceContainer) advanceContainer.classList.remove('hidden');
+                if (advancePriceEl) advancePriceEl.innerText = advance;
+                STATE.ticketPaymentType = 'advance';
+                STATE.ticketAdvance = advance;
+            } else {
+                if (advanceContainer) advanceContainer.classList.add('hidden');
+                STATE.ticketPaymentType = 'full';
+                STATE.ticketAdvance = 0;
+            }
             
             STATE.ticketPrice = price;
             STATE.ticketCount = 1;
             
             document.getElementById('ticket-qty').innerText = 1;
-            document.getElementById('book-total-price').innerText = `${price} PLN`;
+            updateBookingTotals();
             
             document.getElementById('modal-booking').classList.remove('hidden');
         }
@@ -6457,15 +6692,379 @@
             document.getElementById('modal-booking').classList.add('hidden');
         }
 
+        function updateBookingTotals() {
+            const label = document.getElementById('book-payment-label');
+            const total = document.getElementById('book-total-price');
+            
+            if (STATE.ticketPrice === 0) {
+                if (label) label.innerText = "Rezerwacja (bezpłatna):";
+                if (total) total.innerText = "Darmowe";
+            } else if (STATE.ticketPaymentType === 'advance') {
+                if (label) label.innerText = "Zaliczka do zapłaty teraz:";
+                if (total) total.innerText = `${STATE.ticketAdvance * STATE.ticketCount} PLN`;
+            } else {
+                if (label) label.innerText = "Razem do zapłaty:";
+                if (total) total.innerText = `${STATE.ticketPrice * STATE.ticketCount} PLN`;
+            }
+        }
+
         function changeTicketQty(val) {
             STATE.ticketCount = Math.max(1, STATE.ticketCount + val);
             document.getElementById('ticket-qty').innerText = STATE.ticketCount;
-            document.getElementById('book-total-price').innerText = `${STATE.ticketPrice * STATE.ticketCount} PLN`;
+            updateBookingTotals();
         }
 
         function handleBookingCheckout() {
             closeBookingModal();
             alert(`✓ Pomyślnie zakupiono ${STATE.ticketCount} bilet(y) na warsztaty.\nBilety i kod QR wejścia zostały przesłane na Twój e-mail.`);
+        }
+
+        // ==================== WORKSHOPS MANAGEMENT LOGICS ====================
+
+        function renderProfileEvents() {
+            const container = document.getElementById('profile-workshops-content');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const viewedName = STATE.activeProfileName || STATE.currentUser.name;
+            const isOwnProfile = (viewedName === STATE.currentUser.name);
+
+            // Show or hide "Dodaj warsztat" button wrapper
+            const addBtnWrapper = document.getElementById('own-profile-add-workshop-container');
+            if (addBtnWrapper) {
+                if (isOwnProfile && STATE.currentUser.role === 'twórca') {
+                    addBtnWrapper.classList.remove('hidden');
+                } else {
+                    addBtnWrapper.classList.add('hidden');
+                }
+            }
+
+            // Find workshops for this user
+            const workshops = (STATE.workshops || []).filter(w => w.creator === viewedName);
+
+            if (workshops.length === 0) {
+                if (isOwnProfile) {
+                    // Own profile & no workshops -> Gray notice with suggestion and add button below it
+                    container.innerHTML = `
+                        <div class="py-12 px-6 text-center text-outline text-xs bg-surface-container-lowest border border-outline-variant/20 rounded-2xl flex flex-col items-center justify-center space-y-4">
+                            <span class="material-symbols-outlined text-4xl text-outline/60">event_busy</span>
+                            <span class="text-on-surface-variant font-medium text-center">Chcesz pokazać innym, jak tworzysz? Dodaj pierwsze ogłoszenie o warsztatach!</span>
+                            <button onclick="openAddWorkshopModal()" class="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white font-bold rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all text-xs">
+                                <span class="material-symbols-outlined text-xs">add</span> Dodaj pierwsze warsztaty
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Another creator & no workshops -> Simple gray notice
+                    container.innerHTML = `
+                        <div class="py-12 px-6 text-center text-outline text-xs bg-surface-container-lowest border border-outline-variant/20 rounded-2xl flex flex-col items-center justify-center">
+                            <span class="material-symbols-outlined text-4xl text-outline/60 mb-2">event_busy</span>
+                            <span>Ten twórca nie zaplanował jeszcze żadnych warsztatów.</span>
+                        </div>
+                    `;
+                }
+                setTimeout(alignActiveTabGradient, 50);
+                return;
+            }
+
+            // Render workshops grid
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+
+            workshops.forEach(w => {
+                const card = document.createElement('div');
+                card.className = "bg-surface-container-lowest border border-outline-variant/20 rounded-2xl overflow-hidden shadow-sm group text-left relative flex flex-col justify-between";
+                
+                // Spot remaining calculation
+                const spotsLeft = Math.max(0, w.capacity - (w.bookingsCount || 0));
+                
+                // Type label text
+                const typeLabel = w.meetingType === 'online' ? 'Warsztaty online' : 'Warsztaty stacjonarne';
+                
+                // Location info
+                const locationHtml = w.meetingType === 'online' 
+                    ? `<p class="flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">link</span> <span class="truncate">Link: <a href="${w.meetingLink}" target="_blank" class="text-primary hover:underline font-bold">${w.meetingLink}</a></span></p>`
+                    : `<p class="flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">location_on</span> <span>Miejsce: ${w.address}</span></p>`;
+                
+                // Price text
+                const priceText = w.price > 0 ? `${w.price} PLN` : 'Darmowe';
+                
+                // Advance payment info
+                const advanceHtml = (w.price > 0 && w.advancePayment > 0)
+                    ? `<span class="bg-secondary/15 text-secondary text-[9px] font-bold px-2 py-0.5 rounded-full">Zaliczka: ${w.advancePayment} PLN</span>`
+                    : '';
+                
+                // Difficulty & Materials pills
+                const diffHtml = `<span class="bg-surface-container text-on-surface-variant text-[9px] font-bold px-2 py-0.5 rounded-full capitalize">Poziom: ${w.difficultyLevel || 'średni'}</span>`;
+                const matHtml = w.materialsIncluded 
+                    ? `<span class="bg-primary/15 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full">Materiały w cenie</span>`
+                    : '';
+
+                // Action buttons on card
+                let actionButtonHtml = '';
+                if (isOwnProfile) {
+                    // Creator's own workshops: Edit / Delete buttons
+                    actionButtonHtml = `
+                        <div class="absolute bottom-3 right-3 z-10 flex gap-2 pointer-events-auto">
+                            <button onclick="editWorkshop(event, '${w.id}')" class="px-3 py-1.5 bg-surface/90 hover:bg-surface text-on-surface border border-outline-variant/30 rounded-full font-bold text-[10px] uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">edit</span> Edytuj
+                            </button>
+                            <button onclick="deleteWorkshop(event, '${w.id}')" class="px-3 py-1.5 bg-error/15 hover:bg-error/25 text-error rounded-full font-bold text-[10px] uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">delete</span> Usuń
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Buyer's view: Zarezerwuj bilet overlayed on the photo!
+                    actionButtonHtml = `
+                        <div class="absolute bottom-3 right-3 z-10 pointer-events-auto">
+                            <button onclick="openBookingModalSim('${w.title}', ${w.price})" class="brand-triple-gradient text-white px-3.5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-xs">confirmation_number</span>
+                                Zarezerwuj bilet
+                            </button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="aspect-video bg-surface-container relative overflow-hidden flex-shrink-0">
+                        <img src="${w.image || 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=80'}" class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"/>
+                        <span class="absolute top-2 left-2 bg-secondary text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full">${typeLabel}</span>
+                        ${actionButtonHtml}
+                    </div>
+                    <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start gap-2">
+                                <div>
+                                    <h4 class="font-headline-md text-base font-bold text-on-surface">${w.title}</h4>
+                                    <p class="text-[10px] text-outline font-semibold capitalize">${w.format || 'grupowe'} • ${w.category || 'edukacyjne'}</p>
+                                </div>
+                                <span class="text-on-surface font-bold text-sm flex-shrink-0">${priceText}</span>
+                            </div>
+                            <p class="text-xs text-outline line-clamp-3 leading-relaxed">${w.description}</p>
+                        </div>
+                        
+                        <div class="space-y-2 pt-2">
+                            <div class="text-[11px] text-on-surface-variant space-y-1 bg-surface-container/30 dark:bg-white/5 p-2.5 rounded-xl border border-outline-variant/10">
+                                <p class="flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">calendar_today</span> <span>Termin: ${w.dates}</span></p>
+                                ${locationHtml}
+                                <p class="flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">group</span> <span>Wolne miejsca: <span class="font-bold ${spotsLeft > 0 ? 'text-primary' : 'text-error'}">${spotsLeft}</span> z ${w.capacity}</span></p>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                ${diffHtml}
+                                ${matHtml}
+                                ${advanceHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            container.appendChild(grid);
+            setTimeout(alignActiveTabGradient, 50);
+        }
+
+        function openAddWorkshopModal(editId = null) {
+            const modal = document.getElementById('modal-add-workshop');
+            if (!modal) return;
+
+            // Reset form
+            document.getElementById('add-workshop-form').reset();
+            document.getElementById('workshop-edit-id').value = '';
+            document.getElementById('workshop-modal-title').innerText = 'Ogłoś nowe warsztaty';
+
+            if (editId) {
+                const w = STATE.workshops.find(x => x.id === editId);
+                if (w) {
+                    document.getElementById('workshop-edit-id').value = w.id;
+                    document.getElementById('workshop-modal-title').innerText = 'Edytuj warsztaty';
+                    document.getElementById('workshop-title').value = w.title;
+                    document.getElementById('workshop-desc').value = w.description;
+                    document.getElementById('workshop-category').value = w.category;
+                    document.getElementById('workshop-format').value = w.format;
+                    
+                    if (w.meetingType === 'online') {
+                        document.getElementById('workshop-type-online').checked = true;
+                        document.getElementById('workshop-link').value = w.meetingLink || '';
+                    } else {
+                        document.getElementById('workshop-type-stacjonarnie').checked = true;
+                        document.getElementById('workshop-address').value = w.address || '';
+                    }
+                    
+                    document.getElementById('workshop-dates').value = w.dates;
+                    document.getElementById('workshop-capacity').value = w.capacity;
+                    document.getElementById('workshop-difficulty').value = w.difficultyLevel || 'średniozaawansowany';
+                    
+                    if (w.price > 0) {
+                        document.getElementById('workshop-payment-paid').checked = true;
+                        document.getElementById('workshop-price').value = w.price;
+                        document.getElementById('workshop-advance').value = w.advancePayment || 0;
+                    } else {
+                        document.getElementById('workshop-payment-free').checked = true;
+                        document.getElementById('workshop-price').value = 0;
+                        document.getElementById('workshop-advance').value = 0;
+                    }
+
+                    document.getElementById('workshop-image').value = w.image || '';
+                    document.getElementById('workshop-materials').checked = !!w.materialsIncluded;
+                }
+            }
+
+            toggleWorkshopLocationFields();
+            toggleWorkshopPaymentFields();
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeAddWorkshopModal() {
+            const modal = document.getElementById('modal-add-workshop');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function toggleWorkshopLocationFields() {
+            const isOnline = document.getElementById('workshop-type-online').checked;
+            const fieldStacjonarnie = document.getElementById('workshop-field-stacjonarnie');
+            const fieldOnline = document.getElementById('workshop-field-online');
+            const inputAddress = document.getElementById('workshop-address');
+            const inputLink = document.getElementById('workshop-link');
+
+            if (isOnline) {
+                fieldStacjonarnie.classList.add('hidden');
+                fieldOnline.classList.remove('hidden');
+                inputLink.required = true;
+                inputAddress.required = false;
+            } else {
+                fieldStacjonarnie.classList.remove('hidden');
+                fieldOnline.classList.add('hidden');
+                inputLink.required = false;
+                inputAddress.required = true;
+            }
+        }
+
+        function toggleWorkshopPaymentFields() {
+            const isFree = document.getElementById('workshop-payment-free').checked;
+            const fields = document.getElementById('workshop-payment-fields');
+            const price = document.getElementById('workshop-price');
+            const advance = document.getElementById('workshop-advance');
+
+            if (isFree) {
+                fields.classList.add('hidden');
+                price.required = false;
+                advance.required = false;
+            } else {
+                fields.classList.remove('hidden');
+                price.required = true;
+                advance.required = false;
+            }
+        }
+
+        const MOCK_WORKSHOP_THUMBS = [
+            "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1580136579312-94651dfd596d?w=600&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?w=600&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=600&auto=format&fit=crop&q=80"
+        ];
+
+        function loadMockWorkshopThumbnail() {
+            const randImg = MOCK_WORKSHOP_THUMBS[Math.floor(Math.random() * MOCK_WORKSHOP_THUMBS.length)];
+            document.getElementById('workshop-image').value = randImg;
+        }
+
+        function handleNewWorkshopSubmit(event) {
+            event.preventDefault();
+            
+            const editId = document.getElementById('workshop-edit-id').value;
+            const title = document.getElementById('workshop-title').value;
+            const description = document.getElementById('workshop-desc').value;
+            const category = document.getElementById('workshop-category').value;
+            const format = document.getElementById('workshop-format').value;
+            const meetingType = document.getElementById('workshop-type-online').checked ? 'online' : 'stacjonarnie';
+            const address = meetingType === 'stacjonarnie' ? document.getElementById('workshop-address').value : '';
+            const meetingLink = meetingType === 'online' ? document.getElementById('workshop-link').value : '';
+            const dates = document.getElementById('workshop-dates').value;
+            const capacity = parseInt(document.getElementById('workshop-capacity').value);
+            const difficultyLevel = document.getElementById('workshop-difficulty').value;
+            
+            const isFree = document.getElementById('workshop-payment-free').checked;
+            const price = isFree ? 0 : parseFloat(document.getElementById('workshop-price').value || 0);
+            const advancePayment = isFree ? 0 : parseFloat(document.getElementById('workshop-advance').value || 0);
+            
+            let image = document.getElementById('workshop-image').value;
+            if (!image || !image.trim()) {
+                image = MOCK_WORKSHOP_THUMBS[0];
+            }
+            
+            const materialsIncluded = document.getElementById('workshop-materials').checked;
+
+            if (editId) {
+                // Update
+                const w = STATE.workshops.find(x => x.id === editId);
+                if (w) {
+                    w.title = title;
+                    w.description = description;
+                    w.category = category;
+                    w.format = format;
+                    w.meetingType = meetingType;
+                    w.address = address;
+                    w.meetingLink = meetingLink;
+                    w.dates = dates;
+                    w.capacity = capacity;
+                    w.difficultyLevel = difficultyLevel;
+                    w.price = price;
+                    w.advancePayment = advancePayment;
+                    w.image = image;
+                    w.materialsIncluded = materialsIncluded;
+                    showToast("Zaktualizowano warsztaty!");
+                }
+            } else {
+                // Create
+                const newW = {
+                    id: "w_" + Date.now(),
+                    creator: STATE.currentUser.name,
+                    title,
+                    description,
+                    category,
+                    format,
+                    meetingType,
+                    address,
+                    meetingLink,
+                    dates,
+                    capacity,
+                    bookingsCount: 0,
+                    difficultyLevel,
+                    price,
+                    advancePayment,
+                    image,
+                    materialsIncluded
+                };
+                STATE.workshops.unshift(newW);
+                showToast("Pomyślnie ogłoszono warsztaty!");
+            }
+
+            safeLocalStorage.setItem('serveart_workshops', JSON.stringify(STATE.workshops));
+            closeAddWorkshopModal();
+            renderProfileEvents();
+        }
+
+        function editWorkshop(event, id) {
+            if (event) event.stopPropagation();
+            openAddWorkshopModal(id);
+        }
+
+        function deleteWorkshop(event, id) {
+            if (event) event.stopPropagation();
+            if (confirm("Czy na pewno chcesz usunąć te warsztaty?")) {
+                const idx = STATE.workshops.findIndex(x => x.id === id);
+                if (idx > -1) {
+                    STATE.workshops.splice(idx, 1);
+                    safeLocalStorage.setItem('serveart_workshops', JSON.stringify(STATE.workshops));
+                    showToast("Usunięto warsztaty!");
+                    renderProfileEvents();
+                }
+            }
         }
 
 
@@ -8129,9 +8728,19 @@
                 
                 if (ownAddListingContainer) ownAddListingContainer.classList.add('hidden');
             }
-            document.getElementById('prof-tab-events').classList.add('hidden');
+            const tabEv = document.getElementById('prof-tab-events');
+            if (isCreator) {
+                tabEv.classList.remove('hidden');
+                tabEv.innerText = 'Warsztaty';
+            } else {
+                tabEv.classList.add('hidden');
+            }
             document.getElementById('prof-tab-saved').classList.add('hidden'); // Deactivated under profile (kept hidden)
-            document.getElementById('prof-tab-cooperation').classList.remove('hidden');
+            const tabCoop = document.getElementById('prof-tab-cooperation');
+            if (tabCoop) {
+                tabCoop.classList.remove('hidden', 'opacity-40', 'pointer-events-none');
+                tabCoop.removeAttribute('data-disabled');
+            }
             document.getElementById('prof-tab-edit').classList.add('hidden');
 
             // Switch to profile view first
@@ -8430,11 +9039,11 @@
             const text = coop.description || "";
             const limit = 150;
             if (text.length <= limit) {
-                return `<span class="text-on-surface-variant dark:text-white">${text}</span>`;
+                return `<span class="text-on-surface-variant dark:text-zinc-300">${text}</span>`;
             } else {
                 const truncated = text.substring(0, limit).trim();
                 return `
-                    <span class="text-on-surface-variant dark:text-white coop-desc-text">
+                    <span class="text-on-surface-variant dark:text-zinc-300 coop-desc-text">
                         <span class="coop-desc-truncated">${truncated}...</span>
                         <span class="text-primary font-bold hover:underline ml-1">więcej</span>
                     </span>
@@ -8447,21 +9056,11 @@
             const container = document.getElementById('cooperation-scroll-container');
             if (!bar || !container) return;
 
-            if (!STATE.currentUser.cooperationEnabled) {
-                bar.classList.add('hidden');
-                return;
-            }
+            const myName = STATE.currentUser.name;
+            // Get all cooperations from other creators
+            const allCoops = STATE.cooperations.filter(coop => coop.creator !== myName);
 
-            const matchedCoops = STATE.cooperations.filter(coop => {
-                if (coop.creator === STATE.currentUser.name) return false;
-                const seekMatch = STATE.currentUser.soughtProfessions.some(prof => 
-                    coop.profession.toLowerCase().includes(prof.toLowerCase()) ||
-                    coop.soughtProfessions.some(sought => sought.toLowerCase().includes(prof.toLowerCase()))
-                );
-                return seekMatch;
-            });
-
-            if (matchedCoops.length === 0) {
+            if (allCoops.length === 0) {
                 bar.classList.add('hidden');
                 return;
             }
@@ -8469,7 +9068,25 @@
             bar.classList.remove('hidden');
             container.innerHTML = '';
 
-            matchedCoops.forEach(coop => {
+            // Sort matched cooperations first
+            const matchedCoops = [];
+            const otherCoops = [];
+
+            allCoops.forEach(coop => {
+                const isMatch = STATE.currentUser.soughtProfessions && STATE.currentUser.soughtProfessions.some(prof => 
+                    (coop.profession && coop.profession.toLowerCase().includes(prof.toLowerCase())) ||
+                    (coop.soughtProfessions && coop.soughtProfessions.some(sought => sought.toLowerCase().includes(prof.toLowerCase())))
+                );
+                if (isMatch) {
+                    matchedCoops.push(coop);
+                } else {
+                    otherCoops.push(coop);
+                }
+            });
+
+            const sortedCoops = [...matchedCoops, ...otherCoops];
+
+            sortedCoops.forEach(coop => {
                 const tags = getCreatorTags(coop.creator);
                 let tagsHtml = '';
                 if (tags.length > 0) {
@@ -8479,7 +9096,7 @@
                     
                     visibleTags.forEach(t => {
                         tagsHtml += `
-                            <span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
+                            <span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-coral border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
                         `;
                     });
                     
@@ -8487,12 +9104,24 @@
                         tagsHtml += `
                             <button onclick="event.stopPropagation(); expandCoopTags(event, '${coop.id}')" class="coop-expand-btn px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[8px] md:text-[9px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>
                             ${hiddenTags.map(t => `
-                                <span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
+                                <span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-coral border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
                             `).join('')}
                         `;
                     }
                     tagsHtml += `</div>`;
                 }
+
+                // Format product tags
+                const productsHtml = coop.productTags && coop.productTags.length > 0
+                    ? `
+                    <div class="space-y-1 mt-1.5 border-t border-outline-variant/10 pt-1.5">
+                        <span class="font-bold text-outline text-[9px] uppercase tracking-wider block">Dotyczy produktu:</span>
+                        <div class="flex flex-wrap gap-1">
+                            ${coop.productTags.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase bg-secondary/10 text-secondary border border-secondary hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    `
+                    : '';
 
                 container.innerHTML += `
                     <div onclick="openCoopDetailModal('${coop.id}')" class="flex-shrink-0 w-64 bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-3.5 shadow-sm space-y-2 text-xs flex flex-col justify-between snap-center hover:-translate-y-1 hover:shadow-md cursor-pointer transition-all">
@@ -8502,23 +9131,23 @@
                                     <img src="${coop.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 flex-shrink-0"/>
                                     <div class="min-w-0">
                                         <h4 class="font-bold text-on-surface truncate text-[11px]">${coop.creator}</h4>
-                                        ${coop.shareLocation ? `<p class="text-[9px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
+                                        ${coop.shareLocation ? `<p class="text-[9px] text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
                                     </div>
                                 </div>
                                 <span class="px-2 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider flex-shrink-0 ${coop.type === 'zlecenie' ? 'bg-turquoise/15 text-secondary border border-turquoise/35' : 'bg-primary/10 text-primary border border-primary/20'}">
-                                    ${coop.type === 'zlecenie' ? 'Zlecenie' : 'Współpraca'}
+                                    ${coop.type === 'zlecenie' ? 'Realizacja' : 'Współpraca'}
                                 </span>
                             </div>
+                            <h3 class="font-bold text-on-surface text-[12px] leading-tight line-clamp-2 mt-1" title="${coop.title || 'Ogłoszenie o współpracy'}">
+                                ${coop.title || 'Ogłoszenie o współpracy'}
+                            </h3>
                             ${tagsHtml}
                         </div>
                         <div class="space-y-1 text-[11px] leading-snug text-left mt-2 flex-1 flex flex-col justify-between">
                             <div class="space-y-2">
-                                <p class="text-on-surface-variant dark:text-white leading-relaxed"><span class="font-bold text-primary">${coop.type === 'zlecenie' ? 'Szczegóły:' : 'Kim jestem:'}</span> ${renderCoopDescription(coop)}</p>
+                                <p class="text-on-surface-variant dark:text-zinc-300 leading-relaxed"><span class="font-bold text-primary">${coop.type === 'zlecenie' ? 'Szczegóły:' : 'Kim jestem:'}</span> ${renderCoopDescription(coop)}</p>
                                 <div class="space-y-1">
-                                    <span class="font-bold text-secondary text-[10px]">Szukam:</span>
-                                    <div class="flex flex-wrap gap-1">
-                                        ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-secondary/45 hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
-                                    </div>
+                                    ${productsHtml}
                                 </div>
                             </div>
                         </div>
@@ -8584,109 +9213,45 @@
         }
 
         // ==================== COOPERATION MODAL LOGICS ====================
-        let coopModalSelectedTags = [];
 
-        function renderCoopModalSelectedTags() {
-            const container = document.getElementById('coop-modal-selected-tags');
-            if (!container) return;
-            if (coopModalSelectedTags.length === 0) {
-                container.innerHTML = `<span class="text-xs text-outline italic self-center px-1">Brak wybranych kompetencji...</span>`;
-                return;
-            }
-            container.innerHTML = coopModalSelectedTags.map(tag => `
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-bold">
-                    ${tag}
-                    <button type="button" onclick="deselectCoopModalTag('${tag}')" class="material-symbols-outlined text-xs hover:text-error transition-colors select-none font-normal">close</button>
-                </span>
-            `).join('');
+        function parseTagsInput(value) {
+            if (!value) return [];
+            return value.split(/\s+/).map(tag => {
+                let clean = tag.trim();
+                if (!clean) return '';
+                if (!clean.startsWith('#')) {
+                    clean = '#' + clean;
+                }
+                return clean;
+            }).filter(Boolean);
         }
 
-        function filterCoopModalTags() {
-            const query = document.getElementById('coop-modal-tag-search').value.toLowerCase().trim();
-            const container = document.getElementById('coop-modal-tag-suggestions');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            const matched = STATE.categories.filter(cat => 
-                cat.toLowerCase().includes(query) && !coopModalSelectedTags.includes(cat)
-            );
-            
-            if (matched.length === 0) {
-                container.innerHTML = `<span class="text-[10px] text-outline italic col-span-2 text-center py-2">Brak pasujących kategorii...</span>`;
-                return;
-            }
-            
-            matched.forEach(cat => {
-                container.innerHTML += `
-                    <button type="button" onclick="selectCoopModalTag('${cat}')" class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-primary/10 hover:text-primary transition-all text-left text-xs text-on-surface truncate flex items-center justify-between">
-                        <span>${cat}</span>
-                        <span class="material-symbols-outlined text-xs text-outline font-normal">add</span>
-                    </button>
-                `;
-            });
-        }
+        function countCoopWords() {
+            const textarea = document.getElementById('coop-description');
+            const counter = document.getElementById('coop-desc-counter');
+            const warning = document.getElementById('coop-word-warning');
+            const submitBtn = document.getElementById('coop-submit-btn');
 
-        function selectCoopModalTag(tag) {
-            if (!coopModalSelectedTags.includes(tag)) {
-                coopModalSelectedTags.push(tag);
-                renderCoopModalSelectedTags();
-                filterCoopModalTags();
-                validateCoopModalForm();
-            }
-        }
+            if (!textarea || !counter || !warning || !submitBtn) return;
 
-        function deselectCoopModalTag(tag) {
-            const idx = coopModalSelectedTags.indexOf(tag);
-            if (idx > -1) {
-                coopModalSelectedTags.splice(idx, 1);
-                renderCoopModalSelectedTags();
-                filterCoopModalTags();
-                validateCoopModalForm();
-            }
-        }
+            const text = textarea.value.trim();
+            const words = text === '' ? [] : text.split(/\s+/);
+            const wordCount = words.length;
 
-        function validateCoopModalForm() {
-            const descEl = document.getElementById('coop-modal-description');
-            const counterEl = document.getElementById('coop-modal-desc-counter');
-            const submitBtn = document.getElementById('coop-modal-submit-btn');
-            
-            if (!descEl || !counterEl || !submitBtn) return;
-            
-            const descText = descEl.value;
-            const len = descText.length;
-            
-            counterEl.innerText = `${len}/300`;
-            if (len < 150 || len > 300) {
-                counterEl.className = "text-[10px] font-bold text-error";
-            } else {
-                counterEl.className = "text-[10px] font-bold text-success";
-            }
-            
-            const isDescValid = len >= 150 && len <= 300;
-            const hasSoughtTags = coopModalSelectedTags.length > 0;
-            const hasProfession = document.getElementById('coop-modal-profession').value.trim().length > 0;
-            
-            if (isDescValid && hasSoughtTags && hasProfession) {
-                submitBtn.disabled = false;
-            } else {
+            counter.innerText = `${wordCount}/150 słów`;
+
+            if (wordCount > 150) {
+                counter.classList.add('text-error');
+                counter.classList.remove('text-primary');
+                warning.classList.remove('hidden');
                 submitBtn.disabled = true;
-            }
-        }
-
-        function toggleCoopFormType() {
-            const selectedType = document.querySelector('input[name="coop-type"]:checked').value;
-            const professionLabel = document.getElementById('coop-label-profession');
-            const soughtLabel = document.getElementById('coop-label-sought');
-            const professionInput = document.getElementById('coop-modal-profession');
-            
-            if (selectedType === 'zlecenie') {
-                if (professionLabel) professionLabel.innerText = "Kim jestem / Moja rola";
-                if (soughtLabel) soughtLabel.innerText = "Potrzebne kompetencje do realizacji zlecenia";
-                if (professionInput) professionInput.placeholder = "np. Odbiorca, Kolekcjoner, Projektant";
+                submitBtn.classList.add('opacity-50', 'pointer-events-none');
             } else {
-                if (professionLabel) professionLabel.innerText = "Moja profesja (główny tag projektu)";
-                if (soughtLabel) soughtLabel.innerText = "Poszukiwane kompetencje (Wybierz z listy)";
-                if (professionInput) professionInput.placeholder = "np. Projektant Mebli";
+                counter.classList.remove('text-error');
+                counter.classList.add('text-primary');
+                warning.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'pointer-events-none');
             }
         }
 
@@ -8695,31 +9260,24 @@
             if (!modal) return;
             
             const titleEl = document.getElementById('coop-modal-title');
-            const submitTextEl = document.getElementById('coop-modal-submit-text');
+            const submitTextEl = document.getElementById('coop-submit-text');
             const editIdEl = document.getElementById('coop-edit-id');
-            const profInput = document.getElementById('coop-modal-profession');
-            const descTextarea = document.getElementById('coop-modal-description');
-            const shareLocCheckbox = document.getElementById('coop-modal-share-location');
-            const searchInput = document.getElementById('coop-modal-tag-search');
             
-            if (searchInput) searchInput.value = '';
+            const titleInput = document.getElementById('coop-title');
+            const typeRadioWsp = document.getElementById('coop-type-wspolpraca');
+            const typeRadioZle = document.getElementById('coop-type-zlecenie');
+            const professionInput = document.getElementById('coop-profession');
+            const productsInput = document.getElementById('coop-products');
+            const descTextarea = document.getElementById('coop-description');
+            const shareLocCheckbox = document.getElementById('coop-share-location');
             
-            // Reset radio button states first
-            const radioWspolpraca = document.querySelector('input[name="coop-type"][value="wspolpraca"]');
-            const radioZlecenie = document.querySelector('input[name="coop-type"][value="zlecenie"]');
-            
-            if (radioWspolpraca) {
-                radioWspolpraca.disabled = false;
-                radioWspolpraca.parentElement.classList.remove('opacity-50', 'cursor-not-allowed');
-                const titleSpan = radioWspolpraca.parentElement.querySelector('.font-bold');
-                if (titleSpan) titleSpan.innerText = "Współpraca";
-            }
-            if (radioZlecenie) {
-                radioZlecenie.disabled = false;
-                radioZlecenie.parentElement.classList.remove('opacity-50', 'cursor-not-allowed');
-                const titleSpan = radioZlecenie.parentElement.querySelector('.font-bold');
-                if (titleSpan) titleSpan.innerText = "Zlecenie";
-            }
+            // Clear inputs first
+            titleInput.value = '';
+            professionInput.value = '';
+            productsInput.value = '';
+            descTextarea.value = '';
+            shareLocCheckbox.checked = true;
+            editIdEl.value = '';
             
             if (coopId) {
                 const coop = STATE.cooperations.find(c => c.id === coopId);
@@ -8728,65 +9286,25 @@
                 titleEl.innerText = "Edytuj ogłoszenie";
                 submitTextEl.innerText = "Zapisz zmiany";
                 editIdEl.value = coopId;
-                profInput.value = coop.profession;
-                descTextarea.value = coop.description;
+                
+                titleInput.value = coop.title || '';
+                if (coop.type === 'zlecenie') {
+                    typeRadioZle.checked = true;
+                } else {
+                    typeRadioWsp.checked = true;
+                }
+                
+                professionInput.value = coop.soughtProfessions ? coop.soughtProfessions.join(' ') : '';
+                productsInput.value = coop.productTags ? coop.productTags.join(' ') : '';
+                descTextarea.value = coop.description || '';
                 shareLocCheckbox.checked = coop.shareLocation !== false;
-                coopModalSelectedTags = [...coop.soughtProfessions];
-                
-                // Select type radio button
-                const typeVal = coop.type || 'wspolpraca';
-                const radio = document.querySelector(`input[name="coop-type"][value="${typeVal}"]`);
-                if (radio) {
-                    radio.checked = true;
-                }
-                toggleCoopFormType();
             } else {
-                titleEl.innerText = "Opublikuj ogłoszenie";
+                titleEl.innerText = "Opublikuj ogłoszenie o współpracy";
                 submitTextEl.innerText = "Opublikuj ogłoszenie";
-                editIdEl.value = "";
-                profInput.value = STATE.currentUser.profession || "";
-                descTextarea.value = "";
-                shareLocCheckbox.checked = true;
-                coopModalSelectedTags = [];
-                
-                // Check limits for Współpraca and Zlecenie
-                const ownCoops = STATE.cooperations.filter(c => c.creator === STATE.currentUser.name);
-                const countWsp = ownCoops.filter(c => c.type === 'wspolpraca' || !c.type).length;
-                const countZle = ownCoops.filter(c => c.type === 'zlecenie').length;
-                const max = STATE.currentUser.isPremium === true ? 5 : 1;
-                
-                const wspLimit = countWsp >= max;
-                const zleLimit = countZle >= max;
-                
-                if (wspLimit && radioWspolpraca) {
-                    radioWspolpraca.disabled = true;
-                    radioWspolpraca.parentElement.classList.add('opacity-50', 'cursor-not-allowed');
-                    const titleSpan = radioWspolpraca.parentElement.querySelector('.font-bold');
-                    if (titleSpan) titleSpan.innerText = "Współpraca (Limit)";
-                }
-                if (zleLimit && radioZlecenie) {
-                    radioZlecenie.disabled = true;
-                    radioZlecenie.parentElement.classList.add('opacity-50', 'cursor-not-allowed');
-                    const titleSpan = radioZlecenie.parentElement.querySelector('.font-bold');
-                    if (titleSpan) titleSpan.innerText = "Zlecenie (Limit)";
-                }
-                
-                // Select default check based on limits
-                if (wspLimit && !zleLimit && radioZlecenie) {
-                    radioZlecenie.checked = true;
-                } else if (zleLimit && !wspLimit && radioWspolpraca) {
-                    radioWspolpraca.checked = true;
-                } else if (radioWspolpraca) {
-                    radioWspolpraca.checked = true;
-                }
-                
-                toggleCoopFormType();
+                typeRadioWsp.checked = true;
             }
             
-            renderCoopModalSelectedTags();
-            filterCoopModalTags();
-            validateCoopModalForm();
-            
+            countCoopWords();
             modal.classList.remove('hidden');
         }
 
@@ -8799,49 +9317,42 @@
             event.preventDefault();
             
             const editId = document.getElementById('coop-edit-id').value;
-            const profession = document.getElementById('coop-modal-profession').value.trim();
-            const description = document.getElementById('coop-modal-description').value.trim();
-            const shareLocation = document.getElementById('coop-modal-share-location').checked;
+            const title = document.getElementById('coop-title').value.trim();
+            const type = document.getElementById('coop-type-zlecenie').checked ? 'zlecenie' : 'wspolpraca';
+            const professionRaw = document.getElementById('coop-profession').value.trim();
+            const productsRaw = document.getElementById('coop-products').value.trim();
+            const description = document.getElementById('coop-description').value.trim();
+            const shareLocation = document.getElementById('coop-share-location').checked;
             
-            if (!profession || !description || coopModalSelectedTags.length === 0) {
-                alert("Wypełnij wymagane pola i wybierz przynajmniej jedną kompetencję partnerską!");
+            if (!title || !professionRaw || !description) {
+                alert("Wypełnij wymagane pola (tytuł, poszukiwane zawody/dziedziny, opis)!");
                 return;
             }
             
-            if (description.length < 150 || description.length > 300) {
-                alert("Opis musi mieć od 150 do 300 znaków!");
+            // Check word limit
+            const words = description.split(/\s+/).filter(Boolean);
+            if (words.length > 150) {
+                alert("Opis może mieć maksymalnie 150 słów!");
                 return;
             }
             
-            const typeRadio = document.querySelector('input[name="coop-type"]:checked');
-            const type = typeRadio ? typeRadio.value : 'wspolpraca';
+            const soughtProfessions = parseTagsInput(professionRaw);
+            const productTags = parseTagsInput(productsRaw);
             
-            if (!editId) {
-                const ownCoops = STATE.cooperations.filter(c => c.creator === STATE.currentUser.name);
-                const countWsp = ownCoops.filter(c => c.type === 'wspolpraca' || !c.type).length;
-                const countZle = ownCoops.filter(c => c.type === 'zlecenie').length;
-                const max = STATE.currentUser.isPremium === true ? 5 : 1;
-                
-                if (type === 'wspolpraca' && countWsp >= max) {
-                    alert(`Osiągnąłeś limit ogłoszeń o współpracy (${max})!`);
-                    return;
-                }
-                if (type === 'zlecenie' && countZle >= max) {
-                    alert(`Osiągnąłeś limit ogłoszeń o zleceniach (${max})!`);
-                    return;
-                }
-            }
+            // Read owner's default profession or SPECIALIZATION to use as creator profession
+            const creatorProf = STATE.currentUser.profession || "Artysta / Rzemieślnik";
             
             if (editId) {
                 const coop = STATE.cooperations.find(c => c.id === editId);
                 if (coop) {
-                    coop.profession = profession;
-                    coop.description = description;
-                    coop.soughtProfessions = [...coopModalSelectedTags];
-                    coop.shareLocation = shareLocation;
+                    coop.title = title;
                     coop.type = type;
+                    coop.description = description;
+                    coop.soughtProfessions = soughtProfessions;
+                    coop.productTags = productTags;
+                    coop.profession = creatorProf;
+                    coop.shareLocation = shareLocation;
                     
-                    // Sync cooperation edit to Supabase if client is ready
                     if (window.supabaseSyncCooperation) {
                         window.supabaseSyncCooperation(coop);
                     }
@@ -8854,11 +9365,13 @@
                     creator: STATE.currentUser.name,
                     city: STATE.currentUser.city,
                     avatar: STATE.currentUser.avatar || "",
+                    title: title,
+                    type: type,
                     description: description,
-                    soughtProfessions: [...coopModalSelectedTags],
-                    profession: profession,
-                    shareLocation: shareLocation,
-                    type: type
+                    soughtProfessions: soughtProfessions,
+                    productTags: productTags,
+                    profession: creatorProf,
+                    shareLocation: shareLocation
                 };
                 
                 STATE.cooperations.unshift(newCoop);
@@ -8926,28 +9439,16 @@
                         </div>
                     `;
 
-                    const tags = getCreatorTags(coop.creator);
                     let tagsHtml = '';
-                    if (tags.length > 0) {
-                        tagsHtml += `<div class="coop-tags-list flex flex-nowrap items-center gap-1.5 pt-1 overflow-x-auto hide-scrollbar w-full" data-coop-id="${coop.id}_modal_prof">`;
-                        const visibleTags = tags.slice(0, 2);
-                        const hiddenTags = tags.slice(2);
-                        
-                        visibleTags.forEach(t => {
-                            tagsHtml += `
-                                <span onclick="event.stopPropagation(); closeCoopProfileSectionModal(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
-                            `;
-                        });
-                        
-                        if (hiddenTags.length > 0) {
-                            tagsHtml += `
-                                <button onclick="event.stopPropagation(); expandCoopTags(event, '${coop.id}_modal_prof')" class="coop-expand-btn px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[8px] md:text-[9px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>
-                                ${hiddenTags.map(t => `
-                                    <span onclick="event.stopPropagation(); closeCoopProfileSectionModal(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
-                                `).join('')}
-                            `;
-                        }
-                        tagsHtml += `</div>`;
+                    if (coop.soughtProfessions && coop.soughtProfessions.length > 0) {
+                        tagsHtml = `
+                            <div class="flex items-center gap-1.5 mt-1 border-b border-outline-variant/10 pb-2">
+                                <span class="font-bold text-coral text-[10px]">Szukam:</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); closeCoopProfileSectionModal(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        `;
                     }
 
                     listingsHtml += `
@@ -8958,7 +9459,7 @@
                                         <img src="${coop.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 flex-shrink-0"/>
                                         <div class="min-w-0">
                                             <h4 class="font-bold text-on-surface truncate text-[11px]">${coop.creator}</h4>
-                                            ${coop.shareLocation ? `<p class="text-[9px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
+                                            ${coop.shareLocation ? `<p class="text-[9px] text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
                                         </div>
                                     </div>
                                     <span class="px-2 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider flex-shrink-0 ${coop.type === 'zlecenie' ? 'bg-turquoise/15 text-secondary border border-turquoise/35' : 'bg-primary/10 text-primary border border-primary/20'}">
@@ -8969,16 +9470,10 @@
                             </div>
                             <div class="space-y-1 text-[11px] leading-snug text-left mt-2 flex-1 flex flex-col justify-between">
                                 <div class="space-y-2">
-                                    <p class="text-on-surface-variant dark:text-white leading-relaxed">
+                                    <p class="text-on-surface-variant dark:text-zinc-300 leading-relaxed">
                                         <span class="font-bold text-primary">${coop.type === 'zlecenie' ? 'Szczegóły:' : 'Kim jestem:'}</span> 
                                         ${renderCoopDescription(coop)}
                                     </p>
-                                    <div class="space-y-1">
-                                        <span class="font-bold text-secondary text-[10px]">Szukam:</span>
-                                        <div class="flex flex-wrap gap-1">
-                                            ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); closeCoopProfileSectionModal(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-secondary/45 hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             ${actionButtonsHtml}
@@ -9033,18 +9528,6 @@
             const container = document.getElementById('coop-detail-card-container');
             if (!container) return;
 
-            const tags = getCreatorTags(coop.creator);
-            let tagsHtml = '';
-            if (tags.length > 0) {
-                tagsHtml += `<div class="coop-tags-list flex flex-wrap items-center gap-1.5 pt-1 w-full">`;
-                tags.forEach(t => {
-                    tagsHtml += `
-                        <span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${t}</span>
-                    `;
-                });
-                tagsHtml += `</div>`;
-            }
-
             const isOwnCoop = (coop.creator === STATE.currentUser.name);
 
             let actionButtonsHtml = '';
@@ -9063,9 +9546,37 @@
                 `;
             }
 
+            let tagsHtml = '';
+            if (coop.soughtProfessions && coop.soughtProfessions.length > 0) {
+                tagsHtml = `
+                    <div class="flex items-center gap-1.5 mt-1 border-b border-outline-variant/10 pb-2">
+                        <span class="font-bold text-coral text-[10px]">Szukam:</span>
+                        <div class="flex flex-wrap gap-1">
+                            ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); closeCoopDetailModal(); clickTag('${tag}')" class="px-2 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const soughtHtml = coop.soughtProfessions && coop.soughtProfessions.length > 0
+                ? coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); closeCoopDetailModal(); clickTag('${tag}')" class="px-2 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')
+                : `<span class="text-[9px] text-outline italic">Dowolne</span>`;
+
+            // Format product tags
+            const productsHtml = coop.productTags && coop.productTags.length > 0
+                ? `
+                <div class="space-y-1.5 mt-2 border-t border-outline-variant/10 pt-2">
+                    <span class="font-bold text-outline text-[10px] uppercase tracking-wider block">Dotyczy produktu:</span>
+                    <div class="flex flex-wrap gap-1">
+                        ${coop.productTags.map(tag => `<span onclick="event.stopPropagation(); closeCoopDetailModal(); clickTag('${tag}')" class="px-2 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase bg-secondary/10 text-secondary border border-secondary hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all">${tag}</span>`).join('')}
+                    </div>
+                </div>
+                `
+                : '';
+
             container.innerHTML = `
                 <div class="sticky top-0 bg-surface/95 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-outline-variant/20 z-10">
-                    <h3 class="font-headline-lg text-headline-lg text-primary">${coop.type === 'zlecenie' ? 'Szczegóły Zlecenia' : 'Szczegóły Współpracy'}</h3>
+                    <h3 class="font-headline-lg text-headline-lg text-primary">${coop.type === 'zlecenie' ? 'Szczegóły Realizacji' : 'Szczegóły Współpracy'}</h3>
                     <button onclick="closeCoopDetailModal()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-90 transition-transform">
                         <span class="material-symbols-outlined">close</span>
                     </button>
@@ -9076,26 +9587,30 @@
                             <img src="${coop.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}" class="w-9 h-9 rounded-full object-cover border border-outline-variant/30 flex-shrink-0"/>
                             <div class="min-w-0">
                                 <h4 class="font-bold text-on-surface text-[12px] truncate">${coop.creator}</h4>
-                                ${coop.shareLocation ? `<p class="text-[10px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[11px] font-normal">location_on</span>${coop.city}</p>` : ''}
+                                ${coop.shareLocation ? `<p class="text-[10px] text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[11px] font-normal">location_on</span>${coop.city}</p>` : ''}
                             </div>
                         </div>
                         <span class="px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider flex-shrink-0 ${coop.type === 'zlecenie' ? 'bg-turquoise/15 text-secondary border border-turquoise/35' : 'bg-primary/10 text-primary border border-primary/20'}">
-                            ${coop.type === 'zlecenie' ? 'Zlecenie' : 'Współpraca'}
+                            ${coop.type === 'zlecenie' ? 'Realizacja' : 'Współpraca'}
                         </span>
                     </div>
+                    <h2 class="font-bold text-on-surface text-sm text-left leading-tight mt-1">
+                        ${coop.title || 'Ogłoszenie o współpracy'}
+                    </h2>
                     ${tagsHtml}
                     <div class="space-y-1 text-xs leading-relaxed text-left mt-2">
                         <div class="space-y-3">
-                            <p class="text-on-surface-variant dark:text-white leading-relaxed">
-                                <span class="font-bold text-primary text-[12px] block mb-1">${coop.type === 'zlecenie' ? 'Szczegóły zlecenia:' : 'Kim jestem:'}</span> 
-                                <span class="text-on-surface-variant dark:text-white text-[11px] block whitespace-pre-wrap">${coop.description}</span>
+                            <p class="text-on-surface-variant dark:text-zinc-300 leading-relaxed">
+                                <span class="font-bold text-primary text-[12px] block mb-1">${coop.type === 'zlecenie' ? 'Opis szczegółowy realizacji:' : 'Kim jestem / O projekcie:'}</span> 
+                                <span class="text-on-surface-variant dark:text-zinc-300 text-[11px] block whitespace-pre-wrap">${coop.description}</span>
                             </p>
                             <div class="space-y-1.5">
                                 <span class="font-bold text-secondary text-[10px] uppercase tracking-wider block">Poszukiwane kompetencje:</span>
                                 <div class="flex flex-wrap gap-1">
-                                    ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); closeCoopDetailModal(); clickTag('${tag}')" class="px-2 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-secondary/45 hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
+                                    ${soughtHtml}
                                 </div>
                             </div>
+                            ${productsHtml}
                         </div>
                     </div>
                     ${actionButtonsHtml}
@@ -9138,70 +9653,47 @@
             const viewedName = STATE.activeProfileName || STATE.currentUser.name;
             const isOwnProfile = (viewedName === STATE.currentUser.name);
 
-            // Conditionally show/hide matching settings toggles and checklists
+            // Conditionally show/hide matching settings toggles and checklists (always hidden to keep subtab clean and correctly sized)
             const togglePanel = document.getElementById('profile-coop-toggle-panel');
             const checklistPanel = document.getElementById('profile-coop-checklist-panel');
-            if (togglePanel) {
-                if (isOwnProfile) togglePanel.classList.remove('hidden');
-                else togglePanel.classList.add('hidden');
-            }
-            if (checklistPanel) {
-                if (isOwnProfile) {
-                    checklistPanel.classList.remove('hidden');
-                    renderCoopCompetencyCheckboxes();
-                } else {
-                    checklistPanel.classList.add('hidden');
-                }
-            }
+            if (togglePanel) togglePanel.classList.add('hidden');
+            if (checklistPanel) checklistPanel.classList.add('hidden');
             
             const container = document.getElementById('profile-coop-form-container');
             if (!container) return;
             
             const targetCreator = isOwnProfile ? STATE.currentUser.name : viewedName;
             const ownCoops = STATE.cooperations.filter(c => c.creator === targetCreator);
-            const isPremium = isOwnProfile ? (STATE.currentUser.isPremium === true) : false;
-            const maxListings = isPremium ? 5 : 1;
             const count = ownCoops.length;
-            
-            const countWspolpraca = ownCoops.filter(c => c.type === 'wspolpraca' || !c.type).length;
-            const countZlecenie = ownCoops.filter(c => c.type === 'zlecenie').length;
-            
-            const limitWspReached = countWspolpraca >= maxListings;
-            const limitZleReached = countZlecenie >= maxListings;
-            const bothLimitsReached = limitWspReached && limitZleReached;
             
             let publishBtnHtml = '';
             if (isOwnProfile) {
-                if (bothLimitsReached) {
-                    publishBtnHtml = `
-                        <div class="space-y-2 mb-4">
-                            <button disabled class="w-full h-11 bg-surface-container text-outline font-bold rounded-xl text-xs cursor-not-allowed flex items-center justify-center gap-1.5" title="Osiągnąłeś limit obu rodzajów ogłoszeń">
-                                <span class="material-symbols-outlined text-sm font-normal">lock</span>
-                                Opublikuj ogłoszenie (Współpraca: ${countWspolpraca}/${maxListings}, Zlecenia: ${countZlecenie}/${maxListings})
-                            </button>
-                            <p class="text-[10px] text-center text-error font-medium">
-                                ${isPremium ? 'Osiągnąłeś limit 5 ogłoszeń o współpracy oraz 5 zleceń dla konta Premium.' : 'Osiągnąłeś limit 1 ogłoszenia o współpracy oraz 1 zlecenia w wersji standardowej. Przejdź na Premium, aby mieć do 5.'}
-                            </p>
-                        </div>
-                    `;
-                } else {
-                    publishBtnHtml = `
-                        <button onclick="openCooperationModal()" class="w-full h-11 brand-gradient text-white font-bold rounded-xl active:scale-95 transition-all text-xs shadow-md flex items-center justify-center gap-1.5 mb-4">
-                            <span class="material-symbols-outlined text-sm font-normal">campaign</span>
-                            Opublikuj ogłoszenie (Współpraca: ${countWspolpraca}/${maxListings}, Zlecenia: ${countZlecenie}/${maxListings})
-                        </button>
-                    `;
-                }
+                publishBtnHtml = `
+                    <button onclick="openCooperationModal()" class="w-full h-11 brand-gradient text-white font-bold rounded-xl active:scale-95 transition-all text-xs shadow-md flex items-center justify-center gap-1.5 mb-4">
+                        <span class="material-symbols-outlined text-sm font-normal">campaign</span>
+                        Dodaj ogłoszenie o współpracy
+                    </button>
+                `;
             }
             
             let listingsHtml = '';
             if (count === 0) {
-                listingsHtml = `
-                    <div class="p-6 border border-dashed border-outline-variant/30 rounded-2xl text-center space-y-2 bg-surface-container-lowest">
-                        <span class="material-symbols-outlined text-outline text-3xl font-normal">campaign</span>
-                        <p class="text-xs text-outline">Brak aktywnych ogłoszeń.</p>
-                    </div>
-                `;
+                if (isOwnProfile) {
+                    listingsHtml = `
+                        <div class="py-6 px-4 border border-dashed border-outline-variant/30 rounded-2xl text-center space-y-3 bg-surface-container-lowest flex flex-col items-center justify-center max-w-sm mx-auto shadow-inner">
+                            <p class="text-xs text-on-surface-variant font-medium leading-relaxed">Szukasz rzemieślnika lub artysty lub chcesz podjąć współpracę? Opublikuj swoje pierwsze ogłoszenie!</p>
+                            <button onclick="openCooperationModal()" class="inline-flex items-center gap-1 px-4 py-2 bg-primary text-white font-bold rounded-xl shadow hover:opacity-90 active:scale-95 transition-all text-xs">
+                                <span class="material-symbols-outlined text-xs font-bold">add</span> Dodaj ogłoszenie
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    listingsHtml = `
+                        <div class="py-6 px-4 border border-dashed border-outline-variant/30 rounded-2xl text-center space-y-2 bg-surface-container-lowest flex flex-col items-center justify-center max-w-sm mx-auto shadow-inner">
+                            <p class="text-xs text-outline leading-relaxed">Ten użytkownik nie dodał jeszcze żadnych ogłoszeń o współpracy.</p>
+                        </div>
+                    `;
+                }
             } else {
                 listingsHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">`;
                 ownCoops.forEach(coop => {
@@ -9221,29 +9713,42 @@
                         `;
                     }
 
+                    // Creator tags at the top
                     const tags = getCreatorTags(coop.creator);
                     let tagsHtml = '';
                     if (tags.length > 0) {
+                        const maxVisible = 2;
+                        const visibleTags = tags.slice(0, maxVisible);
+                        const hiddenTags = tags.slice(maxVisible);
                         tagsHtml += `<div class="coop-tags-list flex flex-nowrap items-center gap-1.5 pt-1 overflow-x-auto hide-scrollbar w-full" data-coop-id="${coop.id}_prof">`;
-                        const visibleTags = tags.slice(0, 2);
-                        const hiddenTags = tags.slice(2);
-                        
                         visibleTags.forEach(t => {
-                            tagsHtml += `
-                                <span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
-                            `;
+                            tagsHtml += `<span onclick="event.stopPropagation(); clickTag('${t}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-coral border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>`;
                         });
-                        
                         if (hiddenTags.length > 0) {
                             tagsHtml += `
                                 <button onclick="event.stopPropagation(); expandCoopTags(event, '${coop.id}_prof')" class="coop-expand-btn px-1.5 py-0.5 rounded bg-surface-container-high hover:bg-outline-variant/30 text-on-surface-variant text-[8px] md:text-[9px] font-bold flex-shrink-0 transition-colors select-none font-normal">(+)</button>
                                 ${hiddenTags.map(t => `
-                                    <span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-primary border border-primary/45 hover:border-primary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
+                                    <span onclick="event.stopPropagation(); clickTag('${t}')" class="hidden-coop-tag hidden px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-coral border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)] flex-shrink-0">${t}</span>
                                 `).join('')}
                             `;
                         }
                         tagsHtml += `</div>`;
                     }
+
+                    const soughtHtml = coop.soughtProfessions && coop.soughtProfessions.length > 0 
+                        ? coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-coral hover:border-coral hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')
+                        : `<span class="text-[9px] text-outline italic">Dowolne</span>`;
+
+                    const productsHtml = coop.productTags && coop.productTags.length > 0
+                        ? `
+                        <div class="space-y-1 mt-1.5 border-t border-outline-variant/10 pt-1.5">
+                            <span class="font-bold text-outline text-[9px] uppercase tracking-wider block">Dotyczy produktu:</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${coop.productTags.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase bg-secondary/10 text-secondary border border-secondary hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                        `
+                        : '';
 
                     listingsHtml += `
                         <div onclick="openCoopDetailModal('${coop.id}')" class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-3.5 shadow-sm space-y-2 text-xs flex flex-col justify-between hover:-translate-y-1 hover:shadow-md cursor-pointer transition-all">
@@ -9253,26 +9758,30 @@
                                         <img src="${coop.avatar || 'https://xjtkzhkmwbkjjmgbnpza.supabase.co/storage/v1/object/public/avatars/avatar.png'}" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 flex-shrink-0"/>
                                         <div class="min-w-0">
                                             <h4 class="font-bold text-on-surface truncate text-[11px]">${coop.creator}</h4>
-                                            ${coop.shareLocation ? `<p class="text-[9px] text-outline flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
+                                            ${coop.shareLocation ? `<p class="text-[9px] text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px] font-normal">location_on</span>${coop.city}</p>` : ''}
                                         </div>
                                     </div>
                                     <span class="px-2 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider flex-shrink-0 ${coop.type === 'zlecenie' ? 'bg-turquoise/15 text-secondary border border-turquoise/35' : 'bg-primary/10 text-primary border border-primary/20'}">
-                                        ${coop.type === 'zlecenie' ? 'Zlecenie' : 'Współpraca'}
+                                        ${coop.type === 'zlecenie' ? 'Realizacja' : 'Współpraca'}
                                     </span>
                                 </div>
+                                <h3 class="font-bold text-on-surface text-[12px] leading-tight line-clamp-2 mt-1" title="${coop.title || 'Ogłoszenie o współpracy'}">
+                                    ${coop.title || 'Ogłoszenie o współpracy'}
+                                </h3>
                                 ${tagsHtml}
                             </div>
                             <div class="space-y-1 text-[11px] leading-snug text-left mt-2 flex-1 flex flex-col justify-between">
                                 <div class="space-y-2">
-                                    <p class="text-on-surface-variant dark:text-white leading-relaxed">
+                                    <p class="text-on-surface-variant dark:text-zinc-300 leading-relaxed">
                                         <span class="font-bold text-primary">${coop.type === 'zlecenie' ? 'Szczegóły:' : 'Kim jestem:'}</span> 
                                         ${renderCoopDescription(coop)}
                                     </p>
                                     <div class="space-y-1">
                                         <span class="font-bold text-secondary text-[10px]">Szukam:</span>
                                         <div class="flex flex-wrap gap-1">
-                                            ${coop.soughtProfessions.map(tag => `<span onclick="event.stopPropagation(); clickTag('${tag}')" class="px-1.5 py-0.5 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-tight bg-white dark:bg-surface-container-lowest text-secondary border border-secondary/45 hover:border-secondary hover:-translate-y-[1.5px] cursor-pointer select-none transition-all shadow-[0_3px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_3px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_5px_12px_rgba(0,0,0,0.35)]">${tag}</span>`).join('')}
+                                            ${soughtHtml}
                                         </div>
+                                        ${productsHtml}
                                     </div>
                                 </div>
                             </div>
@@ -9285,13 +9794,19 @@
             
             const headerTitle = isOwnProfile ? "Twoje aktywne ogłoszenia" : `Aktywne ogłoszenia użytkownika ${viewedName}`;
             
+            // If count is 0, don't double render publish button above empty state
+            const finalPublishBtn = count === 0 ? '' : publishBtnHtml;
+            
             container.innerHTML = `
-                ${publishBtnHtml}
+                ${finalPublishBtn}
                 <div class="space-y-3">
                     <h4 class="font-label-md text-[11px] text-on-surface font-bold uppercase tracking-wider">${headerTitle}</h4>
                     ${listingsHtml}
                 </div>
             `;
+
+            // Adjust active tab gradient height dynamically to match content changes
+            setTimeout(alignActiveTabGradient, 50);
         }
 
         // Updated action graphic to support 'coop' type

@@ -111,10 +111,12 @@ Wdrożono zaawansowane usprawnienia sistema współpracy między artystami/rzemi
 
 ### E. Tagi twórcy w jednej linii
 - **Tagi twórcy w jednej linii**: Na kartach ofert współpracy tagi twórcy wyświetlają się w jednej linii (flex-nowrap). Wyświetlane są 2 pierwsze tagi, a pozostałe można rozwinąć przyciskiem **`(+)`**.
-- **Limit 150 znaków w opisie**: Opis na karcie we wszystkich widokach współpracy (Explore, Profil, Okna modalne) jest automatycznie limitowany do 150 znaków z linkiem **„więcej”**.
-
-### F. Opcja „Ukryj / Pokaż” na górze sekcji współpracy
-- Dodano przycisk **„Ukryj / Pokaż”** wraz z animowaną ikoną strzałki w sekcji *„Dopasowane współprace”*.
+ - **Automatyczne dopasowanie wysokości**: Dzięki temu zakładka Współpraca zawiera obecnie wyłącznie listę aktywnych ogłoszeń lub przejrzysty empty-state. Obramowanie teczki SVG dopasowuje się automatycznie i precyzyjnie do wysokości zawartej tam treści. Wprowadzono wywołanie `alignActiveTabGradient()` na końcu renderowania, aby wysokość reagowała natychmiast na zmiany danych.
+- **Uproszczenie interfejsu**: Przycisk dodawania został uproszczony i pozbawiony mylących limitów subskrypcyjnych, stając się czytelnym i eleganckim wezwaniem do akcji: *„Dodaj ogłoszenie o współpracy”*.
+- **Rozwiązanie problemu nakładania się warstw (z-index)**: Dodano regułę CSS `.profile-tab-content-container > *:not(.profile-folder-svg-bg) { position: relative; z-index: 2; }` w celu umieszczenia elementów zawartości przed tłem SVG. Rozwiązało to problem niewidoczności kafelków przed najechaniem oraz zablokowania obsługi zdarzeń myszy (kliknięcia, najechanie).
+- **Usunięcie błędu ReferenceError**: Zdefiniowano brakującą zmienną `soughtHtml` wewnątrz funkcji `openCoopDetailModal()`, przywracając pełną funkcjonalność kliknięcia kafla w celu otwarcia modalu szczegółów.
+- **Węższy pusty stan**: Skorygowano pusty stan dla właściciela profilu – ma on teraz zredukowany padding, maksymalną szerokość `max-w-sm` oraz przycisk `(+) Dodaj ogłoszenie` pod komunikatem, dzięki czemu okno jest wąskie i idealnie dopasowane.
+- **Uporządkowanie tagów**: Na kafelkach profilowych przywrócono renderowanie tagów autorskich twórcy (dziedzina z profilu) na samej górze kafelka, a tagi poszukiwane ("Szukam:") znajdują się poprawnie na dole, eliminując powtórzenia.
 
 ---
 

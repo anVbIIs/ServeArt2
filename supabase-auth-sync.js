@@ -644,3 +644,124 @@ window.supabaseSignInWithGoogle = async function() {
         }
     }
 };
+
+// 6. Quick Test Accounts SignIn helper
+window.quickSignIn = async function(roleType) {
+    const errorMsg = document.getElementById('auth-error-msg');
+    const successMsg = document.getElementById('auth-success-msg');
+    if (errorMsg) errorMsg.classList.add('hidden');
+    if (successMsg) successMsg.classList.add('hidden');
+    
+    if (window.showToast) {
+        window.showToast("Logowanie testowe...", "sync");
+    }
+
+    let email, password, fullName, role;
+    if (roleType === 'admin') {
+        email = 'admin@serveart.pl';
+        password = 'Password123!';
+        fullName = 'Admin Testowy';
+        role = 'admin';
+    } else if (roleType === 'tworca') {
+        email = 'tworca@serveart.pl';
+        password = 'Password123!';
+        fullName = 'Jan Kowalski';
+        role = 'twórca';
+    } else { // kupujacy
+        email = 'kupujacy@serveart.pl';
+        password = 'Password123!';
+        fullName = 'Anna Nowak';
+        role = 'entuzjasta';
+    }
+
+    const doOfflineFallbackSignIn = function() {
+        console.warn("Using offline mock fallback login.");
+        STATE.isAuthenticated = true;
+        STATE.currentUser = {
+            id: 'mock_' + roleType,
+            name: fullName,
+            role: role,
+            email: email,
+            avatar: '',
+            city: 'Wrocław',
+            joined: 'Lipiec 2026',
+            profession: role === 'admin' ? 'Administrator' : (role === 'twórca' ? 'Artysta' : 'Pasjonat'),
+            mainSpecialization: '',
+            bio: role === 'admin' ? 'Konto Administratora Prototypu' : 'Konto testowe',
+            exclusions: 'Brak',
+            tags: [],
+            customMinBudget: 0,
+            customMaxBudget: 0,
+            customDeliveryTime: '',
+            banner: 'gradient-5',
+            isPremium: role === 'admin',
+            avatarShape: 'circle',
+            offering: [],
+            soughtProfessions: []
+        };
+        safeLocalStorage.setItem('serveart_logged_in', 'true');
+        safeLocalStorage.setItem('serveart_user_id', STATE.currentUser.id);
+        safeLocalStorage.setItem('serveart_user_name', STATE.currentUser.name);
+        safeLocalStorage.setItem('serveart_user_role', STATE.currentUser.role);
+        safeLocalStorage.setItem('serveart_user_email', STATE.currentUser.email);
+        
+        window.closeAuthModal();
+        if (window.initializeUserChannels) window.initializeUserChannels();
+        if (window.renderExploreFeed) window.renderExploreFeed();
+        if (window.renderCommunityFeed) window.renderCommunityFeed();
+        if (window.renderCooperationFeed) window.renderCooperationFeed();
+        if (window.updateHeaderAuthButton) window.updateHeaderAuthButton();
+        if (window.showToast) {
+            window.showToast(`Zalogowano jako ${STATE.currentUser.name} (Offline Mock)`, "check_circle");
+        }
+    };
+
+    if (!window.supabaseClient) {
+        doOfflineFallbackSignIn();
+        return;
+    }
+
+    try {
+        // Try to sign in first
+        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            // If user doesn't exist, register them
+            if (error.message.includes('Invalid login credentials') || error.status === 400) {
+                if (window.showToast) {
+                    window.showToast("Tworzenie konta testowego w chmurze...", "sync");
+                }
+                
+                // Sign up using signUp
+                const { data: signUpData, error: signUpError } = await window.supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            role: role
+                        }
+                    }
+                });
+
+                if (signUpError) throw signUpError;
+                
+                // Re-attempt sign-in
+                const { error: reSignInError } = await window.supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                if (reSignInError) throw reSignInError;
+            } else {
+                throw error;
+            }
+        }
+    } catch (err) {
+        console.warn("Real login failed. Falling back to offline mock mode:", err);
+        doOfflineFallbackSignIn();
+    }
+};
+
